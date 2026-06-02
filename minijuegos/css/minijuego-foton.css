@@ -1,0 +1,298 @@
+/* ══════════════════════════════════════════
+   minijuegos/css/minijuego-foton.css
+   Estilos del minijuego Diagramas de Feynman.
+   ══════════════════════════════════════════ */
+
+/* ── Pantalla completa ── */
+.fy-screen {
+  position: absolute; inset: 0; z-index: 60;
+  background: #04020f;
+  display: flex; flex-direction: column;
+  font-family: 'Exo 2', sans-serif;
+  overflow: hidden;
+}
+
+/* ════════════════════════════════════════
+   HEADER
+   ════════════════════════════════════════ */
+.fy-header {
+  flex-shrink: 0;
+  display: flex; align-items: center; gap: 14px;
+  padding: 10px 20px;
+  background: rgba(5,2,20,0.95);
+  border-bottom: 1px solid rgba(255,215,64,0.2);
+}
+.fy-header-title {
+  font-size: 12px; color: var(--gold);
+  text-shadow: 0 0 12px rgba(255,215,64,0.4), 2px 2px 0 rgba(180,100,0,0.5);
+}
+.fy-header-sub { font-size: 11px; color: var(--text2); flex: 1; }
+.fy-close-btn {
+  font-family: 'Orbitron', monospace; font-size: 10px;
+  padding: 7px 14px; border-radius: 4px;
+  background: transparent; border: 1px solid rgba(255,215,64,0.25);
+  color: rgba(255,215,64,0.6); cursor: pointer; transition: all 0.2s;
+}
+.fy-close-btn:hover { border-color: var(--gold); color: var(--gold); }
+
+/* ── Barra intro ── */
+.fy-intro-bar {
+  flex-shrink: 0; padding: 8px 20px;
+  background: linear-gradient(90deg,rgba(30,15,80,0.9),rgba(10,5,35,0.9));
+  border-bottom: 1px solid rgba(124,77,255,0.2);
+  font-size: 12px; color: #c5b0ff; line-height: 1.5; text-align: center;
+}
+
+/* ════════════════════════════════════════
+   CUERPO
+   ════════════════════════════════════════ */
+.fy-body { display: flex; flex: 1; min-height: 0; }
+
+/* ── Panel izquierdo ── */
+.fy-panel {
+  width: 240px; flex-shrink: 0;
+  background: rgba(6,3,20,0.95);
+  border-right: 1px solid rgba(255,215,64,0.12);
+  padding: 10px 10px;
+  display: flex; flex-direction: column; gap: 8px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,215,64,0.2) transparent;
+}
+.fy-panel-card {
+  background: rgba(124,77,255,0.07);
+  border: 1px solid rgba(124,77,255,0.2);
+  border-radius: 8px; padding: 10px 12px;
+}
+.fy-panel-label {
+  font-size: 9px; color: var(--text2);
+  text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px;
+}
+.fy-consigna {
+  font-size: 12px; color: var(--text); line-height: 1.65; margin-bottom: 8px;
+}
+.fy-pista-btn {
+  font-size: 10px; background: transparent;
+  border: 1px solid rgba(255,215,64,0.22);
+  color: rgba(255,215,64,0.6); border-radius: 4px;
+  padding: 4px 10px; cursor: pointer; transition: all 0.2s;
+}
+.fy-pista-btn:hover { border-color:var(--gold); color:var(--gold); }
+.fy-pista {
+  margin-top: 8px; font-size: 11px; color: #a090d0; line-height: 1.6;
+  border-left: 2px solid rgba(255,215,64,0.3); padding-left: 8px;
+}
+.fy-pista.hidden { display: none; }
+
+/* ── Bloques ── */
+.fy-bloques-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 5px;
+}
+.fy-bloque {
+  border: 1px solid; border-radius: 6px;
+  padding: 5px 4px; cursor: pointer;
+  display: flex; flex-direction: column; align-items: center; gap: 2px;
+  transition: all 0.15s; user-select: none;
+}
+.fy-bloque:hover {
+  transform: scale(1.06);
+  box-shadow: 0 0 10px currentColor;
+}
+.fy-bloque:active { transform: scale(0.96); }
+.fy-bloque-sym {
+  font-family: 'Orbitron', monospace;
+  font-size: 14px; font-weight: 700; line-height: 1;
+}
+.fy-bloque-desc { font-size: 8px; opacity: 0.7; text-align: center; line-height: 1.2; }
+
+/* ── Leyenda de instrucciones ── */
+.fy-leyenda-card { font-size: 10px !important; }
+.fy-leyenda-item {
+  font-size: 10px; color: var(--text2); line-height: 1.8;
+  display: flex; gap: 5px; align-items: flex-start;
+}
+.fy-leyenda-item b { color: var(--accent); font-weight: 600; }
+
+/* ── Progreso ── */
+.fy-prog-val {
+  font-family: 'Orbitron', monospace;
+  font-size: 16px; font-weight: 700; color: var(--gold); margin-bottom: 5px;
+}
+.fy-prog-wrap {
+  height: 6px; background: rgba(255,255,255,0.06);
+  border-radius: 10px; overflow: hidden;
+  border: 1px solid rgba(255,215,64,0.15);
+}
+.fy-prog-bar {
+  height: 100%; width: 0%;
+  background: linear-gradient(90deg, #7c4dff, var(--gold));
+  border-radius: 10px; transition: width 0.35s ease;
+  box-shadow: 0 0 8px rgba(255,215,64,0.3);
+}
+
+/* ── Botones ── */
+.fy-nav-btns {
+  display: flex; flex-direction: column; gap: 6px; margin-top: auto;
+}
+.fy-btn {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 7px; letter-spacing: 1px;
+  padding: 9px 8px; text-align: center; line-height: 1.5;
+  background: rgba(124,77,255,0.1);
+  border: 1px solid rgba(124,77,255,0.3);
+  color: #c5b0ff; border-radius: 4px; cursor: pointer;
+  transition: all 0.18s;
+  clip-path: polygon(0 3px,3px 0,calc(100% - 3px) 0,100% 3px,
+                     100% calc(100% - 3px),calc(100% - 3px) 100%,
+                     3px 100%,0 calc(100% - 3px));
+}
+.fy-btn:hover {
+  background: rgba(124,77,255,0.22);
+  border-color: var(--gold); color: var(--gold);
+  box-shadow: 2px 2px 0 rgba(124,77,255,0.4);
+  transform: translate(-1px,-1px);
+}
+.fy-btn-validar {
+  border-color: rgba(0,229,255,0.4); color: var(--accent);
+  background: rgba(0,229,255,0.08);
+}
+.fy-btn-validar:hover { border-color: var(--accent); }
+.fy-btn-reset {
+  border-color: rgba(255,100,100,0.3); color: rgba(255,150,150,0.7);
+  background: rgba(255,100,100,0.05);
+}
+.fy-btn-reset:hover { border-color: #ff5252; color: #ff5252; }
+
+/* ════════════════════════════════════════
+   ÁREA DEL CANVAS
+   ════════════════════════════════════════ */
+.fy-area-wrap {
+  flex: 1; position: relative;
+}
+.fy-canvas {
+  width: 100%; height: 100%;
+  display: block; cursor: crosshair;
+}
+.fy-connect-hint {
+  position: absolute; bottom: 10px; right: 14px;
+  font-size: 10px; color: rgba(255,215,64,0.3);
+  pointer-events: none; font-family: 'Exo 2', sans-serif;
+}
+
+/* ════════════════════════════════════════
+   FEEDBACK
+   ════════════════════════════════════════ */
+.fy-feedback {
+  position: absolute; bottom: 20px; right: 20px;
+  z-index: 80; max-width: 420px;
+  display: flex; align-items: flex-start; gap: 14px;
+  padding: 16px 18px; border-radius: 10px; border: 1px solid;
+  backdrop-filter: blur(8px);
+  animation: fy-fb-in 0.25s cubic-bezier(0.175,0.885,0.32,1.275);
+}
+.fy-feedback.hidden { display: none; }
+.fy-feedback.fy-fb-ok {
+  background: rgba(0,30,15,0.95); border-color: rgba(0,200,100,0.5);
+  box-shadow: 0 0 20px rgba(0,200,100,0.18);
+}
+.fy-feedback.fy-fb-err {
+  background: rgba(30,8,5,0.95); border-color: rgba(220,60,40,0.5);
+  box-shadow: 0 0 20px rgba(220,60,40,0.18);
+}
+.fy-fb-icon {
+  font-size: 28px; flex-shrink: 0; line-height: 1;
+  font-family: 'Orbitron', monospace; font-weight: 900;
+}
+.fy-fb-ok .fy-fb-icon { color: #00e676; }
+.fy-fb-err .fy-fb-icon { color: #ff5252; }
+.fy-fb-msg {
+  font-size: 13px; color: #e0e0ff; line-height: 1.6;
+  margin-bottom: 6px; font-weight: 600;
+}
+.fy-fb-exp {
+  font-size: 11px; color: var(--text2); line-height: 1.65;
+}
+@keyframes fy-fb-in {
+  from { transform: scale(0.8) translateY(10px); opacity: 0; }
+  to   { transform: scale(1)   translateY(0);    opacity: 1; }
+}
+
+/* ════════════════════════════════════════
+   SELECTOR DE NIVELES
+   ════════════════════════════════════════ */
+.fy-niveles-overlay {
+  position: absolute; inset: 0; z-index: 90;
+  background: rgba(2,0,12,0.9); backdrop-filter: blur(6px);
+  display: flex; align-items: center; justify-content: center;
+}
+.fy-niveles-overlay.hidden { display: none; }
+.fy-niveles-wrap {
+  background: linear-gradient(135deg,rgba(16,8,45,0.99),rgba(6,3,22,0.99));
+  border: 1px solid rgba(255,215,64,0.3); border-radius: 14px;
+  padding: 28px 32px;
+  display: flex; flex-direction: column; align-items: center; gap: 18px;
+  box-shadow: 0 0 40px rgba(255,215,64,0.1);
+  clip-path: polygon(0 10px,10px 0,calc(100% - 10px) 0,100% 10px,
+                     100% calc(100% - 10px),calc(100% - 10px) 100%,
+                     10px 100%,0 calc(100% - 10px));
+}
+.fy-niveles-title {
+  font-size: 12px; color: var(--gold);
+  text-shadow: 0 0 14px rgba(255,215,64,0.4),2px 2px 0 rgba(180,100,0,0.5);
+}
+.fy-niveles-grid {
+  display: grid; grid-template-columns: repeat(3,1fr); gap: 10px;
+}
+.fy-nv-item { font-size: 7px; padding: 10px 8px; min-width: 80px; }
+.fy-nv-activo {
+  border-color: var(--gold) !important; color: var(--gold) !important;
+  background: rgba(255,215,64,0.1) !important;
+  box-shadow: 2px 2px 0 rgba(255,215,64,0.3) !important;
+}
+
+/* ════════════════════════════════════════
+   PANEL DETECTIVE (Nivel 5)
+   ════════════════════════════════════════ */
+.fy-detective-panel {
+  position: absolute;
+  /* Ocupa solo la zona del canvas, no tapa el panel izquierdo */
+  top: 0; right: 0; bottom: 0; left: 240px;
+  background: rgba(4,2,14,0.97);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 20px; padding: 28px;
+  z-index: 10; overflow-y: auto;
+}
+.fy-detective-panel.hidden { display: none; }
+.fy-det-diagrama {
+  background: rgba(15,8,40,0.9);
+  border: 1px solid rgba(255,215,64,0.25);
+  border-radius: 10px; padding: 18px 24px;
+  text-align: center; max-width: 520px; width: 100%;
+}
+.fy-det-label {
+  font-family: 'Orbitron', monospace; font-size: 9px;
+  color: var(--gold); letter-spacing: 2px; text-transform: uppercase;
+  margin-bottom: 10px;
+}
+.fy-det-pre {
+  font-family: 'Orbitron', monospace; font-size: 13px;
+  color: var(--accent); line-height: 2; white-space: pre;
+  text-align: left; display: inline-block;
+}
+.fy-det-veredicto { text-align: center; }
+.fy-det-btns {
+  display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;
+}
+.fy-btn-valido   { border-color: rgba(0,200,100,0.5)!important; color:#00e676!important; }
+.fy-btn-invalido { border-color: rgba(255,82,82,0.5)!important;  color:#ff5252!important; }
+.fy-btn-noseguro { border-color: rgba(255,215,64,0.3)!important; color:rgba(255,215,64,0.6)!important; }
+.fy-det-razones { max-width: 520px; width: 100%; }
+.fy-det-razones.hidden { display: none; }
+.fy-det-razon-btn {
+  display: block; width: 100%; margin-bottom: 7px;
+  text-align: left; padding: 10px 14px !important;
+  font-family: 'Exo 2',sans-serif !important;
+  font-size: 12px !important; letter-spacing: 0 !important;
+  line-height: 1.5 !important;
+}

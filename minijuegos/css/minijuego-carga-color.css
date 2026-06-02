@@ -1,0 +1,193 @@
+/* ══════════════════════════════════════════
+   minijuegos/css/minijuego-carga-color.css
+   Estilos del minijuego Carga de Color.
+   Estética retro-sci-fi coherente con la página.
+   ══════════════════════════════════════════ */
+
+/* ── Pantalla completa sobre #app ── */
+.cc-screen {
+  position: absolute; inset: 0; z-index: 60;
+  background: #04020f;
+  display: flex; flex-direction: column;
+  font-family: 'Exo 2', sans-serif;
+  overflow: hidden;
+}
+
+/* ── Header con instrucción del nivel ── */
+.cc-header {
+  flex-shrink: 0;
+  padding: 10px 20px;
+  background: linear-gradient(90deg, rgba(30,10,80,0.95), rgba(10,5,40,0.95));
+  border-bottom: 1px solid rgba(124,77,255,0.4);
+  text-align: center;
+}
+.cc-instruccion {
+  font-size: 13px; color: #c5b0ff;
+  line-height: 1.6; margin: 0;
+  max-width: 900px; margin: 0 auto;
+}
+
+/* ── Cuerpo: panel + canvas ── */
+.cc-body {
+  display: flex; flex: 1; min-height: 0;
+}
+
+/* ── Panel izquierdo ── */
+.cc-panel {
+  width: 200px; flex-shrink: 0;
+  background: rgba(8,4,28,0.9);
+  border-right: 1px solid rgba(124,77,255,0.25);
+  padding: 16px 12px;
+  display: flex; flex-direction: column; gap: 10px;
+}
+
+.cc-panel-card {
+  background: rgba(124,77,255,0.1);
+  border: 1px solid rgba(124,77,255,0.3);
+  border-radius: 10px; padding: 10px 12px;
+  clip-path: polygon(0 5px,5px 0,calc(100% - 5px) 0,100% 5px,100% calc(100% - 5px),calc(100% - 5px) 100%,5px 100%,0 calc(100% - 5px));
+}
+.cc-panel-titulo {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 7px; color: var(--accent);
+  line-height: 1.6; margin-bottom: 6px;
+  text-shadow: 0 0 8px rgba(0,229,255,0.4);
+}
+.cc-panel-desc {
+  font-size: 10px; color: #9080c0; line-height: 1.5;
+}
+.cc-panel-label {
+  font-size: 9px; color: #7060a0;
+  text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;
+}
+
+/* Barra de progreso */
+.cc-prog-val {
+  font-family: 'Orbitron', monospace;
+  font-size: 14px; font-weight: 700;
+  color: var(--accent); margin-bottom: 5px;
+}
+.cc-prog-wrap {
+  height: 7px; background: rgba(255,255,255,0.07);
+  border-radius: 10px; overflow: hidden;
+  border: 1px solid rgba(124,77,255,0.2);
+}
+.cc-prog-bar {
+  height: 100%; width: 0%;
+  background: linear-gradient(90deg, #7c4dff, #00e5ff);
+  border-radius: 10px;
+  transition: width 0.35s ease;
+  box-shadow: 0 0 8px rgba(0,229,255,0.4);
+}
+.cc-prog-bar2 {
+  background: linear-gradient(90deg, #ff6d00, #ffd740);
+  box-shadow: 0 0 8px rgba(255,109,0,0.4);
+}
+
+/* Botones del panel */
+.cc-btn {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 8px; letter-spacing: 1px;
+  padding: 10px 8px;
+  background: rgba(124,77,255,0.1);
+  border: 1px solid rgba(124,77,255,0.35);
+  color: #c5b0ff; border-radius: 4px;
+  cursor: pointer; transition: all 0.2s;
+  text-align: center; line-height: 1.5;
+  clip-path: polygon(0 3px,3px 0,calc(100% - 3px) 0,100% 3px,100% calc(100% - 3px),calc(100% - 3px) 100%,3px 100%,0 calc(100% - 3px));
+}
+.cc-btn:hover {
+  background: rgba(124,77,255,0.25);
+  border-color: var(--accent);
+  color: var(--accent);
+  box-shadow: 2px 2px 0 rgba(124,77,255,0.5);
+  transform: translate(-1px,-1px);
+}
+.cc-btn-close {
+  margin-top: auto;
+  border-color: rgba(0,229,255,0.25);
+  color: rgba(0,229,255,0.6);
+}
+.cc-btn-close:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* ── Canvas del juego ── */
+.cc-canvas {
+  flex: 1; display: block;
+  cursor: crosshair;
+}
+
+/* ════════════════════════════════════════
+   FEEDBACK OVERLAY (bien / advertencia)
+   ════════════════════════════════════════ */
+.cc-fb {
+  position: absolute;
+  bottom: 24px; right: 24px;
+  display: flex; align-items: center; gap: 14px;
+  padding: 14px 18px;
+  border-radius: 10px; border: 1px solid;
+  backdrop-filter: blur(8px);
+  animation: cc-fb-in 0.25s cubic-bezier(0.175,0.885,0.32,1.275);
+  max-width: 380px; z-index: 70;
+  clip-path: polygon(0 6px,6px 0,calc(100% - 6px) 0,100% 6px,100% calc(100% - 6px),calc(100% - 6px) 100%,6px 100%,0 calc(100% - 6px));
+}
+.cc-fb.hidden { display: none; }
+.cc-fb.cc-fb-ok {
+  background: rgba(0,30,15,0.92);
+  border-color: rgba(0,200,100,0.5);
+  box-shadow: 0 0 20px rgba(0,200,100,0.2);
+}
+.cc-fb.cc-fb-err {
+  background: rgba(30,8,5,0.92);
+  border-color: rgba(220,60,40,0.5);
+  box-shadow: 0 0 20px rgba(220,60,40,0.2);
+}
+.cc-fb-msg {
+  font-size: 12px; line-height: 1.6; color: #e0e0ff;
+  font-family: 'Exo 2', sans-serif;
+}
+@keyframes cc-fb-in {
+  from { transform: scale(0.7) translateY(10px); opacity: 0; }
+  to   { transform: scale(1)   translateY(0);    opacity: 1; }
+}
+
+/* ════════════════════════════════════════
+   SELECTOR DE NIVELES
+   ════════════════════════════════════════ */
+.cc-nv-overlay {
+  position: absolute; inset: 0; z-index: 80;
+  background: rgba(2,0,12,0.88);
+  backdrop-filter: blur(6px);
+  display: flex; align-items: center; justify-content: center;
+}
+.cc-nv-overlay.hidden { display: none; }
+
+.cc-nv-wrap {
+  background: linear-gradient(135deg, rgba(16,8,45,0.98), rgba(6,3,22,0.98));
+  border: 1px solid rgba(124,77,255,0.45);
+  border-radius: 14px; padding: 28px 32px;
+  display: flex; flex-direction: column;
+  align-items: center; gap: 20px;
+  box-shadow: 0 0 40px rgba(124,77,255,0.2);
+  clip-path: polygon(0 10px,10px 0,calc(100% - 10px) 0,100% 10px,100% calc(100% - 10px),calc(100% - 10px) 100%,10px 100%,0 calc(100% - 10px));
+}
+.cc-nv-titulo {
+  font-size: 13px; color: var(--accent);
+  text-shadow: 0 0 14px rgba(0,229,255,0.5),
+               2px 2px 0 rgba(124,77,255,0.6);
+}
+.cc-nv-grid {
+  display: grid; grid-template-columns: repeat(3,1fr); gap: 10px;
+}
+.cc-nv-item {
+  font-size: 7px; padding: 10px 8px;
+  min-width: 80px;
+}
+.cc-nv-activo {
+  border-color: var(--accent) !important;
+  color: var(--accent) !important;
+  background: rgba(0,229,255,0.1) !important;
+  box-shadow: 2px 2px 0 rgba(0,229,255,0.4) !important;
+}
