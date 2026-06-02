@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Higgs Adventure — Modelo Estándar Interactivo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <!-- CSS — un archivo por sección -->
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/nav.css">
+  <link rel="stylesheet" href="css/home.css">
+  <link rel="stylesheet" href="css/intro.css">
+  <link rel="stylesheet" href="css/modelo-estandar.css">
+  <link rel="stylesheet" href="css/detail.css">
+  <link rel="stylesheet" href="css/higgs.css">
+  <link rel="stylesheet" href="css/higgs-screen.css">
+  <link rel="stylesheet" href="css/perfil.css">
+  <link rel="stylesheet" href="minijuegos/css/minijuegos.css">
+  <link rel="stylesheet" href="minijuegos/css/minijuego-carga-color.css">
+  <link rel="stylesheet" href="minijuegos/css/minijuego-foton.css">
+</head>
+<body>
+
+<div id="app">
+
+  <!-- Estrellas de fondo -->
+  <div class="stars" id="stars"></div>
+
+  <!-- ── NAVEGACIÓN ── -->
+  <nav class="nav">
+    <div class="logo">HIGGS <span>ADVENTURE</span></div>
+    <div class="nav-btns">
+      <button class="nav-btn active" id="btn-home"  onclick="showScreen('home')">Inicio</button>
+      <button class="nav-btn"        id="btn-intro" onclick="showScreen('intro')">Introducción</button>
+      <button class="nav-btn"        id="btn-me"    onclick="showScreen('me')">Modelo Estándar</button>
+      <button class="nav-btn" id="btn-higgs" onclick="showScreen('higgs')">⚛ Higgs</button>
+    </div>
+  </nav>
+
+  <!-- ── PANTALLA: INICIO ── -->
+  <div class="screen active" id="screen-home">
+    <canvas id="geo-canvas"></canvas>
+    <div id="sphere-wrap">
+      <canvas id="sphere-canvas" width="300" height="300"></canvas>
+    </div>
+    <div class="home-title">HIGGS ADVENTURE</div>
+    <div class="home-sub">Aventura por el Modelo Estándar</div>
+    <p class="home-desc">
+      Desde el mundo que ves hasta las partículas más pequeñas del universo.<br>
+      Descubre los <em>quarks, leptones y bosones</em> que forman toda la materia,<br>
+      y desbloquea el misterioso <em>Bosón de Higgs</em>.
+    </p>
+    <button class="start-btn" onclick="showScreen('intro')">Comenzar exploración →</button>
+  </div>
+
+  <!-- ── PANTALLA: INTRODUCCIÓN ── -->
+  <div class="screen" id="screen-intro">
+    <div class="intro-stage" id="intro-stage"></div>
+  </div>
+
+  <!-- ── PANTALLA: MODELO ESTÁNDAR ── -->
+  <div class="screen" id="screen-me">
+    <div class="me-title">— Modelo Estándar de Partículas Elementales —</div>
+    <div class="me-grid-wrap" id="me-grid"></div>
+    <div class="me-legend">
+      <div class="legend-item">
+        <div class="legend-dot" style="background:var(--quark)"></div>
+        <span>Quarks</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-dot" style="background:var(--lepton)"></div>
+        <span>Leptones</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-dot" style="background:var(--boson)"></div>
+        <span>Bosones de gauge</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-dot" style="background:var(--gold)"></div>
+        <span>Bosón de Higgs</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-dot" style="background:rgba(50,70,100,0.6)"></div>
+        <span>Bloqueado</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── PANTALLA: DETALLE DE PARTÍCULA ── -->
+  <div class="screen" id="screen-detail">
+    <div class="detail-sidebar">
+      <button class="sidebar-btn" onclick="showScreen('me')" title="Volver al ME">←</button>
+      <button class="sidebar-btn" onclick="showScreen('me')" title="Modelo Estándar">⊞</button>
+    </div>
+    <div class="detail-main" id="detail-main"></div>
+  </div>
+
+  <!-- ── PANTALLA: HIGGS ── -->
+  <div class="screen" id="screen-higgs">
+    <!-- Contenido generado por js/higgs-screen.js al llamar initHiggsScreen() -->
+  </div>
+
+</div><!-- #app -->
+
+<!-- ── JAVASCRIPT — orden importa ── -->
+<script src="js/data.js"></script>       <!-- Datos de partículas y textos -->
+<script src="js/navigation.js"></script> <!-- showScreen(), estrellas -->
+<script src="js/intro.js"></script>      <!-- Pantalla de introducción -->
+<script src="js/modelo-estandar.js"></script> <!-- Grid del ME -->
+<script src="js/detail.js"></script>     <!-- Panel de partícula -->
+<script src="js/higgs-screen.js"></script>  <!-- Pantalla del Bosón de Higgs -->
+<script src="js/home-sphere.js"></script><!-- Canvas: esfera energética -->
+<script src="js/home-geo.js"></script>
+<script src="js/perfil.js"></script>        <!-- Panel de perfil y logros -->
+
+<!-- MINIJUEGOS -->
+<script src="minijuegos/js/data-minijuegos.js"></script>
+<script src="minijuegos/js/minijuego-carga-color.js"></script>
+<script src="minijuegos/js/minijuego-foton.js"></script>
+<script src="minijuegos/js/minijuegos.js"></script>
+<script>
+  window.addEventListener('load', () => {
+    initMinijuegos();
+    initPerfil();
+  });
+</script>
+
+</body>
+</html>
