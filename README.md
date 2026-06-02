@@ -73,3 +73,5 @@ Al estar dirigido a estudiantes de nivel medio superior y superior, así como al
 ##  Repositorio
 
 Este repositorio contiene el código fuente y los recursos del proyecto Higgs Adventure.
+
+Para ejecutar el proyecto se inicia index.html
