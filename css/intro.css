@@ -1,0 +1,172 @@
+/* ══════════════════════════════════════════
+   intro.css
+   Pantalla de introducción histórica.
+   v2: imágenes con animaciones, botón atrás,
+   lista de viñetas, contador de pasos.
+   ══════════════════════════════════════════ */
+
+#screen-intro {
+  flex-direction: column;
+  align-items: center; justify-content: center;
+  background: radial-gradient(ellipse at 50% 40%, rgba(0,40,80,0.3) 0%, transparent 65%);
+  overflow-y: auto;
+}
+
+.intro-stage {
+  display: flex; flex-direction: column;
+  align-items: center; text-align: center;
+  padding: 20px 24px 28px; max-width: 640px; width: 100%;
+}
+
+/* ── Imagen central (canvas con fondo removido) ── */
+.intro-img-wrap {
+  width: 180px; height: 180px;
+  margin-bottom: 20px;
+  position: relative; flex-shrink: 0;
+  background: transparent;
+  display: flex; align-items: center; justify-content: center;
+}
+.intro-img {
+  width: 180px; height: 180px;
+  background: transparent;
+  filter: drop-shadow(0 0 14px rgba(0,229,255,0.3));
+  transition: filter 0.3s;
+  display: block;
+}
+.intro-img-wrap.clickable-img {
+  cursor: pointer;
+}
+.intro-img-wrap.clickable-img:hover .intro-img {
+  filter: drop-shadow(0 0 28px rgba(0,229,255,0.75)) brightness(1.1);
+}
+
+/* ── Animaciones de imagen ── */
+
+/* Levitación suave */
+@keyframes float {
+  0%,100% { transform: translateY(0px); }
+  50%      { transform: translateY(-10px); }
+}
+.intro-img-wrap.float { animation: float 3.5s ease-in-out infinite; }
+
+/* Levitación más lenta */
+@keyframes float-slow {
+  0%,100% { transform: translateY(0px); }
+  50%      { transform: translateY(-7px); }
+}
+.intro-img-wrap.pulse { animation: float-slow 5s ease-in-out infinite; }
+
+/* Parpadeo de opacidad suave */
+@keyframes blink-img {
+  0%,100% { opacity: 1; }
+  50%      { opacity: 0.55; }
+}
+.intro-img-wrap.spin-slow .intro-img { animation: blink-img 2.5s ease-in-out infinite; }
+
+/* Float + parpadeo combinados */
+@keyframes float-blink {
+  0%,100% { transform: translateY(0px); opacity: 1; }
+  50%      { transform: translateY(-8px); opacity: 0.6; }
+}
+.intro-img-wrap.glow-pulse { animation: float-blink 4s ease-in-out infinite; }
+
+/* ── Etiqueta de escala ── */
+.intro-label {
+  font-family: 'Orbitron', monospace;
+  font-size: 10px; color: var(--accent);
+  letter-spacing: 3px; text-transform: uppercase; margin-bottom: 10px;
+}
+
+.intro-title { font-size: 20px; font-weight: 600; margin-bottom: 10px; line-height: 1.3; }
+
+.intro-desc {
+  font-size: 13px; color: var(--text2);
+  max-width: 560px; line-height: 1.75; margin-bottom: 10px;
+  text-align: left;
+}
+
+/* ── Lista de viñetas ── */
+.intro-list {
+  list-style: none; padding: 0; margin: 0 0 14px 0;
+  text-align: left; width: 100%; max-width: 560px;
+}
+.intro-list li {
+  font-size: 12.5px; color: var(--text2);
+  line-height: 1.65; padding: 6px 0 6px 20px;
+  position: relative; border-bottom: 1px solid rgba(0,229,255,0.07);
+}
+.intro-list li::before {
+  content: '▸';
+  position: absolute; left: 0;
+  color: var(--accent); opacity: 0.7;
+  font-size: 10px; top: 8px;
+}
+
+/* ── Hint parpadeante ── */
+.intro-hint {
+  font-size: 12px; color: var(--accent); opacity: 0.7;
+  animation: blink 1.5s ease-in-out infinite;
+  margin-bottom: 8px;
+}
+
+/* ── Dots de progreso ── */
+.progress-dots { display: flex; gap: 7px; margin-bottom: 20px; flex-wrap: wrap; justify-content: center; }
+.dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: rgba(0,229,255,0.12);
+  border: 1px solid rgba(0,229,255,0.25);
+  transition: all 0.3s;
+}
+.dot.active { background: var(--accent); box-shadow: 0 0 8px var(--accent); }
+.dot.done   { background: rgba(0,229,255,0.4); }
+
+/* ── Fila de navegación (atrás / contador / siguiente) ── */
+.intro-nav-row {
+  display: flex; align-items: center; gap: 16px;
+  margin-top: 14px; justify-content: center;
+}
+
+.nav-step-btn {
+  font-family: 'Orbitron', monospace;
+  font-size: 10px; letter-spacing: 1px; font-weight: 700;
+  padding: 8px 20px;
+  background: rgba(0,229,255,0.07);
+  border: 1px solid rgba(0,229,255,0.3);
+  color: var(--accent); border-radius: 4px;
+  cursor: pointer; transition: all 0.2s; text-transform: uppercase;
+  white-space: nowrap;
+}
+.nav-step-btn:hover {
+  background: rgba(0,229,255,0.15);
+  box-shadow: 0 0 12px rgba(0,229,255,0.2);
+}
+.back-btn {
+  border-color: rgba(0,229,255,0.2);
+  color: var(--text2);
+}
+.back-btn:hover {
+  border-color: rgba(0,229,255,0.4);
+  color: var(--accent);
+}
+
+.intro-counter {
+  font-family: 'Orbitron', monospace;
+  font-size: 10px; color: var(--text2);
+  letter-spacing: 1px; min-width: 48px; text-align: center;
+}
+
+/* Botón "siguiente" en pantalla higgs (heredado) */
+.next-btn {
+  font-family: 'Orbitron', monospace;
+  font-size: 10px; letter-spacing: 1px;
+  padding: 9px 22px;
+  background: rgba(0,229,255,0.09);
+  border: 1px solid rgba(0,229,255,0.38);
+  color: var(--accent); border-radius: 4px;
+  cursor: pointer; margin-top: 14px;
+  transition: all 0.2s; text-transform: uppercase;
+}
+.next-btn:hover {
+  background: rgba(0,229,255,0.18);
+  box-shadow: 0 0 12px rgba(0,229,255,0.2);
+}

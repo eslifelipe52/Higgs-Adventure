@@ -1,0 +1,235 @@
+/* ══════════════════════════════════════════
+   css/perfil.css
+   Panel de perfil global + resultados
+   del Modo Libre del minijuego QCD.
+   ══════════════════════════════════════════ */
+
+/* ════════════════════════════════════════
+   BOTÓN DE PERFIL EN NAV
+   ════════════════════════════════════════ */
+.perfil-nav-btn {
+  background: transparent;
+  border: 1px solid rgba(0,229,255,0.25);
+  border-radius: 50%;
+  width: 36px; height: 36px;
+  cursor: pointer; transition: all 0.2s;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; flex-shrink: 0;
+}
+.perfil-nav-btn:hover {
+  border-color: var(--accent);
+  background: rgba(0,229,255,0.08);
+  box-shadow: 0 0 12px rgba(0,229,255,0.25);
+}
+
+/* ════════════════════════════════════════
+   PANEL DE PERFIL
+   ════════════════════════════════════════ */
+.perfil-panel {
+  position: absolute;
+  top: 62px; left: 12px;
+  width: 360px; max-height: calc(100vh - 80px);
+  z-index: 200;
+  background: linear-gradient(160deg, rgba(10,5,30,0.98), rgba(5,2,18,0.98));
+  border: 1px solid rgba(0,229,255,0.25);
+  border-radius: 14px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0,229,255,0.2) transparent;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.6), 0 0 0 1px rgba(0,229,255,0.06);
+  animation: panel-in 0.22s cubic-bezier(0.175,0.885,0.32,1.275);
+}
+.perfil-panel.hidden { display: none; }
+
+@keyframes panel-in {
+  from { opacity:0; transform: translateY(-10px) scale(0.96); }
+  to   { opacity:1; transform: translateY(0)     scale(1); }
+}
+
+/* ── Header ── */
+.perfil-header {
+  display: flex; align-items: center; gap: 12px;
+  padding: 16px 16px 14px;
+  border-bottom: 1px solid rgba(0,229,255,0.12);
+  background: rgba(0,229,255,0.04);
+}
+.perfil-avatar-big { font-size: 28px; }
+.perfil-header-info { flex: 1; }
+.perfil-username {
+  font-size: 11px; color: var(--accent);
+  text-shadow: 0 0 10px rgba(0,229,255,0.4);
+  margin-bottom: 2px;
+}
+.perfil-sub { font-size: 10px; color: var(--text2); }
+.perfil-close {
+  background: transparent; border: 1px solid rgba(255,255,255,0.15);
+  color: var(--text2); width: 26px; height: 26px; border-radius: 4px;
+  cursor: pointer; transition: all 0.2s; font-size: 12px;
+  display: flex; align-items: center; justify-content: center;
+}
+.perfil-close:hover { border-color: var(--accent); color: var(--accent); }
+
+/* ── Secciones ── */
+.perfil-section {
+  padding: 14px 16px;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+.perfil-section-locked { opacity: 0.5; }
+.perfil-section-title {
+  font-family: 'Orbitron', monospace;
+  font-size: 9px; color: var(--accent);
+  letter-spacing: 1.5px; text-transform: uppercase;
+  margin-bottom: 12px;
+}
+.perfil-empty {
+  font-size: 11px; color: var(--text2);
+  font-style: italic; text-align: center;
+  padding: 8px 0;
+}
+
+/* ── Mejor puntaje ── */
+.perfil-mejor {
+  display: flex; justify-content: space-between; align-items: center;
+  background: rgba(255,255,255,0.04); border-radius: 8px;
+  padding: 8px 12px; margin-bottom: 12px;
+}
+.perfil-mejor-label { font-size: 11px; color: var(--text2); }
+.perfil-mejor-val {
+  font-family: 'Orbitron', monospace; font-size: 14px; font-weight: 700;
+}
+
+/* ── Grid de logros ── */
+.perfil-logros-grid {
+  display: grid; grid-template-columns: repeat(4,1fr); gap: 8px;
+}
+.perfil-logro-item {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 3px; padding: 8px 4px; border-radius: 8px;
+  border: 1px solid;
+  transition: all 0.2s;
+}
+.perfil-logro-item.obtenido {
+  border-color: var(--lcolor);
+  background: rgba(255,255,255,0.04);
+  box-shadow: 0 0 10px color-mix(in srgb, var(--lcolor) 30%, transparent);
+}
+.perfil-logro-item.bloqueado {
+  border-color: rgba(255,255,255,0.08);
+  background: rgba(255,255,255,0.02);
+  filter: grayscale(1) opacity(0.45);
+}
+.perfil-logro-emoji  { font-size: 20px; }
+.perfil-logro-nombre {
+  font-size: 9px; font-family: 'Orbitron', monospace;
+  color: var(--lcolor, var(--text2));
+}
+.perfil-logro-req { font-size: 8px; color: var(--text2); }
+
+/* ── Historial ── */
+.perfil-historial { display: flex; flex-direction: column; gap: 0; }
+.perfil-hist-head {
+  display: grid; grid-template-columns: 1fr 1fr 60px 60px 80px;
+  font-size: 9px; color: var(--text2); text-transform: uppercase;
+  letter-spacing: 0.5px; padding: 4px 6px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  margin-bottom: 4px;
+}
+.perfil-hist-row {
+  display: grid; grid-template-columns: 1fr 1fr 60px 60px 80px;
+  font-size: 11px; color: var(--text);
+  padding: 6px 6px; border-radius: 4px; transition: background 0.15s;
+}
+.perfil-hist-row:hover { background: rgba(255,255,255,0.04); }
+
+/* ── Footer ── */
+.perfil-footer {
+  padding: 10px 16px;
+  font-size: 10px; color: rgba(255,255,255,0.2);
+  text-align: center; font-style: italic;
+}
+
+/* ════════════════════════════════════════
+   PANTALLA DE RESULTADOS (Modo Libre)
+   ════════════════════════════════════════ */
+.cc-results-overlay {
+  position: absolute; inset: 0; z-index: 100;
+  background: rgba(2,0,12,0.92);
+  backdrop-filter: blur(8px);
+  display: flex; align-items: center; justify-content: center;
+  animation: panel-in 0.3s ease;
+}
+.cc-results-wrap {
+  background: linear-gradient(160deg, rgba(16,8,45,0.99), rgba(6,3,22,0.99));
+  border: 1px solid rgba(255,215,64,0.35);
+  border-radius: 16px; padding: 36px 40px;
+  display: flex; flex-direction: column; align-items: center; gap: 18px;
+  min-width: 360px; max-width: 480px; text-align: center;
+  box-shadow: 0 0 60px rgba(255,215,64,0.12);
+  clip-path: polygon(0 12px,12px 0,calc(100% - 12px) 0,100% 12px,
+                     100% calc(100% - 12px),calc(100% - 12px) 100%,
+                     12px 100%,0 calc(100% - 12px));
+}
+.cc-results-title {
+  font-size: 14px; color: var(--accent);
+  text-shadow: 0 0 16px rgba(0,229,255,0.5), 2px 2px 0 rgba(124,77,255,0.5);
+}
+.cc-results-logro {
+  display: flex; align-items: center; gap: 12px;
+  font-family: 'Orbitron', monospace;
+}
+.cc-logro-emoji  { font-size: 40px; }
+.cc-logro-nombre { font-size: 20px; font-weight: 900; letter-spacing: 3px; }
+.cc-results-puntaje {
+  font-family: 'Orbitron', monospace;
+  font-size: 56px; font-weight: 900; line-height: 1;
+}
+.cc-results-pts-label {
+  font-size: 12px; color: var(--text2); margin-top: -12px;
+  letter-spacing: 3px; text-transform: uppercase;
+}
+.cc-results-stats {
+  display: flex; gap: 28px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 10px; padding: 14px 24px;
+}
+.cc-stat { display: flex; flex-direction: column; align-items: center; gap: 3px; }
+.cc-stat-val {
+  font-family: 'Orbitron', monospace; font-size: 22px; font-weight: 700;
+  color: var(--accent);
+}
+.cc-stat-label { font-size: 10px; color: var(--text2); text-transform: uppercase; letter-spacing: 1px; }
+
+/* Escala de logros */
+.cc-logros-escala {
+  width: 100%; display: flex; flex-direction: column; gap: 6px;
+}
+.cc-logro-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 6px 12px; border-radius: 6px;
+  border: 1px solid rgba(255,255,255,0.06);
+  font-size: 12px; opacity: 0.45; transition: all 0.2s;
+}
+.cc-logro-item.alcanzado {
+  opacity: 1;
+  background: rgba(255,255,255,0.04);
+  border-color: rgba(255,255,255,0.15);
+}
+.cc-logro-item span:nth-child(1) { font-size: 18px; }
+.cc-logro-item span:nth-child(2) { flex: 1; text-align: left; font-weight: 600; }
+.cc-logro-min { font-size: 10px; color: var(--text2); }
+
+/* Botones */
+.cc-results-btns {
+  display: flex; gap: 12px; width: 100%; justify-content: center;
+}
+
+/* Score en tiempo real en el panel */
+.cc-score-card {
+  border-color: rgba(255,215,64,0.35) !important;
+  background: rgba(255,215,64,0.06) !important;
+}
+.cc-score-detail {
+  font-size: 9px; color: var(--text2); margin-top: 4px;
+  letter-spacing: 0.5px;
+}

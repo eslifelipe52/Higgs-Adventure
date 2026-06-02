@@ -1,0 +1,313 @@
+/* ══════════════════════════════════════════
+   css/higgs-screen.css
+   Estilos de la pantalla especial del Higgs.
+   ══════════════════════════════════════════ */
+
+/* ── Canvas de fondo ── */
+.higgs-bg-canvas {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  pointer-events: none; z-index: 0;
+}
+
+/* ── Reescribir el screen para la versión completa ── */
+#screen-higgs {
+  flex-direction: column !important;
+  align-items: stretch !important;
+  justify-content: flex-start !important;
+  overflow: hidden;
+  height: 100%;
+  background: radial-gradient(ellipse at 50% 20%, rgba(60,40,0,0.3) 0%, transparent 60%),
+              radial-gradient(ellipse at 50% 100%, rgba(30,10,80,0.4) 0%, transparent 60%),
+              var(--bg);
+}
+#screen-higgs > *:not(.higgs-bg-canvas) {
+  position: relative; z-index: 1;
+}
+
+/* ════════════════════════════════════════
+   HEADER
+   ════════════════════════════════════════ */
+.higgs-top-header {
+  display: flex; align-items: center; gap: 18px;
+  padding: 12px 28px;
+  background: rgba(5,3,18,0.9);
+  border-bottom: 1px solid rgba(255,215,64,0.25);
+  backdrop-filter: blur(8px);
+  flex-shrink: 0;
+}
+.higgs-top-symbol {
+  font-family: 'Orbitron', monospace;
+  font-size: 32px; font-weight: 900;
+  color: var(--gold);
+  text-shadow: 0 0 20px rgba(255,215,64,0.6);
+  width: 56px; height: 56px;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(255,215,64,0.1);
+  border: 1px solid rgba(255,215,64,0.35);
+  border-radius: 10px; flex-shrink: 0;
+}
+.higgs-top-name {
+  font-size: 14px; color: var(--gold);
+  text-shadow: 0 0 12px rgba(255,215,64,0.4), 2px 2px 0 rgba(180,100,0,0.5);
+  margin-bottom: 4px;
+}
+.higgs-top-sub { font-size: 12px; color: rgba(200,180,100,0.65); }
+.higgs-back-btn {
+  margin-left: auto;
+  font-family: 'Orbitron', monospace; font-size: 10px;
+  padding: 8px 16px; border-radius: 4px;
+  background: transparent; border: 1px solid rgba(255,215,64,0.25);
+  color: rgba(255,215,64,0.6); cursor: pointer; transition: all 0.2s;
+}
+.higgs-back-btn:hover {
+  border-color: var(--gold); color: var(--gold);
+  background: rgba(255,215,64,0.08);
+}
+
+/* ════════════════════════════════════════
+   TABS
+   ════════════════════════════════════════ */
+.higgs-tabs {
+  display: flex; gap: 0;
+  border-bottom: 1px solid rgba(255,215,64,0.18);
+  flex-shrink: 0;
+  background: rgba(4,2,14,0.8);
+}
+.higgs-tab {
+  font-family: 'Exo 2', sans-serif;
+  font-size: 12px; font-weight: 600;
+  padding: 12px 24px;
+  background: transparent;
+  border: none; border-bottom: 2px solid transparent;
+  color: var(--text2); cursor: pointer;
+  transition: all 0.2s; display: flex; align-items: center; gap: 7px;
+}
+.higgs-tab:hover { color: var(--gold); }
+.higgs-tab.active {
+  color: var(--gold);
+  border-bottom-color: var(--gold);
+  background: rgba(255,215,64,0.05);
+}
+.htab-icon { font-size: 15px; }
+
+/* ════════════════════════════════════════
+   CONTENIDO GENERAL
+   ════════════════════════════════════════ */
+.higgs-content {
+  flex: 1 1 0;
+  min-height: 0;
+  position: relative;
+  overflow: hidden;
+}
+.htab-panel {
+  display: none;
+  position: absolute;
+  inset: 0;
+  overflow-y: auto;
+  padding: 28px 36px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,215,64,0.2) transparent;
+  box-sizing: border-box;
+}
+.htab-panel.active { display: block; }
+
+/* ════════════════════════════════════════
+   TAB 1: TIMELINE
+   ════════════════════════════════════════ */
+.higgs-timeline {
+  position: relative; padding-left: 80px;
+  margin-bottom: 36px;
+}
+.higgs-timeline::before {
+  content: '';
+  position: absolute; left: 52px; top: 8px; bottom: 8px;
+  width: 1px; background: linear-gradient(180deg, rgba(255,215,64,0.6), rgba(124,77,255,0.3));
+}
+
+.htl-item {
+  display: flex; align-items: flex-start;
+  gap: 20px; margin-bottom: 28px; position: relative;
+}
+.htl-year {
+  font-family: 'Orbitron', monospace; font-size: 11px;
+  color: var(--text2); width: 52px; text-align: right;
+  flex-shrink: 0; padding-top: 4px; margin-left: -80px;
+}
+.htl-year.gold { color: var(--gold); font-weight: 700; font-size: 10px; }
+.htl-dot {
+  width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0;
+  background: rgba(124,77,255,0.6); border: 2px solid rgba(124,77,255,0.8);
+  margin-top: 4px; margin-left: -6px;
+  box-shadow: 0 0 8px rgba(124,77,255,0.4);
+}
+.htl-dot-gold {
+  background: var(--gold); border-color: var(--gold);
+  box-shadow: 0 0 16px rgba(255,215,64,0.7);
+  width: 16px; height: 16px; margin-left: -8px;
+}
+.htl-card {
+  flex: 1; background: rgba(15,8,40,0.7);
+  border: 1px solid rgba(124,77,255,0.2);
+  border-radius: 10px; padding: 14px 18px;
+}
+.htl-card-gold {
+  border-color: rgba(255,215,64,0.4);
+  background: rgba(30,18,0,0.7);
+  box-shadow: 0 0 20px rgba(255,215,64,0.08);
+}
+.htl-title {
+  font-family: 'Orbitron', monospace; font-size: 11px;
+  color: var(--accent); margin-bottom: 8px; letter-spacing: 1px;
+}
+.htl-card-gold .htl-title { color: var(--gold); }
+.htl-card p {
+  font-size: 13px; color: var(--text2); line-height: 1.75; margin: 0 0 8px;
+}
+.htl-card p:last-child { margin-bottom: 0; }
+.htl-card strong { color: var(--text); font-weight: 600; }
+
+/* ── Gráfica ATLAS ── */
+.higgs-atlas-section { margin-top: 8px; }
+.higgs-atlas-title {
+  font-family: 'Orbitron', monospace; font-size: 11px;
+  color: var(--gold); letter-spacing: 2px; text-transform: uppercase;
+  margin-bottom: 18px; text-align: center;
+}
+.higgs-atlas-body {
+  display: flex; gap: 24px; align-items: flex-start;
+  flex-wrap: wrap;
+}
+.higgs-atlas-img-wrap {
+  flex-shrink: 0; max-width: 380px; width: 100%;
+}
+.higgs-atlas-img {
+  width: 100%; border-radius: 8px;
+  border: 1px solid rgba(255,215,64,0.2);
+  box-shadow: 0 0 24px rgba(255,215,64,0.1);
+}
+.higgs-atlas-caption {
+  font-size: 11px; color: var(--text2); line-height: 1.6;
+  margin-top: 10px; font-style: italic;
+  border-left: 2px solid rgba(255,215,64,0.3); padding-left: 10px;
+}
+.higgs-atlas-explain {
+  flex: 1; min-width: 260px;
+  display: flex; flex-direction: column; gap: 14px;
+}
+.higgs-atlas-card {
+  background: rgba(15,8,40,0.7); border: 1px solid rgba(124,77,255,0.2);
+  border-radius: 8px; padding: 14px 16px;
+}
+.higgs-ac-title {
+  font-family: 'Orbitron', monospace; font-size: 10px;
+  color: var(--accent); margin-bottom: 8px; letter-spacing: 1px;
+}
+.higgs-atlas-card p {
+  font-size: 12.5px; color: var(--text2); line-height: 1.7; margin: 0;
+}
+.higgs-atlas-card strong { color: var(--text); }
+
+/* ════════════════════════════════════════
+   TAB 2: PROPIEDADES
+   ════════════════════════════════════════ */
+.higgs-props-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 14px;
+}
+.higgs-prop-card {
+  background: rgba(15,8,40,0.75);
+  border: 1px solid rgba(255,215,64,0.2);
+  border-radius: 10px; cursor: pointer;
+  transition: all 0.2s; overflow: hidden;
+}
+.higgs-prop-card:hover {
+  border-color: rgba(255,215,64,0.5);
+  box-shadow: 0 0 16px rgba(255,215,64,0.12);
+}
+.higgs-prop-card.open {
+  border-color: var(--gold);
+  box-shadow: 0 0 20px rgba(255,215,64,0.18);
+}
+.hpc-header {
+  display: flex; align-items: center; gap: 12px; padding: 14px 16px;
+}
+.hpc-icon { font-size: 20px; flex-shrink: 0; }
+.hpc-label {
+  font-size: 10px; color: var(--text2);
+  text-transform: uppercase; letter-spacing: 1px; flex: 1;
+}
+.hpc-value {
+  font-family: 'Orbitron', monospace; font-size: 13px;
+  font-weight: 700; color: var(--accent);
+}
+.hpc-value.gold { color: var(--gold); }
+.hpc-expand {
+  max-height: 0; overflow: hidden;
+  font-size: 12.5px; color: var(--text2); line-height: 1.75;
+  padding: 0 16px;
+  border-top: 0px solid rgba(255,215,64,0.15);
+  transition: max-height 0.35s ease, padding 0.35s ease, border-top-width 0.35s ease;
+}
+.higgs-prop-card.open .hpc-expand {
+  max-height: 200px; padding: 12px 16px 16px;
+  border-top-width: 1px;
+}
+.hpc-expand strong { color: var(--text); font-weight: 600; }
+.higgs-highlight {
+  color: var(--gold); font-weight: 700;
+  font-family: 'Orbitron', monospace; font-size: 0.95em;
+}
+
+/* ════════════════════════════════════════
+   TAB 3: MINIJUEGOS
+   ════════════════════════════════════════ */
+.higgs-mj-intro {
+  font-size: 13px; color: var(--text2); text-align: center;
+  margin-bottom: 28px; line-height: 1.7;
+}
+.higgs-mj-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 20px;
+}
+.higgs-mj-card {
+  display: flex; gap: 18px; align-items: flex-start;
+  background: rgba(15,8,40,0.8);
+  border: 1px solid rgba(255,215,64,0.2);
+  border-radius: 12px; padding: 20px;
+  cursor: pointer; transition: all 0.2s;
+}
+.higgs-mj-card:hover {
+  border-color: rgba(255,215,64,0.5);
+  box-shadow: 0 0 20px rgba(255,215,64,0.12);
+  transform: translateY(-2px);
+}
+.higgs-mj-img-wrap {
+  flex-shrink: 0; width: 150px; height: 150px;
+  background: rgba(0,0,0,0.3); border-radius: 8px;
+  border: 1px solid rgba(255,215,64,0.15);
+  display: flex; align-items: center; justify-content: center;
+  animation: mj-float 3.5s ease-in-out infinite;
+}
+.higgs-mj-info { flex: 1; }
+.higgs-mj-nombre {
+  font-family: 'Orbitron', monospace; font-size: 12px;
+  color: var(--gold); margin-bottom: 10px; letter-spacing: 1px;
+}
+.higgs-mj-desc {
+  font-size: 12px; color: var(--text2); line-height: 1.7;
+  margin-bottom: 12px;
+}
+.higgs-mj-estado {
+  font-size: 11px; font-weight: 600; display: inline-block;
+  padding: 4px 10px; border-radius: 20px;
+}
+.higgs-mj-estado.proximamente {
+  color: rgba(255,215,64,0.6);
+  border: 1px solid rgba(255,215,64,0.2);
+  background: rgba(255,215,64,0.05);
+}
+.higgs-mj-estado.listo {
+  color: #00e676; border: 1px solid rgba(0,230,118,0.3);
+  background: rgba(0,230,118,0.07);
+}

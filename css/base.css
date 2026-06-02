@@ -1,0 +1,86 @@
+/* ══════════════════════════════════════════
+   base.css
+   Variables globales, reset, stars, screens,
+   animaciones compartidas y utilidades.
+   ══════════════════════════════════════════ */
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* ── Variables de diseño ── */
+:root {
+  --bg:       #050a14;
+  --bg2:      #0a1628;
+  --bg3:      #0f1e3a;
+  --accent:   #00e5ff;
+  --accent2:  #7c4dff;
+  --accent3:  #ff6d00;
+  --text:     #e0f0ff;
+  --text2:    #7aa8d0;
+  --gold:     #ffd740;
+
+  /* Colores por tipo de partícula */
+  --quark:      #ff6d00;
+  --quark-bg:   rgba(255,109,0,0.12);
+  --lepton:     #00e5ff;
+  --lepton-bg:  rgba(0,229,255,0.12);
+  --boson:      #7c4dff;
+  --boson-bg:   rgba(124,77,255,0.12);
+  --higgs:      #ffd740;
+  --higgs-bg:   rgba(255,215,64,0.12);
+}
+
+html, body {
+  width: 100%; height: 100%;
+  overflow: hidden;
+  background: var(--bg);
+}
+
+#app {
+  font-family: 'Exo 2', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  position: relative;
+}
+
+/* ── Estrellas de fondo ── */
+.stars {
+  position: absolute; inset: 0; overflow: hidden;
+  pointer-events: none; z-index: 0;
+}
+.star {
+  position: absolute; background: white; border-radius: 50%;
+  animation: twinkle linear infinite;
+}
+@keyframes twinkle {
+  0%, 100% { opacity: 0.15; }
+  50%       { opacity: 0.9; }
+}
+
+/* ── Sistema de pantallas ── */
+.screen {
+  position: absolute; inset: 56px 0 0 0;
+  z-index: 5; display: none; overflow: hidden;
+}
+.screen.active { display: flex; }
+
+/* ── Animaciones compartidas ── */
+.fade-in {
+  animation: fade-in 0.45s ease forwards;
+}
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slide-in {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 0.38; }
+  50%       { opacity: 1; }
+}

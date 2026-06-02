@@ -1,0 +1,62 @@
+/* ══════════════════════════════════════════
+   nav.css
+   Barra de navegación superior.
+   ══════════════════════════════════════════ */
+
+.nav {
+  position: absolute; top: 0; left: 0; right: 0; z-index: 10;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 28px; height: 56px;
+  background: rgba(5,10,20,0.92);
+  border-bottom: 1px solid rgba(0,229,255,0.18);
+  backdrop-filter: blur(10px);
+}
+
+/* Logo con gradiente azul-morado */
+.logo {
+  font-family: 'Orbitron', monospace;
+  font-size: 17px; font-weight: 900; letter-spacing: 3px;
+  background: linear-gradient(90deg, #4fc3f7 0%, #7c4dff 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 6px rgba(100,160,255,0.35));
+}
+.logo span {
+  background: linear-gradient(90deg, #7c4dff 0%, #b47fff 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Botones de navegación */
+.nav-btns { display: flex; gap: 8px; }
+
+.nav-btn {
+  font-family: 'Orbitron', monospace;
+  font-size: 10px; letter-spacing: 1px; font-weight: 700;
+  padding: 8px 18px;
+  background: transparent;
+  border: 1px solid rgba(0,229,255,0.28);
+  color: var(--text2); border-radius: 4px;
+  cursor: pointer; transition: all 0.2s;
+  text-transform: uppercase;
+}
+.nav-btn:hover,
+.nav-btn.active {
+  border-color: var(--accent); color: var(--accent);
+  background: rgba(0,229,255,0.08);
+  box-shadow: 0 0 14px rgba(0,229,255,0.22);
+}
+
+/* Botón bloqueado (Higgs) */
+.nav-btn.locked-btn {
+  border-color: rgba(255,215,64,0.28);
+  color: rgba(255,215,64,0.4);
+  cursor: not-allowed;
+}
+.nav-btn.locked-btn:hover {
+  background: transparent; box-shadow: none;
+  border-color: rgba(255,215,64,0.28);
+  color: rgba(255,215,64,0.4);
+}

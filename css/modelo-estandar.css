@@ -1,0 +1,115 @@
+/* ══════════════════════════════════════════
+   modelo-estandar.css
+   ══════════════════════════════════════════ */
+
+#screen-me {
+  flex-direction: column;
+  padding: 12px 40px 8px;
+  justify-content: center;
+}
+
+.me-title {
+  font-family: 'Orbitron', monospace; font-size: 10px;
+  letter-spacing: 2px; color: var(--text2); margin-bottom: 14px;
+  text-transform: uppercase; text-align: center;
+  flex-shrink: 0;
+}
+
+/* ── Wrapper principal: 3 grupos en fila centrados ── */
+.me-grid-wrap {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 24px;
+}
+
+/* ── Cada grupo (quarks / leptones / bosones) ── */
+.me-group {
+  display: flex; flex-direction: column;
+  align-items: center; gap: 8px;
+}
+
+.me-group-label {
+  font-family: 'Orbitron', monospace; font-size: 9px;
+  letter-spacing: 2px; text-transform: uppercase;
+  text-align: center; opacity: 0.75; flex-shrink: 0;
+}
+.me-group-label.lbl-quark  { color: var(--quark); }
+.me-group-label.lbl-lepton { color: var(--lepton); }
+.me-group-label.lbl-boson  { color: var(--boson); }
+
+/* ── Sub-grids: siempre 2 columnas, celdas cuadradas ── */
+.me-subgrid {
+  display: grid;
+  gap: 6px;
+}
+.me-subgrid.cols-2 {
+  grid-template-columns: repeat(2, 100px);
+  grid-template-rows:    repeat(3, 100px);
+}
+/* Bosones: 4 gauge en col izq + Higgs en col der fila 1 */
+.me-subgrid.cols-1-higgs {
+  grid-template-columns: repeat(2, 100px);
+  grid-template-rows:    repeat(3, 100px);
+}
+
+/* ── Celda de partícula ── */
+.particle-cell {
+  width: 100px; height: 100px;
+  border: 1px solid; border-radius: 10px;
+  cursor: pointer;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 6px;
+  transition: all 0.2s; position: relative; overflow: hidden;
+}
+.particle-cell:hover { transform: scale(1.07); z-index: 2; }
+
+/* Colores por tipo */
+.particle-cell.quark      { background: var(--quark-bg);  border-color: rgba(255,109,0,0.4); }
+.particle-cell.lepton     { background: var(--lepton-bg); border-color: rgba(0,229,255,0.4); }
+.particle-cell.boson      { background: var(--boson-bg);  border-color: rgba(124,77,255,0.4); }
+.particle-cell.higgs-cell { background: var(--higgs-bg);  border-color: rgba(255,215,64,0.4); }
+
+.particle-cell.quark:hover      { border-color: var(--quark);  box-shadow: 0 0 16px rgba(255,109,0,0.5); }
+.particle-cell.lepton:hover     { border-color: var(--lepton); box-shadow: 0 0 16px rgba(0,229,255,0.5); }
+.particle-cell.boson:hover      { border-color: var(--boson);  box-shadow: 0 0 16px rgba(124,77,255,0.5); }
+.particle-cell.higgs-cell:hover { border-color: var(--gold);   box-shadow: 0 0 20px rgba(255,215,64,0.6); }
+
+/* Celda bloqueada */
+.particle-cell.locked {
+  background: rgba(12,22,42,0.9);
+  border-color: rgba(40,60,90,0.4); cursor: not-allowed;
+}
+.particle-cell.locked:hover { transform: none; box-shadow: none; }
+
+/* Contenido */
+.p-symbol {
+  font-family: 'Orbitron', monospace;
+  font-size: 22px; font-weight: 900; line-height: 1; margin-bottom: 4px;
+}
+.p-name { font-size: 10px; color: var(--text2); text-align: center; line-height: 1.3; }
+.p-mass { font-size: 9px; opacity: 0.5; margin-top: 2px; }
+
+.quark      .p-symbol { color: var(--quark); }
+.lepton     .p-symbol { color: var(--lepton); }
+.boson      .p-symbol { color: var(--boson); }
+.higgs-cell .p-symbol { color: var(--gold); font-size: 24px; }
+.locked     .p-symbol { color: rgba(40,65,100,0.7); font-size: 16px; }
+.locked     .p-name   { color: rgba(40,65,100,0.5); }
+
+/* Celda vacía (spacer) */
+.particle-cell.empty {
+  background: transparent; border: none;
+  cursor: default; pointer-events: none;
+}
+.particle-cell.empty:hover { transform: none; }
+
+/* ── Leyenda ── */
+.me-legend {
+  display: flex; gap: 20px; justify-content: center;
+  margin-top: 12px; font-size: 11px; color: var(--text2);
+  flex-shrink: 0;
+}
+.legend-item { display: flex; align-items: center; gap: 6px; }
+.legend-dot  { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
