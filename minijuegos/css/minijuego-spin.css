@@ -1,0 +1,461 @@
+/* ══════════════════════════════════════════
+   minijuegos/css/minijuego-spin.css
+   Estilos del minijuego del Espín (Etapa 1).
+   Paleta azul/cian coherente con Carga Eléctrica.
+   ══════════════════════════════════════════ */
+
+/* ── Pantalla completa ── */
+.sp-screen {
+  position: absolute; inset: 0; z-index: 60;
+  background: #04020f;
+  display: flex; flex-direction: column;
+  font-family: 'Exo 2', sans-serif;
+  overflow: hidden;
+}
+
+/* ════════════════════════════════════════
+   HEADER
+   ════════════════════════════════════════ */
+.sp-header { flex-shrink: 0; position: relative; overflow: hidden; }
+.sp-header::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, transparent, #00b0ff, #ffd740, #00b0ff, transparent);
+  animation: cc-header-line 3s linear infinite;
+}
+.sp-instruccion-wrap {
+  display: flex; align-items: center; gap: 14px;
+  padding: 12px 24px;
+  background: linear-gradient(90deg,
+    rgba(0,30,60,0.97) 0%, rgba(5,15,40,0.97) 40%,
+    rgba(5,15,40,0.97) 60%, rgba(0,30,60,0.97) 100%);
+  border-bottom: 1px solid rgba(0,180,255,0.4);
+  box-shadow: 0 4px 24px rgba(0,180,255,0.12);
+}
+.sp-instruccion-label {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 7px; letter-spacing: 2px; color: #4fc3f7;
+  text-shadow: 0 0 8px rgba(79,195,247,0.6);
+  flex-shrink: 0; white-space: nowrap;
+  border: 1px solid rgba(79,195,247,0.3);
+  padding: 4px 8px; border-radius: 3px;
+  background: rgba(79,195,247,0.06);
+}
+.sp-instruccion-icon {
+  font-size: 22px; flex-shrink: 0;
+  animation: cc-icon-pulse 2s ease-in-out infinite;
+}
+.sp-instruccion {
+  font-family: 'Exo 2', sans-serif;
+  font-size: 14px; font-weight: 600; color: #d0eeff;
+  line-height: 1.55; margin: 0; flex: 1; text-align: center;
+  text-shadow: 0 0 20px rgba(79,195,247,0.3);
+}
+
+/* Tabs de etapa (de momento solo Etapa 1) */
+.sp-etapa-tabs {
+  display: flex; gap: 6px; flex-shrink: 0;
+  padding: 0 24px 8px; justify-content: center;
+}
+.sp-etapa-tab {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 7px; letter-spacing: 1px;
+  padding: 6px 12px; border-radius: 4px; cursor: pointer;
+  background: rgba(79,195,247,0.06);
+  border: 1px solid rgba(79,195,247,0.22);
+  color: var(--text2); transition: all 0.18s;
+}
+.sp-etapa-tab:hover { border-color: #4fc3f7; color: #4fc3f7; }
+.sp-etapa-tab.active {
+  border-color: var(--gold); color: var(--gold);
+  background: rgba(255,215,64,0.1);
+  box-shadow: 0 0 8px rgba(255,215,64,0.2);
+}
+
+/* ── Cuerpo ── */
+.sp-body { flex: 1; overflow-y: auto; min-height: 0; }
+
+/* ── Barra nav inferior ── */
+.sp-nav-bar {
+  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 16px;
+  background: rgba(0,5,20,0.95);
+  border-top: 1px solid rgba(0,180,255,0.2);
+  gap: 12px;
+}
+.sp-nivel-dots { display: flex; gap: 8px; flex-wrap: wrap; }
+.sp-nivel-dot {
+  font-family: 'Orbitron', monospace; font-size: 9px;
+  padding: 6px 12px; border-radius: 4px; cursor: pointer;
+  background: rgba(0,180,255,0.06);
+  border: 1px solid rgba(0,180,255,0.2);
+  color: var(--text2); transition: all 0.2s;
+}
+.sp-nivel-dot:hover  { border-color: #4fc3f7; color: #4fc3f7; }
+.sp-nivel-dot.active { border-color: #4fc3f7; color: #4fc3f7; background: rgba(79,195,247,0.1); }
+.sp-progreso-label {
+  font-family: 'Orbitron', monospace; font-size: 10px;
+  color: var(--text2); white-space: nowrap;
+}
+
+/* ── Botones ── */
+.sp-btn {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 7px; letter-spacing: 1px;
+  padding: 9px 14px; text-align: center; line-height: 1.5;
+  background: rgba(0,180,255,0.08);
+  border: 1px solid rgba(0,180,255,0.3);
+  color: #80d8ff; border-radius: 4px; cursor: pointer;
+  transition: all 0.18s;
+  clip-path: polygon(0 3px,3px 0,calc(100% - 3px) 0,100% 3px,
+                     100% calc(100% - 3px),calc(100% - 3px) 100%,
+                     3px 100%,0 calc(100% - 3px));
+}
+.sp-btn:hover {
+  background: rgba(0,180,255,0.2);
+  border-color: var(--gold); color: var(--gold);
+  box-shadow: 2px 2px 0 rgba(0,180,255,0.3);
+  transform: translate(-1px,-1px);
+}
+.sp-btn-volver { border-color: rgba(79,195,247,0.22); color: var(--text2); }
+.sp-btn-next   { border-color: rgba(0,230,118,0.4); color: #00e676; background: rgba(0,230,118,0.07); margin-top: 8px; width: 100%; }
+.sp-btn-accion { width: 100%; margin-top: 6px; }
+.sp-btn-accion.activo {
+  border-color: var(--gold); color: var(--gold);
+  background: rgba(255,215,64,0.12);
+  box-shadow: 2px 2px 0 rgba(255,215,64,0.3);
+}
+
+/* ════════════════════════════════════════
+   LAYOUT: panel izquierdo + canvas
+   ════════════════════════════════════════ */
+.sp-wrap {
+  display: flex; gap: 14px;
+  height: 100%; padding: 14px;
+  box-sizing: border-box;
+}
+.sp-panel {
+  width: 260px; flex-shrink: 0;
+  display: flex; flex-direction: column; gap: 8px;
+  overflow-y: auto;
+  padding-right: 6px;
+  /* Scrollbar fina y acorde al tema (Firefox) */
+  scrollbar-width: thin;
+  scrollbar-color: rgba(79,195,247,0.35) transparent;
+}
+/* Scrollbar fina y acorde al tema (Chrome/Edge/Safari) */
+.sp-panel::-webkit-scrollbar { width: 6px; }
+.sp-panel::-webkit-scrollbar-track { background: transparent; }
+.sp-panel::-webkit-scrollbar-thumb {
+  background: rgba(79,195,247,0.3);
+  border-radius: 6px;
+}
+.sp-panel::-webkit-scrollbar-thumb:hover { background: rgba(79,195,247,0.55); }
+
+.sp-panel-card {
+  background: rgba(0,10,30,0.85);
+  border: 1px solid rgba(0,180,255,0.2);
+  border-radius: 10px; padding: 10px 12px;
+  display: flex; flex-direction: column; gap: 5px;
+}
+.sp-panel-title {
+  font-family: 'Orbitron', monospace; font-size: 8px;
+  letter-spacing: 1.5px; color: #4fc3f7;
+  border-bottom: 1px solid rgba(79,195,247,0.15);
+  padding-bottom: 6px; margin-bottom: 2px;
+}
+.sp-hint { font-size: 10px; color: var(--text2); line-height: 1.55; }
+.sp-hint strong { color: var(--text); }
+
+/* Canvas */
+.sp-canvas-wrap { flex: 1; display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.sp-canvas {
+  flex: 1; border-radius: 10px; min-height: 240px;
+  border: 1px solid rgba(0,180,255,0.12);
+  background: #04020f;
+}
+.sp-canvas-legend {
+  display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;
+  font-size: 10px; color: var(--text2); padding: 2px 0;
+}
+
+/* ── Reto + barra de progreso ── */
+.sp-reto {
+  font-size: 11px; color: var(--text); line-height: 1.5;
+}
+.sp-reto b { color: #4fc3f7; }
+.sp-prog-wrap {
+  height: 8px; border-radius: 10px; overflow: hidden; margin-top: 8px;
+  background: rgba(255,255,255,0.07); border: 1px solid rgba(0,180,255,0.2);
+}
+.sp-prog-barra {
+  height: 100%; width: 0%;
+  background: linear-gradient(90deg, #00b0ff, #4fc3f7);
+  box-shadow: 0 0 8px rgba(0,180,255,0.5);
+  border-radius: 10px; transition: width 0.3s ease;
+}
+.sp-prog-lbl {
+  font-family: 'Orbitron', monospace; font-size: 10px;
+  color: var(--text2); text-align: center; margin-top: 4px;
+}
+
+/* Predicción (Stern-Gerlach) */
+.sp-pred { display: flex; flex-direction: column; gap: 6px; margin-top: 8px; }
+
+/* Tally en vivo (↑ vs ↓) */
+.sp-tally { display: flex; flex-direction: column; gap: 5px; margin: 6px 0; }
+.sp-tally-row { display: flex; align-items: center; gap: 6px; font-family: 'Orbitron',monospace; font-size: 12px; }
+.sp-tally-bar { flex: 1; height: 10px; border-radius: 6px; background: rgba(255,255,255,0.07); overflow: hidden; }
+.sp-tally-fill { height: 100%; width: 0%; transition: width 0.2s ease; }
+.sp-tally-fill.up   { background: #4fc3f7; }
+.sp-tally-fill.down { background: #ff8a80; }
+
+/* Éxito del reto (reemplaza al antiguo bloque de logro) */
+.sp-exito {
+  display: flex; align-items: center; gap: 8px;
+  background: rgba(0,230,118,0.08);
+  border: 1px solid rgba(0,230,118,0.35);
+  border-radius: 10px; padding: 10px 12px;
+  font-size: 11px; color: #b2ffda; line-height: 1.5;
+}
+.sp-exito-icon {
+  font-family: 'Orbitron', monospace; font-weight: 900; font-size: 18px; color: #00e676;
+}
+
+/* ── Medidores ── */
+.sp-ms-medidor {
+  font-family: 'Orbitron', monospace; font-size: 15px; font-weight: 700;
+  color: #4fc3f7; text-align: center;
+  padding: 8px; border-radius: 6px;
+  background: rgba(79,195,247,0.08); border: 1px solid rgba(79,195,247,0.25);
+}
+.sp-energia {
+  font-family: 'Orbitron', monospace; font-size: 12px; color: var(--gold);
+  text-align: center; padding: 6px; border-radius: 6px;
+  background: rgba(255,215,64,0.07); border: 1px solid rgba(255,215,64,0.2);
+}
+.sp-ctrl-row {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 10px; color: var(--text2);
+}
+.sp-ctrl-row input[type=range] { flex: 1; accent-color: #4fc3f7; }
+
+/* ── Estado (feedback) ── */
+.sp-estado {
+  font-size: 10px; line-height: 1.5; padding: 6px 8px; border-radius: 6px;
+  min-height: 14px;
+}
+.sp-estado.ok  { color: #69ffa6; background: rgba(0,230,118,0.1); border: 1px solid rgba(0,230,118,0.35); }
+.sp-estado.err { color: #ffc5c5; background: rgba(255,82,82,0.08); border: 1px solid rgba(255,82,82,0.4); }
+
+/* ── Contenedor de avance (botón siguiente al superar el reto) ── */
+.sp-logro-cont.hidden { display: none; }
+.sp-logro-cont { display: flex; flex-direction: column; gap: 8px; }
+
+/* ════════════════════════════════════════
+   NIVEL 1.3 — ORBITALES
+   ════════════════════════════════════════ */
+.sp-orbitales-wrap {
+  align-items: center; justify-content: center;
+  gap: 22px; padding: 20px;
+}
+.sp-orbital-nivel { display: flex; gap: 40px; align-items: flex-end; justify-content: center; }
+.sp-orbital-grupo { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.sp-orbital-label {
+  font-family: 'Orbitron', monospace; font-size: 14px; font-weight: 700;
+  color: #4fc3f7;
+}
+.sp-orbital-cajas { display: flex; gap: 6px; }
+.sp-orbital-caja {
+  width: 48px; height: 56px; border-radius: 8px;
+  border: 2px solid rgba(0,180,255,0.4);
+  background: rgba(0,180,255,0.05);
+  display: flex; align-items: center; justify-content: center; gap: 2px;
+  cursor: pointer; transition: all 0.15s;
+}
+.sp-orbital-caja:hover { border-color: #4fc3f7; background: rgba(79,195,247,0.14); transform: translateY(-2px); }
+/* Animación de "aterrizaje" del electrón recién colocado */
+.sp-orbital-caja.recibe { animation: sp-caja-pop 0.4s ease-out; }
+@keyframes sp-caja-pop {
+  0%   { transform: scale(1);    box-shadow: 0 0 0 rgba(79,195,247,0); border-color: #fff; }
+  40%  { transform: scale(1.18); box-shadow: 0 0 20px rgba(79,195,247,0.8); border-color: #fff; }
+  100% { transform: scale(1);    box-shadow: 0 0 0 rgba(79,195,247,0); }
+}
+.sp-e { font-family: 'Orbitron', monospace; font-size: 20px; font-weight: 900; }
+/* Solo los electrones de la caja recién llenada hacen el "pop" de entrada */
+.sp-orbital-caja.recibe .sp-e {
+  animation: sp-e-in 0.35s cubic-bezier(0.34,1.56,0.64,1);
+}
+@keyframes sp-e-in {
+  0%   { transform: translateY(-14px) scale(0.4); opacity: 0; }
+  100% { transform: translateY(0) scale(1); opacity: 1; }
+}
+.sp-e.up   { color: #4fc3f7; text-shadow: 0 0 8px rgba(79,195,247,0.7); }
+.sp-e.down { color: #ff8a80; text-shadow: 0 0 8px rgba(255,82,82,0.6); }
+.sp-orbital-conteo {
+  font-family: 'Orbitron', monospace; font-size: 11px; color: var(--text2);
+  margin-top: 10px;
+}
+
+/* Átomo grande (símbolo del elemento en construcción) */
+.sp-atomo-grande {
+  font-family: 'Orbitron', monospace; font-weight: 900; font-size: 40px;
+  color: #4fc3f7; text-shadow: 0 0 18px rgba(79,195,247,0.5);
+  margin-top: 6px;
+}
+.sp-atomo-grande.celebra { animation: sp-celebra 1.1s ease-in-out; }
+@keyframes sp-celebra {
+  0%,100% { transform: scale(1); color: #4fc3f7; }
+  30%     { transform: scale(1.35) rotate(-6deg); color: #69ffa6; text-shadow: 0 0 28px rgba(0,230,118,0.8); }
+  60%     { transform: scale(1.1) rotate(4deg); color: #69ffa6; }
+}
+
+/* Mini-indicadores de la secuencia de átomos (H · C · O · Ne) */
+.sp-atomos-mini { display: flex; gap: 6px; margin-top: 8px; justify-content: center; }
+.sp-atomo-chip {
+  font-family: 'Orbitron', monospace; font-size: 10px; font-weight: 700;
+  padding: 3px 7px; border-radius: 5px;
+  border: 1px solid rgba(0,180,255,0.25); color: var(--text2);
+  background: rgba(0,180,255,0.05);
+}
+.sp-atomo-chip.actual { border-color: #4fc3f7; color: #4fc3f7; background: rgba(79,195,247,0.14); box-shadow: 0 0 8px rgba(79,195,247,0.3); }
+.sp-atomo-chip.hecho  { border-color: #00e676; color: #69ffa6; background: rgba(0,230,118,0.12); }
+
+/* Selector de espín (nivel 3) */
+.sp-spin-sel { display: flex; gap: 6px; }
+.sp-spin-btn {
+  flex: 1; font-family: 'Orbitron', monospace; font-size: 11px;
+  padding: 8px 6px; border-radius: 6px; cursor: pointer;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.2); color: var(--text2);
+  transition: all 0.15s;
+}
+.sp-spin-btn.selected {
+  border-color: #4fc3f7; color: #4fc3f7;
+  background: rgba(79,195,247,0.14);
+  box-shadow: 0 0 10px rgba(79,195,247,0.3);
+}
+
+
+/* ════════════════════════════════════════
+   ETAPA 2
+   ════════════════════════════════════════ */
+
+/* Módulo A — tira de fermiones bajo el analizador */
+.sp-fam-tira {
+  display: flex; gap: 6px; justify-content: center; flex-wrap: wrap;
+  padding: 6px 0 2px;
+}
+.sp-ferm-mini {
+  width: 42px; height: 38px; cursor: pointer;
+  font-family: 'Orbitron',monospace; font-size: 15px; font-weight: 900;
+  color: var(--fc); background: rgba(0,180,255,0.05);
+  border: 1px solid var(--fc, rgba(0,180,255,0.3));
+  border-radius: 8px; transition: all 0.15s;
+  text-shadow: 0 0 6px var(--fc);
+}
+.sp-ferm-mini:hover { transform: translateY(-2px); }
+.sp-ferm-mini.sel {
+  background: rgba(255,215,64,0.14); border-color: var(--gold);
+  box-shadow: 0 0 10px rgba(255,215,64,0.4);
+}
+.sp-ferm-mini.medido {
+  border-color: #00e676; color: #69ffa6;
+  background: rgba(0,230,118,0.12); text-shadow: 0 0 6px rgba(0,230,118,0.6);
+}
+.sp-ferm-mini.medido::after { content: ' ✓'; font-size: 9px; }
+
+/* Módulo B — selector de decaimientos + decisión */
+.sp-dec-selector { display: flex; flex-direction: column; gap: 5px; margin-bottom: 6px; }
+.sp-dec-opt {
+  font-family: 'Orbitron',monospace; font-size: 13px; text-align: left;
+  padding: 7px 10px; border-radius: 7px; cursor: pointer;
+  background: rgba(0,180,255,0.05); border: 1px solid rgba(0,180,255,0.25);
+  color: #d0eeff; transition: all 0.15s;
+}
+.sp-dec-opt:hover { border-color: #4fc3f7; }
+.sp-dec-opt.sel { border-color: var(--gold); background: rgba(255,215,64,0.1); color: var(--gold); }
+.sp-dec-opt.resuelto { border-color: #00e676; color: #69ffa6; background: rgba(0,230,118,0.1); }
+.sp-dec-opt.resuelto::after { content: ' ✓'; }
+.sp-dec-decidir { display: flex; gap: 8px; margin-top: 6px; }
+.sp-dec-si, .sp-dec-no { flex: 1; }
+.sp-dec-exp { font-size: 11px; line-height: 1.5; color: var(--text2); margin-top: 6px; }
+.sp-dec-exp.ok  { color: #b2ffda; }
+.sp-dec-exp.err { color: #ffc5c5; }
+
+/* Módulo D — tabla comparativa g/2 */
+.sp-gm-fila {
+  display: flex; justify-content: space-between; align-items: center;
+  font-family: 'Orbitron',monospace; font-size: 12px; color: var(--text2);
+  padding: 3px 0; border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.sp-gm-fila b { font-size: 13px; }
+
+
+/* ════════════════════════════════════════
+   ETAPA 3 — El espín de los bosones gauge
+   ════════════════════════════════════════ */
+
+/* Botones auxiliares usados por los módulos de la Etapa 3 */
+.sp-btn-sutil {
+  width: 100%; margin-top: 6px; font-size: 10px;
+  border-color: rgba(255,255,255,0.18); color: var(--text2);
+  background: rgba(255,255,255,0.03);
+}
+.sp-btn-sutil:hover { border-color: rgba(255,255,255,0.4); color: var(--text); }
+
+.sp-btn-campo {
+  width: 100%; margin-top: 8px;
+  border-color: rgba(79,195,247,0.35); color: #80d8ff;
+  background: rgba(79,195,247,0.07);
+}
+.sp-btn-campo.on {
+  border-color: #4fc3f7; color: #cdeeff;
+  background: rgba(79,195,247,0.2);
+  box-shadow: 0 0 12px rgba(79,195,247,0.4);
+}
+
+/* ── Módulo A — El Triestado ── */
+/* Subíndice de m_s legible dentro del medidor y los botones */
+.sp-ms-medidor sub { font-size: 0.62em; }
+.sp-tri-btns .sp-btn-accion sub { font-size: 0.8em; }
+
+.sp-tri-btns { display: flex; gap: 5px; margin-bottom: 4px; }
+.sp-tri-btns .sp-btn-accion { margin-top: 0; font-size: 11px; padding: 7px 4px; }
+
+.sp-tri-tira { display: flex; gap: 6px; justify-content: center; flex-wrap: wrap; margin-bottom: 6px; }
+.sp-tri-chip {
+  display: flex; flex-direction: column; align-items: center; gap: 1px;
+  min-width: 54px; padding: 6px 8px; cursor: pointer;
+  border-radius: 8px; transition: all 0.15s;
+  color: var(--bc); background: rgba(0,180,255,0.05);
+  border: 1px solid var(--bc, rgba(0,180,255,0.3));
+}
+.sp-tri-chip b { font-family: 'Orbitron',monospace; font-size: 15px; font-weight: 900; text-shadow: 0 0 6px var(--bc); }
+.sp-tri-chip small { font-size: 8px; color: var(--text2); }
+.sp-tri-chip:hover { transform: translateY(-2px); }
+.sp-tri-chip.sel {
+  background: rgba(255,215,64,0.12); border-color: var(--gold);
+  box-shadow: 0 0 10px rgba(255,215,64,0.4);
+}
+
+/* ── Listas de metas (Módulos B y C) ── */
+.sp-metas { list-style: none; margin: 8px 0 0; padding: 0; display: flex; flex-direction: column; gap: 4px; }
+.sp-metas li {
+  font-size: 10px; line-height: 1.4; color: var(--text2);
+  padding: 4px 6px; border-radius: 5px;
+  border: 1px solid rgba(255,255,255,0.08); background: rgba(255,255,255,0.02);
+  transition: all 0.2s;
+}
+.sp-metas li.ok {
+  color: #69ffa6; border-color: rgba(0,230,118,0.35); background: rgba(0,230,118,0.1);
+}
+
+/* ── Módulo C — opciones de pregunta ── */
+.sp-gl-ops { display: flex; flex-direction: column; gap: 5px; margin-top: 6px; }
+.sp-gl-op {
+  width: 100%; text-align: left; font-size: 11px; padding: 7px 10px;
+  border-color: rgba(0,180,255,0.25); color: #d0eeff;
+}
+.sp-gl-op:hover { border-color: #4fc3f7; background: rgba(79,195,247,0.1); }

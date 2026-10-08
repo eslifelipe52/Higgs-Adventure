@@ -1,0 +1,697 @@
+/* ══════════════════════════════════════════
+   minijuegos/css/minijuego-masa.css
+   Estilos del minijuego de la Masa.
+   3 niveles: Inercia, E=mc², Decaimiento.
+   ══════════════════════════════════════════ */
+
+/* ── Pantalla completa ── */
+.ms-screen {
+  position: absolute; inset: 0; z-index: 60;
+  background: #04020f;
+  display: flex; flex-direction: column;
+  font-family: 'Exo 2', sans-serif;
+  overflow: hidden;
+}
+
+/* ════════════════════════════════════════
+   HEADER DE INSTRUCCIÓN
+   ════════════════════════════════════════ */
+.ms-header {
+  flex-shrink: 0; position: relative; overflow: hidden;
+}
+.ms-header::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, transparent, #00b0ff, #ffd740, #00b0ff, transparent);
+  animation: cc-header-line 3s linear infinite;
+}
+.ms-instruccion-wrap {
+  display: flex; align-items: center; gap: 14px;
+  padding: 12px 24px;
+  background: linear-gradient(90deg,
+    rgba(0,30,60,0.97) 0%, rgba(5,15,40,0.97) 40%,
+    rgba(5,15,40,0.97) 60%, rgba(0,30,60,0.97) 100%);
+  border-bottom: 1px solid rgba(0,180,255,0.4);
+  box-shadow: 0 4px 24px rgba(0,180,255,0.12);
+}
+.ms-instruccion-label {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 7px; letter-spacing: 2px; color: var(--gold);
+  text-shadow: 0 0 8px rgba(255,215,64,0.6);
+  flex-shrink: 0; white-space: nowrap;
+  border: 1px solid rgba(255,215,64,0.3);
+  padding: 4px 8px; border-radius: 3px;
+  background: rgba(255,215,64,0.06);
+}
+.ms-instruccion-icon {
+  font-size: 22px; flex-shrink: 0;
+  animation: cc-icon-pulse 2s ease-in-out infinite;
+}
+.ms-instruccion {
+  font-family: 'Exo 2', sans-serif;
+  font-size: 14px; font-weight: 600; color: #d0eeff;
+  line-height: 1.55; margin: 0; flex: 1; text-align: center;
+  text-shadow: 0 0 20px rgba(79,195,247,0.3);
+}
+
+/* ── Cuerpo ── */
+.ms-body {
+  flex: 1; overflow-y: auto; min-height: 0;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,215,64,0.2) transparent;
+}
+
+/* ── Barra de navegación inferior ── */
+.ms-nav-bar {
+  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 16px;
+  background: rgba(5,2,20,0.95);
+  border-top: 1px solid rgba(0,180,255,0.2);
+  gap: 12px;
+}
+.ms-nivel-dots {
+  display: flex; gap: 8px;
+}
+.ms-nivel-dot {
+  font-family: 'Orbitron', monospace; font-size: 9px;
+  padding: 6px 12px; border-radius: 4px; cursor: pointer;
+  background: rgba(0,180,255,0.08);
+  border: 1px solid rgba(0,180,255,0.25);
+  color: var(--text2); transition: all 0.2s;
+}
+.ms-nivel-dot:hover  { border-color: var(--gold); color: var(--gold); }
+.ms-nivel-dot.active { border-color: var(--gold); color: var(--gold); background: rgba(255,215,64,0.1); }
+.ms-progreso-label {
+  font-family: 'Orbitron', monospace; font-size: 10px;
+  color: var(--text2); white-space: nowrap;
+}
+
+/* ── Botones generales ── */
+.ms-btn {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 7px; letter-spacing: 1px;
+  padding: 9px 14px; text-align: center; line-height: 1.5;
+  background: rgba(0,180,255,0.1);
+  border: 1px solid rgba(0,180,255,0.3);
+  color: #80d8ff; border-radius: 4px; cursor: pointer;
+  transition: all 0.18s;
+  clip-path: polygon(0 3px,3px 0,calc(100% - 3px) 0,100% 3px,
+                     100% calc(100% - 3px),calc(100% - 3px) 100%,
+                     3px 100%,0 calc(100% - 3px));
+}
+.ms-btn:hover {
+  background: rgba(0,180,255,0.22);
+  border-color: var(--gold); color: var(--gold);
+  box-shadow: 2px 2px 0 rgba(0,180,255,0.4);
+  transform: translate(-1px,-1px);
+}
+.ms-btn-volver { border-color: rgba(0,229,255,0.25); color: var(--text2); }
+.ms-btn-empujar {
+  border-color: rgba(0,229,255,0.4); color: var(--accent);
+  background: rgba(0,229,255,0.08);
+}
+.ms-btn-empujar:disabled { opacity: 0.35; cursor: not-allowed; transform: none; box-shadow: none; }
+.ms-btn-reset {
+  border-color: rgba(255,100,100,0.3); color: rgba(255,150,150,0.7);
+  background: rgba(255,100,100,0.05);
+}
+.ms-btn-next {
+  border-color: rgba(0,230,118,0.4); color: #00e676;
+  background: rgba(0,230,118,0.07);
+}
+.ms-btn-row { display: flex; gap: 8px; }
+
+/* ── Slider ── */
+.ms-slider {
+  width: 100%; accent-color: var(--gold);
+  height: 4px; border-radius: 4px; cursor: pointer;
+  background: rgba(255,215,64,0.15);
+}
+.ms-label {
+  font-size: 12px; color: var(--text2); display: block; margin-bottom: 6px;
+}
+.ms-label strong { color: var(--gold); font-family: 'Orbitron', monospace; }
+
+/* ── Conclusión ── */
+.ms-conclusion-text {
+  background: rgba(0,229,255,0.07);
+  border: 1px solid rgba(0,229,255,0.25);
+  border-radius: 8px; padding: 14px 16px;
+  font-size: 13px; color: var(--text2); line-height: 1.75;
+  margin-bottom: 12px;
+}
+.ms-conclusion-text strong { color: var(--accent); }
+
+/* ════════════════════════════════════════
+   ETAPA 1 — Estado de objetos y resultado
+   ════════════════════════════════════════ */
+
+/* Indicador ✓ / ··· sobre la tarjeta */
+.ms-obj-estado {
+  position: absolute; top: 4px; right: 6px;
+  font-size: 14px; font-weight: 900; line-height: 1;
+  color: rgba(255,255,255,0.25);
+  transition: color 0.3s, text-shadow 0.3s;
+}
+.ms-obj-card { position: relative; }
+.ms-obj-card.completado .ms-obj-estado {
+  color: #00e676;
+  text-shadow: 0 0 10px rgba(0,230,118,0.8);
+}
+.ms-obj-card.completado {
+  opacity: 0.65; cursor: default;
+  border-color: rgba(0,230,118,0.35) !important;
+  background: rgba(0,230,118,0.05) !important;
+}
+
+/* Resultado del intento */
+.ms-e1-resultado {
+  font-size: 12px; border-radius: 8px; padding: 10px 14px;
+  line-height: 1.65; border: 1px solid;
+  animation: fade-in 0.2s ease;
+}
+.ms-e1-resultado.hidden { display: none; }
+.ms-e1-resultado.ok {
+  background: rgba(0,30,15,0.9); border-color: rgba(0,200,100,0.4); color: #b2ffda;
+}
+.ms-e1-resultado.ok strong { color: #00e676; }
+.ms-e1-resultado.err {
+  background: rgba(30,5,5,0.9); border-color: rgba(255,82,82,0.4); color: #ffc5c5;
+}
+.ms-e1-resultado.err strong { color: #ff5252; }
+
+/* Panel de avance */
+.ms-e1-avance { display: flex; flex-direction: column; gap: 8px; }
+.ms-e1-avance.hidden { display: none; }
+
+/* ════════════════════════════════════════
+   ETAPA 1 — Layout principal (Inercia)
+   ════════════════════════════════════════ */
+.ms-n0-wrap {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  height: 100%; padding: 14px;
+  gap: 12px; box-sizing: border-box;
+}
+
+/* Fila superior: instrucciones izq + objetos der */
+.ms-e1-top-row {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+
+/* Panel de instrucciones */
+.ms-e1-instrucciones {
+  flex-shrink: 0;
+  width: 220px;
+  background: rgba(0,10,30,0.85);
+  border: 1px solid rgba(0,180,255,0.3);
+  border-radius: 10px;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.ms-e1-inst-title {
+  font-family: 'Orbitron', monospace;
+  font-size: 8px; letter-spacing: 1.5px; color: var(--gold);
+  text-shadow: 0 0 8px rgba(255,215,64,0.4);
+  border-bottom: 1px solid rgba(255,215,64,0.15);
+  padding-bottom: 6px;
+}
+.ms-e1-inst-lista {
+  margin: 0; padding-left: 16px;
+  display: flex; flex-direction: column; gap: 5px;
+}
+.ms-e1-inst-lista li {
+  font-size: 10px; color: var(--text2); line-height: 1.55;
+}
+.ms-e1-inst-lista li strong { color: var(--accent); }
+.ms-e1-formula {
+  display: inline-block; margin-top: 2px;
+  font-family: 'Orbitron', monospace; font-size: 10px; color: var(--gold);
+  background: rgba(255,215,64,0.08); border: 1px solid rgba(255,215,64,0.2);
+  border-radius: 4px; padding: 2px 7px; letter-spacing: 0.5px;
+}
+.ms-e1-inst-meta {
+  font-size: 10px; color: var(--text2);
+  background: rgba(0,229,255,0.06); border: 1px solid rgba(0,229,255,0.18);
+  border-radius: 5px; padding: 5px 8px; line-height: 1.5;
+}
+.ms-e1-inst-meta strong { color: var(--accent); }
+
+/* Nota explicativa de beta (Etapa 2) */
+.ms-e2-beta-nota {
+  font-size: 10px; color: var(--text2); line-height: 1.6;
+  background: rgba(0,180,255,0.08);
+  border: 1px solid rgba(0,180,255,0.25);
+  border-radius: 6px; padding: 7px 10px; margin-bottom: 8px;
+}
+.ms-e2-beta-nota strong { color: #b388ff; }
+.ms-e2-beta-eq {
+  display: inline-block; margin: 3px 0;
+  font-family: 'Orbitron', monospace; font-size: 11px; color: var(--gold);
+  background: rgba(255,215,64,0.08); border: 1px solid rgba(255,215,64,0.2);
+  border-radius: 4px; padding: 2px 8px;
+}
+
+/* Puntos de progreso de niveles */
+.ms-e1-niveles-bar {
+  display: flex; align-items: center; gap: 5px; margin-top: 2px;
+}
+.ms-e1-dot {
+  width: 9px; height: 9px; border-radius: 50%;
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.2);
+  transition: all 0.25s; flex-shrink: 0;
+  cursor: default;
+  padding: 0;
+}
+/* Los dots "done" son clickeables para volver */
+.ms-e1-dot.done {
+  background: #00e676; border-color: #00e676; box-shadow: 0 0 5px #00e676;
+  cursor: pointer;
+}
+.ms-e1-dot.done:hover {
+  transform: scale(1.4);
+  box-shadow: 0 0 8px #00e676, 0 0 14px rgba(0,230,118,0.4);
+}
+.ms-e1-dot.current { background: var(--gold); border-color: var(--gold); box-shadow: 0 0 5px var(--gold); }
+.ms-e1-niveles-label {
+  font-family: 'Orbitron', monospace; font-size: 8px;
+  color: var(--text2); margin-left: 3px;
+}
+
+/* Contenedor de tarjetas — flex que llena el espacio restante */
+.ms-n0-objetos {
+  flex: 1;
+  display: flex; gap: 8px; flex-wrap: wrap; align-content: flex-start;
+}
+.ms-obj-card {
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 10px; padding: 10px 12px;
+  cursor: pointer; transition: all 0.2s;
+  display: flex; flex-direction: column; align-items: center; gap: 5px;
+  background: rgba(255,255,255,0.04); min-width: 88px;
+}
+.ms-obj-card:hover    { transform: translateY(-2px); box-shadow: 0 4px 14px rgba(255,255,255,0.1); }
+.ms-obj-card.selected { background: rgba(255,215,64,0.1); border-color: var(--gold) !important; }
+.ms-obj-label  { font-size: 10px; color: var(--text); text-align: center; font-weight: 600; }
+.ms-obj-masa   { font-size: 9px; color: var(--text2); font-family: 'Orbitron', monospace; }
+
+.ms-n0-arena {
+  display: flex; gap: 12px; min-height: 0;
+}
+.ms-n0-canvas {
+  flex: 1; border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.07);
+  background: #0a0520; min-height: 160px;
+}
+.ms-n0-info {
+  width: 180px; flex-shrink: 0;
+  background: rgba(0,10,30,0.9);
+  border: 1px solid rgba(0,180,255,0.2);
+  border-radius: 8px; padding: 12px;
+  display: flex; flex-direction: column; gap: 6px;
+}
+.ms-info-row {
+  display: flex; justify-content: space-between; align-items: center;
+  font-size: 11px; border-bottom: 1px solid rgba(255,255,255,0.05);
+  padding-bottom: 4px; gap: 8px;
+}
+.ms-info-row span:first-child { color: var(--text2); }
+.ms-info-row span:last-child  { color: var(--accent); font-family: 'Orbitron', monospace; font-size: 10px; text-align: right; }
+
+.ms-n0-controles {
+  display: flex; flex-direction: column; gap: 10px;
+}
+.ms-fuerza-wrap { display: flex; flex-direction: column; gap: 6px; }
+
+/* Fila slider + input numérico */
+.ms-fuerza-row {
+  display: flex; align-items: center; gap: 10px;
+}
+.ms-fuerza-row .ms-slider { flex: 1; }
+
+.ms-fuerza-input-group {
+  display: flex; align-items: center; gap: 4px;
+  background: rgba(255,215,64,0.07);
+  border: 1px solid rgba(255,215,64,0.35);
+  border-radius: 6px; padding: 3px 8px;
+  transition: border-color 0.2s;
+}
+.ms-fuerza-input-group:focus-within {
+  border-color: var(--gold);
+  box-shadow: 0 0 8px rgba(255,215,64,0.3);
+}
+.ms-fuerza-input {
+  width: 52px; background: transparent; border: none; outline: none;
+  font-family: 'Orbitron', monospace; font-size: 13px; font-weight: 700;
+  color: var(--gold); text-align: right;
+}
+/* Ocultar flechas de número en navegadores */
+.ms-fuerza-input::-webkit-inner-spin-button,
+.ms-fuerza-input::-webkit-outer-spin-button { -webkit-appearance: none; }
+.ms-fuerza-unidad {
+  font-family: 'Orbitron', monospace; font-size: 11px;
+  color: rgba(255,215,64,0.7); flex-shrink: 0;
+}
+
+/* Mensaje de error de fuerza */
+.ms-fuerza-error {
+  font-size: 11px; color: #ff5252;
+  background: rgba(255,82,82,0.08);
+  border: 1px solid rgba(255,82,82,0.3);
+  border-radius: 5px; padding: 5px 10px;
+  animation: fade-in 0.2s ease;
+}
+.ms-fuerza-error.hidden { display: none; }
+
+/* Canvas de imagen dentro de la tarjeta de objeto */
+.ms-obj-img-wrap {
+  display: flex; align-items: center; justify-content: center;
+  width: 72px; height: 72px;
+}
+.ms-obj-canvas {
+  width: 72px; height: 72px;
+  image-rendering: pixelated;  /* conserva nitidez en PNGs pixelados */
+}
+
+/* ════════════════════════════════════════
+   ETAPA 2: RELATIVIDAD Y ENERGÍA
+   ════════════════════════════════════════ */
+
+/* Layout principal Etapa 2 */
+.ms-e2-wrap {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  height: 100%; padding: 14px;
+  gap: 12px; box-sizing: border-box;
+}
+
+/* Grid inferior: barras izq + controles der */
+.ms-e2-main {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px; min-height: 0;
+}
+
+/* Partículas en la fila superior (lado derecho del panel instrucciones) */
+.ms-e2-particulas {
+  flex: 1;
+  display: flex; gap: 8px; flex-wrap: wrap; align-content: flex-start;
+}
+
+/* Tarjeta de partícula estilo Modelo Estándar */
+.ms-e2-card {
+  position: relative;
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 10px; padding: 10px 12px;
+  cursor: pointer; transition: all 0.2s;
+  background: rgba(255,255,255,0.04);
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+  min-width: 90px;
+}
+.ms-e2-card:hover    { transform: translateY(-2px); box-shadow: 0 4px 14px rgba(255,255,255,0.1); }
+.ms-e2-card.selected { background: rgba(255,215,64,0.1); border-color: var(--gold) !important; }
+.ms-e2-card.completado {
+  opacity: 0.65; cursor: default;
+  border-color: rgba(0,230,118,0.35) !important;
+  background: rgba(0,230,118,0.05) !important;
+}
+.ms-e2-card.completado .ms-obj-estado { color: #00e676; text-shadow: 0 0 10px rgba(0,230,118,0.8); }
+
+/* Símbolo grande del ME dentro de la tarjeta */
+.ms-e2-sym {
+  font-family: 'Orbitron', monospace;
+  font-weight: 900; line-height: 1;
+  text-shadow: 0 0 10px currentColor;
+  margin-top: 6px;
+}
+.ms-e2-nombre {
+  font-size: 9px; color: var(--text); text-align: center;
+  font-weight: 600; line-height: 1.3;
+}
+.ms-e2-masa {
+  font-size: 8px; color: var(--gold);
+  font-family: 'Orbitron', monospace;
+  text-align: center;
+}
+.ms-e2-tipo {
+  font-size: 7px; font-family: 'Press Start 2P', monospace;
+  padding: 2px 5px; border-radius: 3px; text-transform: uppercase;
+}
+.ms-e2-tipo-quark  { background: rgba(255,109,0,0.15); color: #ff6d00; border: 1px solid rgba(255,109,0,0.3); }
+.ms-e2-tipo-lepton { background: rgba(0,188,212,0.12); color: #00bcd4; border: 1px solid rgba(0,188,212,0.3); }
+.ms-e2-tipo-boson  { background: rgba(156,109,255,0.12); color: #9c6dff; border: 1px solid rgba(156,109,255,0.3); }
+.ms-e2-tipo-higgs  { background: rgba(255,215,64,0.12); color: var(--gold); border: 1px solid rgba(255,215,64,0.3); }
+
+/* Controles de entrada Etapa 2 */
+.ms-e2-controles {
+  background: rgba(0,10,30,0.9);
+  border: 1px solid rgba(0,180,255,0.2);
+  border-radius: 10px; padding: 14px;
+  display: flex; flex-direction: column; gap: 10px;
+}
+.ms-e2-entrada-wrap { display: flex; flex-direction: column; gap: 6px; }
+
+/* Reutilizar estilos de barras del antiguo Nivel 1 */
+.ms-n1-ecuacion {
+  background: rgba(0,10,30,0.9);
+  border: 1px solid rgba(0,180,255,0.3);
+  border-radius: 10px; padding: 16px;
+}
+.ms-ec-title {
+  font-family: 'Orbitron', monospace; font-size: 13px;
+  color: var(--gold); text-align: center; margin-bottom: 16px;
+  text-shadow: 0 0 10px rgba(255,215,64,0.4);
+}
+.ms-ec-bars { display: flex; flex-direction: column; gap: 10px; }
+.ms-ec-row  { display: flex; align-items: center; gap: 10px; }
+.ms-ec-label {
+  font-size: 10px; color: var(--text2); width: 160px; flex-shrink: 0;
+}
+.ms-ec-bar-wrap {
+  flex: 1; height: 14px; background: rgba(255,255,255,0.06);
+  border-radius: 7px; overflow: hidden;
+  border: 1px solid rgba(255,255,255,0.08);
+}
+.ms-ec-bar {
+  height: 100%; border-radius: 7px; transition: width 0.3s ease; width: 0%;
+}
+.ms-ec-total   { background: linear-gradient(90deg,#00b0ff,var(--gold)); box-shadow:0 0 8px rgba(255,215,64,0.3); }
+.ms-ec-masa    { background: linear-gradient(90deg,#ff6d00,#ffd740); box-shadow:0 0 8px rgba(255,109,0,0.3); }
+.ms-ec-cinetica{ background: linear-gradient(90deg,#00e5ff,#4fc3f7); box-shadow:0 0 8px rgba(0,229,255,0.3); }
+.ms-ec-val {
+  font-family: 'Orbitron', monospace; font-size: 10px;
+  color: var(--text); width: 110px; flex-shrink: 0; text-align: right;
+}
+.ms-ec-vel {
+  margin-top: 14px; text-align: center;
+  font-size: 11px; color: var(--accent);
+  font-family: 'Orbitron', monospace;
+}
+
+/* ════════════════════════════════════════
+   ETAPA 3: PUZLE DE DECAIMIENTO
+   ════════════════════════════════════════ */
+.ms-e3-wrap {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  height: 100%; padding: 12px;
+  gap: 10px; box-sizing: border-box;
+  overflow: hidden;
+}
+
+/* Paleta de partículas hijas (fila superior, junto a instrucciones) */
+.ms-e3-paleta {
+  flex: 1;
+  display: flex; gap: 8px; flex-wrap: wrap; align-content: flex-start;
+}
+.ms-e3-part {
+  display: flex; flex-direction: column; align-items: center; gap: 3px;
+  min-width: 64px; padding: 10px 8px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 10px; cursor: pointer; transition: all 0.18s;
+}
+.ms-e3-part:hover {
+  transform: translateY(-2px);
+  background: color-mix(in srgb, var(--pc) 12%, transparent);
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--pc) 35%, transparent);
+}
+.ms-e3-sym { font-family: 'Orbitron', monospace; font-weight: 900; text-shadow: 0 0 8px currentColor; }
+.ms-e3-part-masa { font-size: 8px; color: var(--text2); font-family: 'Orbitron', monospace; }
+
+/* Zona principal: animación (izq) + controles (der), todo visible sin scroll */
+.ms-e3-main {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 12px; min-height: 0;
+}
+/* Canvas de animación: ocupa toda la columna izquierda */
+.ms-e3-canvas {
+  width: 100%; height: 100%;
+  min-height: 0;
+  border-radius: 10px;
+  border: 1px solid rgba(0,180,255,0.25);
+  background: #04020f;
+}
+.ms-e3-panel {
+  background: rgba(0,10,30,0.9);
+  border: 1px solid rgba(0,180,255,0.2);
+  border-radius: 10px; padding: 12px;
+  display: flex; flex-direction: column; gap: 8px;
+  min-height: 0; overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,215,64,0.3) transparent;
+}
+.ms-e3-panel::-webkit-scrollbar { width: 5px; }
+.ms-e3-panel::-webkit-scrollbar-thumb { background: rgba(255,215,64,0.3); border-radius: 3px; }
+
+/* Balance de masa-energía */
+.ms-e3-balance {
+  display: flex; flex-direction: column; gap: 4px;
+  background: rgba(0,0,0,0.25); border-radius: 8px; padding: 8px 10px;
+}
+.ms-e3-bal-row {
+  display: flex; justify-content: space-between; align-items: center;
+  font-size: 11px; color: var(--text2); gap: 8px;
+}
+.ms-e3-bal-row strong { font-family: 'Orbitron', monospace; font-size: 10px; }
+
+/* Lista de hijas seleccionadas */
+.ms-e3-hijas-sel {
+  min-height: 32px; display: flex; align-items: center; flex-wrap: wrap; gap: 4px;
+  font-size: 12px; color: var(--text);
+  background: rgba(255,255,255,0.03);
+  border: 1px dashed rgba(255,255,255,0.15);
+  border-radius: 8px; padding: 6px 8px;
+}
+
+/* Nota explicativa del número leptónico (Etapa 3) */
+.ms-e3-leptonico {
+  font-size: 9px; color: var(--text2); line-height: 1.55;
+  background: rgba(0,188,212,0.07);
+  border: 1px solid rgba(0,188,212,0.22);
+  border-radius: 6px; padding: 7px 9px; margin-top: 2px;
+}
+.ms-e3-leptonico strong { color: #4dd0e1; }
+
+/* Progreso de canales de decaimiento */
+.ms-e3-canales {
+  background: rgba(0,0,0,0.2); border-radius: 8px; padding: 7px 9px;
+  display: flex; flex-direction: column; gap: 5px;
+}
+.ms-e3-canales-title { font-size: 10px; color: var(--text2); }
+.ms-e3-canales-title strong { color: var(--gold); font-family: 'Orbitron', monospace; }
+.ms-e3-canales-lista { display: flex; flex-direction: column; gap: 4px; }
+.ms-e3-canal {
+  border-radius: 6px; padding: 5px 8px; font-size: 10px;
+  border: 1px solid transparent;
+}
+.ms-e3-canal.hallado {
+  background: rgba(0,230,118,0.1); border-color: rgba(0,230,118,0.3);
+}
+.ms-e3-canal.oculto {
+  background: rgba(255,255,255,0.03); border-color: rgba(255,255,255,0.1);
+  display: flex; justify-content: space-between; color: var(--text2);
+  font-style: italic;
+}
+.ms-e3-canal-top {
+  display: flex; justify-content: space-between; align-items: center; gap: 8px;
+}
+.ms-e3-canal-eq {
+  font-family: 'Orbitron', monospace; font-size: 10px; color: var(--text);
+}
+.ms-e3-canal-prob {
+  font-family: 'Orbitron', monospace; font-size: 9px; color: var(--gold);
+  background: rgba(255,215,64,0.1); border-radius: 4px; padding: 1px 6px;
+  white-space: nowrap;
+}
+
+/* En la etapa 3, el resultado se muestra completo (sin recorte interno). */
+.ms-e3-panel .ms-e1-resultado {
+  font-size: 10.5px; line-height: 1.55; padding: 8px 10px;
+  flex-shrink: 0;
+}
+.ms-e3-panel .ms-e1-avance { flex-shrink: 0; }
+/* el texto de avance queda vacío en la etapa 3; no debe ocupar espacio */
+.ms-e3-panel .ms-e1-avance .ms-conclusion-text:empty { display: none; }
+.ms-e3-panel .ms-e1-avance .ms-btn-next { width: 100%; }
+.ms-e3-hijas-vacio { font-size: 10px; color: var(--text2); font-style: italic; }
+.ms-e3-hija-chip {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-family: 'Orbitron', monospace; font-size: 12px; font-weight: 700;
+  padding: 3px 8px; border-radius: 6px; cursor: pointer;
+  background: color-mix(in srgb, var(--pc) 14%, transparent);
+  border: 1px solid color-mix(in srgb, var(--pc) 40%, transparent);
+  transition: all 0.15s;
+}
+.ms-e3-hija-chip:hover { background: rgba(255,82,82,0.18); border-color: #ff5252; }
+
+/* ════════════════════════════════════════
+   PANTALLA FINAL
+   ════════════════════════════════════════ */
+.ms-final-wrap {
+  display: flex; flex-direction: column; align-items: center;
+  justify-content: center; gap: 20px; padding: 32px;
+  min-height: 100%; text-align: center;
+}
+.ms-final-title {
+  font-size: 14px; color: var(--gold);
+  text-shadow: 0 0 16px rgba(255,215,64,0.5), 2px 2px 0 rgba(180,100,0,0.5);
+}
+.ms-final-stars { font-size: 32px; }
+.ms-final-stats {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 10px; padding: 14px 24px;
+  display: flex; flex-direction: column; gap: 8px;
+}
+.ms-stat-row {
+  display: flex; justify-content: space-between; gap: 24px;
+  font-family: 'Orbitron', monospace; font-size: 12px;
+}
+.ms-final-conclusion {
+  max-width: 540px; font-size: 13px; color: var(--text2);
+  line-height: 1.8; text-align: center;
+  background: rgba(255,215,64,0.05);
+  border: 1px solid rgba(255,215,64,0.2);
+  border-radius: 10px; padding: 18px 22px;
+}
+.ms-final-conclusion strong { color: var(--accent); }
+.ms-final-conclusion em { color: var(--text2); }
+.ms-final-btns { display: flex; gap: 12px; }
+
+/* ════════════════════════════════════════
+   FEEDBACK
+   ════════════════════════════════════════ */
+.ms-feedback {
+  position: absolute; bottom: 60px; right: 20px;
+  z-index: 80; max-width: 420px;
+  display: flex; align-items: flex-start; gap: 14px;
+  padding: 16px 18px; border-radius: 10px; border: 1px solid;
+  backdrop-filter: blur(8px);
+  animation: fy-fb-in 0.25s cubic-bezier(0.175,0.885,0.32,1.275);
+}
+.ms-feedback.hidden { display: none; }
+.ms-feedback.ms-fb-ok {
+  background: rgba(0,30,15,0.95); border-color: rgba(0,200,100,0.5);
+  box-shadow: 0 0 20px rgba(0,200,100,0.18);
+}
+.ms-feedback.ms-fb-err {
+  background: rgba(30,8,5,0.95); border-color: rgba(220,60,40,0.5);
+  box-shadow: 0 0 20px rgba(220,60,40,0.18);
+}
+.ms-fb-icon {
+  font-size: 28px; flex-shrink: 0;
+  font-family: 'Orbitron', monospace; font-weight: 900;
+}
+.ms-fb-ok .ms-fb-icon  { color: #00e676; }
+.ms-fb-err .ms-fb-icon { color: #ff5252; }
+.ms-fb-content { flex: 1; }
+.ms-fb-msg { font-size: 13px; color: #e0e0ff; line-height: 1.6; margin-bottom: 6px; font-weight: 600; }
+.ms-fb-exp { font-size: 11px; color: var(--text2); line-height: 1.65; }

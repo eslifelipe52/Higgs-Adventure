@@ -1,0 +1,226 @@
+/* ══════════════════════════════════════════
+   css/calculadora.css
+   Mini calculadora flotante reutilizable.
+   z-index 200 para quedar encima de overlays.
+   ══════════════════════════════════════════ */
+
+/* ── Widget contenedor ── */
+.calc-widget {
+  position: fixed;
+  bottom: 80px;
+  right: 24px;
+  z-index: 200;
+  width: 268px;
+
+  background: linear-gradient(160deg, #1a0a3a 0%, #0d0520 100%);
+  border: 1px solid rgba(124, 77, 255, 0.45);
+  border-radius: 14px;
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.6),
+    0 0 0 1px rgba(255, 215, 64, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  overflow: hidden;
+  user-select: none;
+
+  animation: calc-appear 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.calc-widget.hidden {
+  display: none;
+}
+
+@keyframes calc-appear {
+  from { opacity: 0; transform: scale(0.88) translateY(12px); }
+  to   { opacity: 1; transform: scale(1)    translateY(0);    }
+}
+
+/* ── Barra de título (drag handle) ── */
+.calc-titlebar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px 6px;
+  background: rgba(124, 77, 255, 0.12);
+  border-bottom: 1px solid rgba(124, 77, 255, 0.2);
+}
+
+.calc-title {
+  font-family: 'Orbitron', monospace;
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  color: rgba(255, 215, 64, 0.85);
+  text-shadow: 0 0 8px rgba(255, 215, 64, 0.35);
+}
+
+.calc-close {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 13px;
+  cursor: pointer;
+  padding: 0 2px;
+  line-height: 1;
+  transition: color 0.15s;
+}
+.calc-close:hover { color: #ff5252; }
+
+/* ── Pantalla ── */
+.calc-display-wrap {
+  padding: 8px 12px 6px;
+  background: rgba(0, 0, 0, 0.35);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.calc-expr {
+  font-family: 'Orbitron', monospace;
+  font-size: 9px;
+  color: rgba(255, 255, 255, 0.3);
+  text-align: right;
+  min-height: 14px;
+  margin-bottom: 2px;
+  letter-spacing: 0.5px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.calc-display {
+  width: 100%;
+  background: transparent;
+  border: none;
+  outline: none;
+  text-align: right;
+  font-family: 'Orbitron', monospace;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--gold, #ffd740);
+  letter-spacing: 0.5px;
+  text-shadow: 0 0 12px rgba(255, 215, 64, 0.4);
+  box-sizing: border-box;
+  padding: 0;
+  cursor: default;
+  /* readonly — no hay caret; permite scroll horizontal en fórmulas largas */
+  caret-color: transparent;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+.calc-display::-webkit-scrollbar { height: 3px; }
+.calc-display::-webkit-scrollbar-thumb { background: rgba(255,215,64,0.3); border-radius: 2px; }
+
+/* ── Grid de botones ── */
+.calc-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  padding: 8px;
+  background: rgba(0, 0, 0, 0.15);
+}
+
+/* ── Botón base ── */
+.calc-btn {
+  font-family: 'Orbitron', monospace;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  padding: 11px 4px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.85);
+  cursor: pointer;
+  transition: background 0.12s, transform 0.08s, box-shadow 0.12s;
+  text-align: center;
+  line-height: 1;
+}
+
+.calc-btn:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.calc-btn:active {
+  transform: scale(0.92);
+  background: rgba(255, 255, 255, 0.18);
+}
+
+/* Funciones (AC, ±, %) */
+.calc-btn-fn {
+  background: rgba(124, 77, 255, 0.14);
+  border-color: rgba(124, 77, 255, 0.22);
+  color: #ce93d8;
+}
+.calc-btn-fn:hover {
+  background: rgba(124, 77, 255, 0.25);
+  border-color: rgba(124, 77, 255, 0.4);
+  color: #e1bee7;
+}
+
+/* Científicos (√, x², xⁿ, ±) */
+.calc-btn-sci {
+  background: rgba(0, 188, 212, 0.14);
+  border-color: rgba(0, 188, 212, 0.28);
+  color: #80deea;
+}
+.calc-btn-sci:hover {
+  background: rgba(0, 188, 212, 0.26);
+  border-color: rgba(0, 188, 212, 0.5);
+  color: #b2ebf2;
+}
+
+/* Operadores (÷, ×, −, +) */
+.calc-btn-op {
+  background: rgba(255, 109, 0, 0.14);
+  border-color: rgba(255, 109, 0, 0.25);
+  color: #ffcc80;
+}
+.calc-btn-op:hover {
+  background: rgba(255, 109, 0, 0.26);
+  border-color: rgba(255, 109, 0, 0.45);
+  color: #ffe0b2;
+}
+.calc-btn-op:active {
+  background: rgba(255, 109, 0, 0.38);
+}
+
+/* Igual */
+.calc-btn-eq {
+  background: linear-gradient(135deg, #7c4dff 0%, #5c35cc 100%);
+  border-color: rgba(124, 77, 255, 0.6);
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(124, 77, 255, 0.35);
+}
+.calc-btn-eq:hover {
+  background: linear-gradient(135deg, #9c6dff 0%, #7c55ee 100%);
+  box-shadow: 0 3px 14px rgba(124, 77, 255, 0.5);
+}
+.calc-btn-eq:active {
+  transform: scale(0.93);
+  box-shadow: 0 1px 4px rgba(124, 77, 255, 0.3);
+}
+
+/* ── Botón de abrir calculadora (para insertar en minijuegos) ── */
+.calc-toggle-btn {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 7px;
+  letter-spacing: 1px;
+  padding: 8px 12px;
+  background: rgba(124, 77, 255, 0.1);
+  border: 1px solid rgba(124, 77, 255, 0.3);
+  color: #ce93d8;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.18s;
+  white-space: nowrap;
+  clip-path: polygon(
+    0 3px, 3px 0, calc(100% - 3px) 0, 100% 3px,
+    100% calc(100% - 3px), calc(100% - 3px) 100%,
+    3px 100%, 0 calc(100% - 3px)
+  );
+}
+.calc-toggle-btn:hover {
+  background: rgba(124, 77, 255, 0.22);
+  border-color: var(--gold, #ffd740);
+  color: var(--gold, #ffd740);
+  box-shadow: 2px 2px 0 rgba(124, 77, 255, 0.4);
+  transform: translate(-1px, -1px);
+}

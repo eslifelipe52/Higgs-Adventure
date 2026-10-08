@@ -1,0 +1,253 @@
+/* ══════════════════════════════════════════
+   minijuegos/css/minijuego-rayos-cosmicos.css
+   Estilos del minijuego de Rayos Cósmicos (Etapa 2).
+   Paleta azul/cian coherente con el resto de minijuegos.
+   ══════════════════════════════════════════ */
+
+/* ── Pantalla completa ── */
+.rc-screen {
+  position: absolute; inset: 0; z-index: 60;
+  background: #04020f;
+  display: flex; flex-direction: column;
+  font-family: 'Exo 2', sans-serif;
+  overflow: hidden;
+}
+
+/* ════════════════════════════════════════
+   HEADER
+   ════════════════════════════════════════ */
+.rc-header { flex-shrink: 0; position: relative; overflow: hidden; }
+.rc-header::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, transparent, #00b0ff, #ffd740, #00b0ff, transparent);
+  animation: cc-header-line 3s linear infinite;
+}
+.rc-instruccion-wrap {
+  display: flex; align-items: center; gap: 14px;
+  padding: 12px 24px;
+  background: linear-gradient(90deg,
+    rgba(0,30,60,0.97) 0%, rgba(5,15,40,0.97) 40%,
+    rgba(5,15,40,0.97) 60%, rgba(0,30,60,0.97) 100%);
+  border-bottom: 1px solid rgba(0,180,255,0.4);
+  box-shadow: 0 4px 24px rgba(0,180,255,0.12);
+}
+.rc-instruccion-label {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 7px; letter-spacing: 2px; color: #4fc3f7;
+  text-shadow: 0 0 8px rgba(79,195,247,0.6);
+  flex-shrink: 0; white-space: nowrap;
+  border: 1px solid rgba(79,195,247,0.3);
+  padding: 4px 8px; border-radius: 3px;
+  background: rgba(79,195,247,0.06);
+}
+.rc-instruccion-icon {
+  font-size: 22px; flex-shrink: 0;
+  animation: cc-icon-pulse 2s ease-in-out infinite;
+}
+.rc-instruccion {
+  font-family: 'Exo 2', sans-serif;
+  font-size: 14px; font-weight: 600; color: #d0eeff;
+  line-height: 1.55; margin: 0; flex: 1; text-align: center;
+  text-shadow: 0 0 20px rgba(79,195,247,0.3);
+}
+
+/* ── Cuerpo ── */
+.rc-body { flex: 1; overflow-y: auto; min-height: 0; }
+
+/* ── Barra nav inferior ── */
+.rc-nav-bar {
+  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 16px;
+  background: rgba(0,5,20,0.95);
+  border-top: 1px solid rgba(0,180,255,0.2);
+  gap: 12px;
+}
+.rc-nivel-dots { display: flex; gap: 8px; flex-wrap: wrap; }
+.rc-nivel-dot {
+  font-family: 'Orbitron', monospace; font-size: 9px;
+  padding: 6px 12px; border-radius: 4px; cursor: pointer;
+  background: rgba(0,180,255,0.06);
+  border: 1px solid rgba(0,180,255,0.2);
+  color: var(--text2); transition: all 0.2s;
+}
+.rc-nivel-dot:hover  { border-color: #4fc3f7; color: #4fc3f7; }
+.rc-nivel-dot.active { border-color: #4fc3f7; color: #4fc3f7; background: rgba(79,195,247,0.1); }
+.rc-progreso-label {
+  font-family: 'Orbitron', monospace; font-size: 10px;
+  color: var(--text2); white-space: nowrap;
+}
+
+/* ── Botones ── */
+.rc-btn {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 7px; letter-spacing: 1px;
+  padding: 9px 14px; text-align: center; line-height: 1.5;
+  background: rgba(0,180,255,0.08);
+  border: 1px solid rgba(0,180,255,0.3);
+  color: #80d8ff; border-radius: 4px; cursor: pointer;
+  transition: all 0.18s;
+  clip-path: polygon(0 3px,3px 0,calc(100% - 3px) 0,100% 3px,
+                     100% calc(100% - 3px),calc(100% - 3px) 100%,
+                     3px 100%,0 calc(100% - 3px));
+}
+.rc-btn:hover {
+  background: rgba(0,180,255,0.2);
+  border-color: var(--gold); color: var(--gold);
+  box-shadow: 2px 2px 0 rgba(0,180,255,0.3);
+  transform: translate(-1px,-1px);
+}
+.rc-btn:disabled {
+  opacity: 0.4; cursor: not-allowed;
+  border-color: rgba(255,255,255,0.12); color: var(--text2);
+  box-shadow: none; transform: none; background: rgba(255,255,255,0.03);
+}
+.rc-btn-volver { border-color: rgba(79,195,247,0.22); color: var(--text2); }
+.rc-btn-next   { border-color: rgba(0,230,118,0.4); color: #00e676; background: rgba(0,230,118,0.07); margin-top: 8px; width: 100%; }
+.rc-btn-accion { width: 100%; margin-top: 6px; }
+.rc-btn-sutil {
+  width: 100%; margin-top: 6px; font-size: 7px;
+  border-color: rgba(255,255,255,0.18); color: var(--text2);
+  background: rgba(255,255,255,0.03);
+}
+.rc-btn-sutil:hover { border-color: rgba(255,255,255,0.4); color: var(--text); }
+.rc-btn-sutil.on {
+  border-color: var(--gold); color: var(--gold);
+  background: rgba(255,215,64,0.12);
+}
+
+/* ════════════════════════════════════════
+   LAYOUT: panel izquierdo + canvas
+   ════════════════════════════════════════ */
+.rc-wrap {
+  display: flex; gap: 14px;
+  height: 100%; padding: 14px;
+  box-sizing: border-box;
+}
+.rc-panel {
+  width: 270px; flex-shrink: 0;
+  display: flex; flex-direction: column; gap: 8px;
+  overflow-y: auto; padding-right: 6px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(79,195,247,0.35) transparent;
+}
+.rc-panel::-webkit-scrollbar { width: 6px; }
+.rc-panel::-webkit-scrollbar-track { background: transparent; }
+.rc-panel::-webkit-scrollbar-thumb { background: rgba(79,195,247,0.3); border-radius: 6px; }
+.rc-panel::-webkit-scrollbar-thumb:hover { background: rgba(79,195,247,0.55); }
+
+.rc-panel-card {
+  background: rgba(0,10,30,0.85);
+  border: 1px solid rgba(0,180,255,0.2);
+  border-radius: 10px; padding: 10px 12px;
+  display: flex; flex-direction: column; gap: 5px;
+}
+.rc-panel-title {
+  font-family: 'Orbitron', monospace; font-size: 8px;
+  letter-spacing: 1.5px; color: #4fc3f7;
+  border-bottom: 1px solid rgba(79,195,247,0.15);
+  padding-bottom: 6px; margin-bottom: 2px;
+}
+.rc-hint { font-size: 10px; color: var(--text2); line-height: 1.55; }
+.rc-hint strong { color: var(--text); }
+
+/* Canvas */
+.rc-canvas-wrap { flex: 1; display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.rc-canvas {
+  flex: 1; border-radius: 10px; min-height: 240px;
+  border: 1px solid rgba(0,180,255,0.12);
+  background: #04020f;
+}
+.rc-canvas-legend {
+  display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;
+  font-size: 10px; color: var(--text2); padding: 2px 0;
+}
+
+/* ── Reto + barra de progreso ── */
+.rc-reto { font-size: 11px; color: var(--text); line-height: 1.5; }
+.rc-reto b { color: #4fc3f7; }
+.rc-prog-wrap {
+  height: 8px; border-radius: 10px; overflow: hidden; margin-top: 8px;
+  background: rgba(255,255,255,0.07); border: 1px solid rgba(0,180,255,0.2);
+}
+.rc-prog-barra {
+  height: 100%; width: 0%;
+  background: linear-gradient(90deg, #00b0ff, #4fc3f7);
+  box-shadow: 0 0 8px rgba(0,180,255,0.5);
+  border-radius: 10px; transition: width 0.3s ease;
+}
+.rc-prog-lbl {
+  font-family: 'Orbitron', monospace; font-size: 10px;
+  color: var(--text2); text-align: center; margin-top: 4px;
+}
+
+/* ── Metas (listas de objetivos) ── */
+.rc-metas { list-style: none; margin: 8px 0 0; padding: 0; display: flex; flex-direction: column; gap: 4px; }
+.rc-metas li {
+  font-size: 10px; line-height: 1.4; color: var(--text2);
+  padding: 4px 6px; border-radius: 5px;
+  border: 1px solid rgba(255,255,255,0.08); background: rgba(255,255,255,0.02);
+  transition: all 0.2s;
+}
+.rc-metas li.ok { color: #69ffa6; border-color: rgba(0,230,118,0.35); background: rgba(0,230,118,0.1); }
+
+/* ── Estado (feedback) ── */
+.rc-estado {
+  font-size: 10px; line-height: 1.5; padding: 6px 8px; border-radius: 6px;
+  min-height: 14px;
+}
+.rc-estado.ok  { color: #69ffa6; background: rgba(0,230,118,0.1);  border: 1px solid rgba(0,230,118,0.35); }
+.rc-estado.err { color: #ffc5c5; background: rgba(255,82,82,0.08); border: 1px solid rgba(255,82,82,0.4); }
+
+/* ── Datos numéricos (energías, conteos) ── */
+.rc-datos {
+  font-family: 'Orbitron', monospace; font-size: 10px;
+  color: #80d8ff; line-height: 1.6; margin-top: 6px;
+  background: rgba(0,180,255,0.05); border: 1px solid rgba(0,180,255,0.15);
+  border-radius: 6px; padding: 6px 8px;
+}
+.rc-datos b { color: #fff; }
+
+/* ── Slider ── */
+.rc-slider-val {
+  font-family: 'Orbitron', monospace; font-size: 12px; font-weight: 700;
+  color: #4fc3f7; text-align: center; margin-bottom: 4px;
+}
+.rc-slider {
+  width: 100%; -webkit-appearance: none; appearance: none;
+  height: 6px; border-radius: 6px; outline: none; cursor: pointer;
+  background: linear-gradient(90deg, #1f6fb0, #4fc3f7);
+}
+.rc-slider::-webkit-slider-thumb {
+  -webkit-appearance: none; appearance: none;
+  width: 16px; height: 16px; border-radius: 50%;
+  background: #fff; border: 2px solid #4fc3f7;
+  box-shadow: 0 0 8px rgba(79,195,247,0.7); cursor: pointer;
+}
+.rc-slider::-moz-range-thumb {
+  width: 16px; height: 16px; border-radius: 50%;
+  background: #fff; border: 2px solid #4fc3f7; cursor: pointer;
+}
+
+/* ── Opciones de pregunta (Nivel D) ── */
+.rc-nu-ops { display: flex; flex-direction: column; gap: 5px; margin-top: 6px; }
+.rc-nu-op {
+  width: 100%; text-align: left; font-size: 7px; padding: 8px 10px;
+  border-color: rgba(0,180,255,0.25); color: #d0eeff;
+}
+.rc-nu-op:hover { border-color: #4fc3f7; background: rgba(79,195,247,0.1); }
+
+/* ── Éxito del reto ── */
+.rc-exito {
+  display: flex; align-items: center; gap: 8px;
+  background: rgba(0,230,118,0.08);
+  border: 1px solid rgba(0,230,118,0.35);
+  border-radius: 10px; padding: 10px 12px;
+  font-size: 11px; color: #b2ffda; line-height: 1.5;
+}
+.rc-exito-icon {
+  font-family: 'Orbitron', monospace; font-weight: 900; font-size: 18px; color: #00e676;
+}
+.rc-logro-cont { display: flex; flex-direction: column; gap: 8px; }
+.rc-logro-cont.hidden { display: none; }
