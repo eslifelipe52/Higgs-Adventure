@@ -408,6 +408,8 @@ function spBrujulaLoop() {
         spProgreso(st.aciertos / st.meta, st.aciertos + ' / ' + st.meta + ' alineaciones');
         if (st.aciertos >= st.meta) {
           spRetoCumplido('¡Dominas la brújula cuántica! El espín solo tiene dos estados: ↑ y ↓.');
+          /* Progreso global: módulo superado (la bandera st.completado evita repetirlo) */
+          if (typeof Progreso !== 'undefined') Progreso.moduloCompletado('spin', 'brujula');
         } else {
           spFlashSp('✔ ¡Alineado! (' + st.aciertos + '/' + st.meta + ') Preparando el siguiente campo…');
           st.transicion = 48;   /* ~0.8 s de pausa antes de la nueva ronda */
@@ -829,6 +831,8 @@ function spSternLoop() {
       setTimeout(() => { st._avanzando = false; spSternFase(3); }, 1600);
     } else if (st.fase === 3) {
       spRetoCumplido('¡Lo esencial del espín! Medir un eje reinicia el otro: la medición cuántica cambia el estado. Dos manchas, siempre.');
+      /* Progreso global: módulo superado */
+      if (typeof Progreso !== 'undefined') Progreso.moduloCompletado('spin', 'stern');
     }
   }
 
@@ -1048,6 +1052,8 @@ function spPauliCheck() {
   const esUltimo = spState.atomoIdx >= spState.atomosSeq.length - 1;
   if (esUltimo) {
     spRetoCumplido('¡' + spState.objNombre + ' completo! Con solo dos espines por orbital se construye toda la tabla periódica.');
+    /* Progreso global: módulo superado (solo en el último átomo de la secuencia) */
+    if (typeof Progreso !== 'undefined') Progreso.moduloCompletado('spin', 'pauli');
     return;
   }
 
@@ -1225,6 +1231,8 @@ function spMagLoop() {
         spProgreso(st.aciertos / st.objetivos.length, st.aciertos + ' / ' + st.objetivos.length + ' sintonías');
         if (st.aciertos >= st.objetivos.length) {
           spRetoCumplido('¡Imán cuántico dominado! El espín es un dipolo magnético y el campo externo controla su energía (ΔE = 2μB).');
+          /* Progreso global: módulo superado */
+          if (typeof Progreso !== 'undefined') Progreso.moduloCompletado('spin', 'magnetico');
         } else {
           spFlashSp('✔ ¡Sintonizado en ΔE ≈ ' + obj.toFixed(1) + '!');
           setTimeout(() => { st.objIdx++; st.dentroDesde = 0; st._avanzando = false; spMagNuevoObjetivo(); spMagActualizarEnergia(); }, 900);
@@ -1504,6 +1512,8 @@ function spFamLoop() {
         spProgreso(st.medidos.size / SP_FERMIONES.length, st.medidos.size + ' / ' + SP_FERMIONES.length + ' analizados');
         if (st.medidos.size >= SP_FERMIONES.length) {
           spRetoCumplido('Los 10 fermiones se dividieron en dos: TODOS tienen espín 1/2. Lo que cambia es masa y sabor.');
+          /* Progreso global: módulo superado (el Set st.medidos garantiza una sola vez) */
+          if (typeof Progreso !== 'undefined') Progreso.moduloCompletado('spin', 'familia');
         }
       }
     }
@@ -1662,6 +1672,8 @@ function spDecResp(resp) {
     const dec = document.getElementById('sp-dec-decidir'); if (dec) dec.style.display = 'none';
     if (spState.decResueltos.size >= SP_DECAIM.length) {
       spRetoCumplido('¡Dominas la conservación del espín! Es la regla que decide qué decaimientos son posibles.');
+      /* Progreso global: módulo superado */
+      if (typeof Progreso !== 'undefined') Progreso.moduloCompletado('spin', 'decaim');
     }
   }
   /* Si falla, puede volver a decidir (los botones siguen visibles) */
@@ -1872,6 +1884,8 @@ function spHeliConfirmar() {
   spProgreso(spState.heliResueltos / SP_HELI.length, spState.heliResueltos + ' / ' + SP_HELI.length);
   if (spState.heliResueltos >= SP_HELI.length) {
     spRetoCumplido('¡Helicidad dominada! Sin masa → fija; con masa → relativa. Esto conecta con la violación de paridad.');
+    /* Progreso global: módulo superado */
+    if (typeof Progreso !== 'undefined') Progreso.moduloCompletado('spin', 'helicidad');
   } else {
     /* Mostrar "Correcto" un momento ANTES de cargar el siguiente caso
        (spHeliCargar limpia el mensaje). Bloquear confirmar durante la pausa. */
@@ -2129,6 +2143,8 @@ function spTriRegistrar() {
   spProgreso(obs / total, obs + ' / ' + total + ' estados observados');
   if (obs >= total && !spState.completado) {
     spRetoCumplido('¡Triestado dominado! Espín 1 → tres estados (+1, 0, −1); sin masa, el 0 desaparece y quedan solo ±1.');
+    /* Progreso global: módulo superado (la condición !spState.completado lo limita a una vez) */
+    if (typeof Progreso !== 'undefined') Progreso.moduloCompletado('spin', 'triestado');
   }
 }
 
@@ -2473,6 +2489,8 @@ function spEstMeta(clave, msg) {
   spProgreso(hechas / 3, hechas + ' / 3 metas');
   if (hechas >= 3) {
     spRetoCumplido('¡Espín-estadística! Espín 1/2 → exclusión (materia con volumen); espín entero → condensado (luz coherente).');
+    /* Progreso global: módulo superado (cada meta se registra una sola vez) */
+    if (typeof Progreso !== 'undefined') Progreso.moduloCompletado('spin', 'estadis');
   }
 }
 
@@ -2853,6 +2871,8 @@ function spGlMeta(clave, liId, msg) {
   spProgreso(hechas / 3, hechas + ' / 3 metas');
   if (hechas >= 3) {
     spRetoCumplido('¡Gluón dominado! Espín 1 y sin masa como el fotón, pero con carga de color: se auto-liga y hace a la QCD no abeliana.');
+    /* Progreso global: módulo superado (cada meta se registra una sola vez) */
+    if (typeof Progreso !== 'undefined') Progreso.moduloCompletado('spin', 'gluon');
   }
 }
 

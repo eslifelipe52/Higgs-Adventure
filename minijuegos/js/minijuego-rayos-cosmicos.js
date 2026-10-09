@@ -505,6 +505,11 @@ function rcImpMeta(clave, liId, msg) {
   const hechas = Object.values(rcState.metas).filter(Boolean).length;
   rcProgreso(hechas / 4, hechas + ' / 4 metas');
   if (hechas >= 4) {
+    /* Módulo «impacto» superado: registra el avance una sola vez */
+    if (!rcState.impactoProgreso && typeof Progreso !== 'undefined') {
+      rcState.impactoProgreso = true;
+      Progreso.moduloCompletado('rayos-cosmicos', 'impacto');
+    }
     rcRetoCumplido('¡Primera cascada! Una sola partícula primaria produjo decenas de secundarias. Al suelo llegan muones, neutrinos, fotones y los nucleones estables.');
   }
 }
@@ -721,6 +726,11 @@ function rcEMCheck() {
   if (rcState.emCapa >= rcState.emCapas) {
     rcState.emVistoMax = true;
     rcState.emAuto = false;
+    /* Módulo «em» superado: registra el avance una sola vez */
+    if (!rcState.emProgreso && typeof Progreso !== 'undefined') {
+      rcState.emProgreso = true;
+      Progreso.moduloCompletado('rayos-cosmicos', 'em');
+    }
     rcRetoCumplido('¡Cascada completa! Se duplicó capa a capa hasta X_max; al bajar del umbral de ~1 MeV se extinguió. Multiplicación pura: γ↔e⁺e⁻.');
   }
 }
@@ -937,6 +947,11 @@ function rcMuMeta(clave, liId, msg) {
   const hechas = Object.values(rcState.muMetas).filter(Boolean).length;
   rcProgreso(hechas / 3, hechas + ' / 3 metas');
   if (hechas >= 3) {
+    /* Módulo «muones» superado: registra el avance una sola vez */
+    if (!rcState.muonesProgreso && typeof Progreso !== 'undefined') {
+      rcState.muonesProgreso = true;
+      Progreso.moduloCompletado('rayos-cosmicos', 'muones');
+    }
     rcRetoCumplido('¡Componente muónica dominada! Los muones son las partículas más penetrantes y llegan al suelo gracias a la dilatación temporal. Son la prueba viva de la relatividad.');
   }
 }
@@ -1175,6 +1190,11 @@ function rcNuMeta(clave, liId, msg) {
   const hechas = Object.values(rcState.nuMetas).filter(Boolean).length;
   rcProgreso(hechas / 2, hechas + ' / 2 metas');
   if (hechas >= 2) {
+    /* Módulo «neutrinos» superado: registra el avance una sola vez */
+    if (!rcState.neutrinosProgreso && typeof Progreso !== 'undefined') {
+      rcState.neutrinosProgreso = true;
+      Progreso.moduloCompletado('rayos-cosmicos', 'neutrinos');
+    }
     rcRetoCumplido('¡Neutrinos cósmicos! Atraviesan la atmósfera, el suelo y la Tierra entera sin interactuar. Solo detectores gigantes bajo tierra (IceCube, Super-K) captan los rarísimos que chocan: son la ventana más directa al universo violento.');
   }
 }
@@ -1467,6 +1487,11 @@ function rcDetTarea(clave, liId, msg) {
   const hechas = Object.values(rcState.detTareas).filter(Boolean).length;
   rcProgreso(hechas / 5, hechas + ' / 5 tareas');
   if (hechas >= 5) {
+    /* Módulo «detector» superado: registra el avance una sola vez */
+    if (!rcState.detectorProgreso && typeof Progreso !== 'undefined') {
+      rcState.detectorProgreso = true;
+      Progreso.moduloCompletado('rayos-cosmicos', 'detector');
+    }
     rcRetoCumplido('¡Observatorio dominado! Con tanques de agua y telescopios UV se reconstruye la dirección y la energía de cada rayo cósmico: así se buscan sus fuentes en el universo.');
   }
 }

@@ -60,6 +60,110 @@ Todas las etapas están concebidas con un carácter retroalimentativo. Esto impl
 
 ---
 
+## Estado del desarrollo
+
+### Estructura de archivos
+
+```
+index.html                  punto de entrada (carga todo en orden)
+js/progreso.js              progreso, desbloqueos y logros  ← fuente única de verdad
+js/data.js                  partículas, propiedades y pasos de introducción
+js/navigation.js            cambio de pantallas y control de desbloqueos
+js/modelo-estandar.js       grid del ME (con celdas bloqueadas por etapa)
+js/detail.js                panel de detalle de una partícula
+js/higgs-screen.js          módulo del bosón de Higgs
+js/intro.js                 introducción interactiva
+js/perfil.js                panel de perfil (progreso · logros · historial)
+js/calculadora.js           calculadora científica flotante
+js/home-sphere.js           canvas de la esfera energética
+js/home-geo.js              canvas de geometría del inicio
+minijuegos/js/data-minijuegos.js   registro de secciones y minijuegos
+minijuegos/js/minijuegos.js        hub de minijuegos
+minijuegos/js/minijuego-*.js       un archivo por minijuego
+tools/verificar.js          comprobaciones automáticas del proyecto
+```
+
+### Minijuegos implementados
+
+| Minijuego | Etapa | Estado |
+|---|---|---|
+| Carga de Color | 1 | jugable |
+| Carga Eléctrica | 1 | jugable |
+| Espín | 1 | jugable |
+| Masa | 1 | jugable |
+| Decaimiento | 2 | jugable |
+| Rayos Cósmicos | 2 | jugable |
+| Fotón (Feynman) | 3 | jugable |
+| Gluón, Bosón Z, Bosones W± | 3 | pendientes |
+| Campo de Higgs, Diagramas de Higgs | 4 | pendientes |
+
+### Capturas
+
+Grid del Modelo Estándar: solo la primera generación está accesible y el resto
+muestra la etapa en la que se desbloquea.
+
+![Grid del Modelo Estándar con las etapas bloqueadas](docs/capturas/01-modelo-estandar-bloqueado.png)
+
+Panel de perfil con el avance por etapas, los minijuegos superados y el progreso
+hacia la siguiente etapa.
+
+![Panel de perfil con el progreso por etapas](docs/capturas/02-perfil-progreso.png)
+
+Una sección de minijuegos todavía bloqueada explica qué falta para abrirla.
+
+![Aviso de sección de minijuegos bloqueada](docs/capturas/03-seccion-bloqueada.png)
+
+Minijuego de Espín (Etapa 1), sobre el fondo cuadriculado común.
+
+![Minijuego de Espín](docs/capturas/04-minijuego-espin.png)
+
+Módulo del bosón de Higgs, que se abre en la Etapa 4.
+
+![Pantalla del bosón de Higgs](docs/capturas/05-pantalla-higgs.png)
+
+### Sistema de progreso y desbloqueo
+
+El desbloqueo progresivo es el eje pedagógico del proyecto y está implementado en
+`js/progreso.js`. Es la **fuente única de verdad** para el avance, los logros y el
+historial; se guarda en `localStorage` bajo la clave `higgs_progreso`.
+
+Regla: **para abrir la etapa N hay que superar los niveles básicos de todos los
+minijuegos de la etapa N−1.**
+
+| Etapa | Contenido que desbloquea | Minijuegos que hay que superar |
+|---|---|---|
+| 1 | Quarks y leptones de gen. 1 | *(abierta desde el inicio)* |
+| 2 | Quarks y leptones de gen. 2 y 3 | Carga de Color, Carga Eléctrica, Espín, Masa |
+| 3 | Bosones gauge | Decaimiento, Rayos Cósmicos |
+| 4 | Bosón de Higgs | Fotón |
+
+La exigencia de cada minijuego se mide en **módulos superados**. El número necesario
+está en `MODULOS_REQUERIDOS` (dentro de `js/progreso.js`) y se puede ajustar en un
+solo sitio.
+
+Los minijuegos informan de su avance con dos llamadas:
+
+```js
+Progreso.moduloCompletado('spin', 'brujula');            // un módulo superado
+Progreso.registrarPartida('foton', { puntaje: 620 });    // una ronda puntuada
+```
+
+Las claves de módulo se guardan en un conjunto, así que repetir la misma clave
+nunca infla el progreso.
+
+### Cómo verificar el proyecto
+
+```bash
+node tools/verificar.js
+```
+
+Comprueba que todos los CSS/JS enlazados y los assets de los minijuegos existen,
+que no hay archivos huérfanos, que cada minijuego marcado como disponible tiene su
+función `iniciar_<id>()`, y que la lógica de desbloqueo por etapas funciona
+(progresión, persistencia y migración de historiales antiguos).
+
+---
+
 ## Conclusiones
 
 El proyecto **Higgs Adventure** representa una propuesta innovadora y necesaria para la enseñanza de la física de partículas en español, al combinar una secuencia didáctica con estrategias de gamificación que transforman conceptos abstractos y complejos en experiencias interactivas accesibles y motivantes.

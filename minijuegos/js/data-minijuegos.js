@@ -6,24 +6,34 @@
       la sección correspondiente.
    2. Pon su asset en minijuegos/assets/
    3. Crea su archivo js/minijuego-NOMBRE.js
+      con una función global iniciar_NOMBRE()
+      (los guiones del id se vuelven guiones
+      bajos: id 'rayos-cosmicos' → iniciar_rayos_cosmicos).
 
    Campos de cada juego:
-     id        → identificador único (string)
+     id        → identificador único (string).
+                 DEBE coincidir con el nombre de la
+                 función iniciar_<id> del minijuego.
      nombre    → título visible
      asset     → ruta relativa al asset (desde index.html)
      propKey   → clave de prop en detail.js que lo enlaza
                  (null si no se muestra en panel de partícula)
      desc      → descripción corta que aparece antes de JUGAR
      disponible → true = jugable, false = "próximamente"
+
+   La sección `fase` (1–4) se corresponde con la
+   etapa del proyecto y controla el desbloqueo
+   progresivo (ver js/progreso.js).
    ══════════════════════════════════════════ */
 
 const MINIJUEGOS_DATA = [
 
   /* ════════════════════════════════════
      FASE 1 — Sección Propiedades
-     Desbloqueada desde el inicio.
+     Etapa 1: Gen 1 de quarks y leptones.
      Minijuegos sobre las 4 propiedades
      fundamentales de las partículas.
+     Desbloqueada desde el inicio.
      ════════════════════════════════════ */
   {
     id: 'propiedades',
@@ -36,7 +46,7 @@ const MINIJUEGOS_DATA = [
         nombre: 'Carga de Color',
         asset: 'minijuegos/assets/cargacolor.png',
         propKey: 'color',
-        desc: 'Los quarks llevan una "carga de color": rojo, verde o azul. Para formar partículas estables (hadrones) los colores deben combinarse en blanco. ¡Arrastra los quarks y forma tríos o pares color-anticolor!',
+        desc: 'Los quarks llevan una "carga de color": rojo, verde o azul. Para formar partículas estables (hadrones) los colores deben combinarse en blanco. ¡Arrastra los quarks y forma tríos o pares color-anticolor! 9 niveles + Modo Libre puntuado.',
         disponible: true
       },
       {
@@ -44,33 +54,32 @@ const MINIJUEGOS_DATA = [
         nombre: 'Carga Eléctrica',
         asset: 'minijuegos/assets/cargaelectrica.png',
         propKey: 'charge',
-        desc: 'Las cargas eléctricas se atraen y repelen según su signo. En este minijuego deberás equilibrar las cargas de un sistema de partículas para lograr neutralidad eléctrica.',
-        disponible: false
+        desc: 'La carga como etiqueta de comportamiento. Etapa 1: fuerzas de atracción y repulsión, el cable mágico y el generador de ondas. Etapa 2: electrodinámica cuántica (fotón virtual, onda y fotón, familias). Etapa 3: el enjambre electromagnético.',
+        disponible: true
       },
       {
         id: 'spin',
         nombre: 'Espín',
         asset: 'minijuegos/assets/spin.png',
         propKey: 'spin',
-        desc: 'El espín es el momento angular intrínseco de una partícula. Fermiones (espín 1/2) y bosones (espín entero) se comportan de forma muy distinta. ¡Clasifica las partículas por su espín y descubre el principio de exclusión de Pauli!',
-        disponible: false
+        desc: 'El espín es el momento angular intrínseco de las partículas. Etapa 1: la brújula cuántica, el experimento de Stern-Gerlach, el principio de exclusión de Pauli y el momento magnético. Después: la familia del espín 1/2, helicidad y el espín de los bosones gauge.',
+        disponible: true
       },
       {
         id: 'masa',
         nombre: 'Masa',
-        asset: 'minijuegos/assets/higgsfield.png',
+        asset: 'minijuegos/assets/masa.png',
         propKey: 'mass',
-        desc: 'La masa de las partículas proviene de su interacción con el campo de Higgs. Ordena las partículas por masa y descubre cuáles interactúan más con este campo misterioso.',
-        disponible: false
+        desc: 'Etapa 1: calcula la fuerza necesaria para mover cada objeto (F = m·2d/t²) y descubre qué es la inercia. Etapa 2: inyecta energía en un acelerador y observa cómo evoluciona E² = (mc²)² + (pc)². Etapa 3: resuelve el puzle de decaimiento energético.',
+        disponible: true
       }
     ]
   },
 
   /* ════════════════════════════════════
      FASE 2 — Sección Gen II y III
-     Se desbloquea al completar Fase 1.
-     Minijuegos sobre las generaciones
-     pesadas de quarks y leptones.
+     Etapa 2: generaciones 2 y 3 de quarks
+     y leptones, y sus fenómenos propios.
      ════════════════════════════════════ */
   {
     id: 'generaciones',
@@ -79,38 +88,28 @@ const MINIJUEGOS_DATA = [
     color: '#7c4dff',
     juegos: [
       {
-        id: 'radiacion',
-        nombre: 'Radiación',
-        asset: 'minijuegos/assets/radiacion.png',
-        propKey: null,
-        desc: 'Las partículas inestables de las generaciones superiores se desintegran emitiendo radiación. Identifica el tipo de radiación (α, β, γ) producida en cada desintegración.',
-        disponible: false
-      },
-      {
-        id: 'desintegracion',
-        nombre: 'Desintegración',
+        id: 'decaimiento',
+        nombre: 'Decaimiento',
         asset: 'minijuegos/assets/desintegracion.png',
         propKey: null,
-        desc: 'Los quarks pesados (charm, strange, top, bottom) se desintegran en quarks más ligeros. Construye la cadena de desintegración correcta antes de que se agote el tiempo.',
-        disponible: false
+        desc: 'Las partículas inestables de las generaciones superiores se desintegran en otras más ligeras. Repasa las leyes de conservación, elige el canal de decaimiento correcto, distingue un espectro continuo de uno monoenergético y ordena las partículas por vida media.',
+        disponible: true
       },
       {
-        id: 'deteccion-muones',
-        nombre: 'Detección de Muones',
+        id: 'rayos-cosmicos',
+        nombre: 'Rayos Cósmicos',
         asset: 'minijuegos/assets/muon.png',
         propKey: null,
-        desc: 'Los muones generados por rayos cósmicos atraviesan la atmósfera a velocidades relativistas. Simula un detector de partículas y atrapa los muones que llegan desde el espacio.',
-        disponible: false
-      },
-
+        desc: 'Un protón cósmico choca con la atmósfera y desata una cascada de partículas secundarias. Sigue el primer impacto hadrónico, la cascada electromagnética, la componente muónica (con dilatación temporal) y los neutrinos que escapan, y opera tu propio detector.',
+        disponible: true
+      }
     ]
   },
 
   /* ════════════════════════════════════
      FASE 3 — Sección Interacción de Campos
-     Se desbloquea al completar Fase 2.
-     Minijuegos sobre bosones mediadores
-     y diagramas de Feynman.
+     Etapa 3: bosones gauge y diagramas
+     de Feynman.
      ════════════════════════════════════ */
   {
     id: 'interacciones',
@@ -119,20 +118,20 @@ const MINIJUEGOS_DATA = [
     color: '#ff6d00',
     juegos: [
       {
-        id: 'gluon',
-        nombre: 'Gluón',
-        asset: 'minijuegos/assets/gluon.png',
-        propKey: 'fuerza',
-        desc: 'El gluón es el mediador de la fuerza fuerte. En este minijuego, mantén los quarks confinados dentro del hadrón intercambiando gluones de los colores correctos.',
-        disponible: false
-      },
-      {
         id: 'foton',
         nombre: 'Fotón',
         asset: 'minijuegos/assets/foton.png',
         propKey: null,
         desc: 'Construye diagramas de Feynman de QED: emisión de fotones, dispersión entre partículas cargadas, aniquilación e⁻e⁺ y creación de pares. 6 niveles progresivos con Modo Detective y Modo Desafío.',
         disponible: true
+      },
+      {
+        id: 'gluon',
+        nombre: 'Gluón',
+        asset: 'minijuegos/assets/gluon.png',
+        propKey: 'fuerza',
+        desc: 'El gluón es el mediador de la fuerza fuerte. En este minijuego, mantén los quarks confinados dentro del hadrón intercambiando gluones de los colores correctos.',
+        disponible: false
       },
       {
         id: 'boson-z',
@@ -155,9 +154,8 @@ const MINIJUEGOS_DATA = [
 
   /* ════════════════════════════════════
      FASE 4 — Sección Higgs
-     Se desbloquea al completar Fase 3.
-     Minijuegos sobre el bosón de Higgs
-     y el campo de Higgs.
+     Etapa 4: bosón de Higgs y campo
+     de Higgs.
      ════════════════════════════════════ */
   {
     id: 'higgs-juegos',
@@ -185,3 +183,6 @@ const MINIJUEGOS_DATA = [
   }
 
 ];
+
+/* Auxiliar: todos los juegos en una sola lista plana */
+const MINIJUEGOS_TODOS = MINIJUEGOS_DATA.reduce((acc, s) => acc.concat(s.juegos), []);

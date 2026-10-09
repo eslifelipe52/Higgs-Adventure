@@ -2,30 +2,41 @@
    js/modelo-estandar.js
    Tres grupos: Quarks | Leptones | Bosones+Higgs
    Celdas cuadradas fijas de 100×100px.
+
+   Las partículas que pertenecen a una etapa
+   todavía bloqueada se muestran con candado
+   (ver js/progreso.js).
    ══════════════════════════════════════════ */
 
+/* Construye (o reconstruye) el grid del Modelo Estándar.
+   Se reconstruye cada vez que se entra a la pantalla para
+   reflejar los desbloqueos conseguidos mientras tanto. */
 function renderME() {
-  if (meRendered) return;
+  const wrap = document.getElementById('me-grid');
+  wrap.innerHTML = '';
   meRendered = true;
 
-  const wrap = document.getElementById('me-grid');
   const { quarks, leptons, bosons, higgs } = PARTICLES;
 
   /* ── Celda de partícula ── */
   function makeCell(p, type) {
-    const locked = p.locked;
+    const bloqueada = Progreso.particulaBloqueada(p, type);
+    const etapa     = Progreso.etapaDeParticula(p, type);
+
     const div = document.createElement('div');
-    div.className = `particle-cell ${locked ? 'locked' : type}`;
-    if (!locked) {
-      if (type === 'higgs-cell') {
-        div.addEventListener('click', () => showScreen('higgs'));
-      } else {
-        div.addEventListener('click', () => showDetail(p, type));
-      }
+    div.className = `particle-cell ${bloqueada ? 'locked locked-stage' : type}`;
+
+    if (bloqueada) {
+      div.title = `🔒 Bloqueada · se desbloquea en la Etapa ${etapa}: ${Progreso.ETAPAS[etapa].nombre}`;
+    } else if (type === 'higgs-cell') {
+      div.addEventListener('click', () => showScreen('higgs'));
+    } else {
+      div.addEventListener('click', () => showDetail(p, type));
     }
-    div.innerHTML = locked
+
+    div.innerHTML = bloqueada
       ? `<div class="p-symbol">🔒</div>
-         <div class="p-name" style="font-size:8px;opacity:0.35">${p.sym}</div>`
+         <div class="p-name">${p.name}<strong>Etapa ${etapa}</strong></div>`
       : `<div class="p-symbol">${p.sym}</div>
          <div class="p-name">${p.name}</div>
          <div class="p-mass">${p.mass}</div>`;
@@ -58,14 +69,9 @@ function renderME() {
   }
 
   /* ── Grupo especial: Bosones + Higgs ──
-     Layout 2×3:
-     col0 row0: γ (fotón)       col1 row0: H (higgs)
-     col0 row1: g (gluón)       col1 row1: [vacío]
-     col0 row2: Z               col1 row2: [vacío]
-     col0 row3: W  → pero son solo 3 filas, entonces:
-     Reordenamos: 4 bosones ocupan col0 filas 0-3 (4 filas)
-     Necesitamos 4 filas, así que usamos grid-template-rows: repeat(4,100px)
-     y Higgs va en col1 row0.
+     Layout 2×4:
+       col0: γ, g, Z, W  (4 bosones de gauge)
+       col1: H⁰ y tres celdas vacías
   */
   function makeBosonsGroup() {
     const group = document.createElement('div');
@@ -78,18 +84,9 @@ function renderME() {
 
     const subgrid = document.createElement('div');
     subgrid.className = 'me-subgrid cols-1-higgs';
-    /* grid 2 cols × 3 filas = 6 slots
-       Slot 0(col0,r0): fotón   Slot 1(col1,r0): higgs
-       Slot 2(col0,r1): gluón   Slot 3(col1,r1): vacío
-       Slot 4(col0,r2): Z       Slot 5(col1,r2): vacío
-       Slot 6... W no cabe → hacemos 4 filas via inline style */
     subgrid.style.gridTemplateRows = 'repeat(4, 100px)';
-
-    /* Col 0: 4 bosones */
-    /* Col 1: Higgs en r0, vacíos en r1-r3 */
-    /* CSS grid llenará col por col si usamos grid-auto-flow: column */
     subgrid.style.gridAutoFlow = 'column';
-    /* Con flow=column, orden: slot(col0,r0),(col0,r1),(col0,r2),(col0,r3),(col1,r0)... */
+
     bosons.forEach(p => subgrid.appendChild(makeCell(p, 'boson'))); /* 4 celdas col0 */
     subgrid.appendChild(makeCell(higgs, 'higgs-cell'));              /* col1 r0 */
     subgrid.appendChild(makeEmpty());                                /* col1 r1 */
@@ -103,4 +100,55 @@ function renderME() {
   wrap.appendChild(makeGroup('Quarks',   'lbl-quark',  quarks,  'quark'));
   wrap.appendChild(makeGroup('Leptones', 'lbl-lepton', leptons, 'lepton'));
   wrap.appendChild(makeBosonsGroup());
+
+  renderBloqueoBanner();
+}
+
+/* ══════════════════════════════════════════
+   Banner informativo: qué hace falta para
+   desbloquear la siguiente etapa.
+   ══════════════════════════════════════════ */
+function renderBloqueoBanner() {
+  const screen = document.getElementById('screen-me');
+  if (!screen) return;
+
+  let banner = document.getElementById('me-bloqueo-banner');
+  if (!banner) {
+    banner = document.createElement('div');
+    banner.id = 'me-bloqueo-banner';
+    banner.className = 'me-bloqueo-banner';
+    screen.insertBefore(banner, screen.firstChild);
+  }
+
+  const etapaMax = Progreso.etapaMaxima();
+
+  /* Si ya está todo abierto, no hay nada que anunciar */
+  if (etapaMax >= 4) {
+    banner.classList.add('hidden');
+    return;
+  }
+
+  const sig     = etapaMax + 1;
+  const info    = Progreso.requisitosEtapa(sig);
+  const faltan  = info.faltan || [];
+
+  banner.classList.remove('hidden');
+  banner.innerHTML = `
+    <span>
+      <strong>Etapa ${sig} · ${Progreso.ETAPAS[sig].nombre}</strong> bloqueada —
+      supera los minijuegos de la Etapa ${info.etapa}:
+      ${faltan.length
+        ? faltan.map(j => `${_nombreJuegoBanner(j.id)} (${j.hechos}/${j.requeridos})`).join(' · ')
+        : 'todo listo'}
+    </span>
+    <button onclick="abrirHub(${info.etapa === 1 ? "'propiedades'" : info.etapa === 2 ? "'generaciones'" : info.etapa === 3 ? "'interacciones'" : "'higgs-juegos'"})">
+      Ir a los minijuegos
+    </button>
+  `;
+}
+
+function _nombreJuegoBanner(id) {
+  const j = (typeof MINIJUEGOS_TODOS !== 'undefined')
+    ? MINIJUEGOS_TODOS.find(x => x.id === id) : null;
+  return j ? j.nombre : id;
 }

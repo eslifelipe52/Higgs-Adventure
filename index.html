@@ -17,8 +17,15 @@
   <link rel="stylesheet" href="css/higgs.css">
   <link rel="stylesheet" href="css/higgs-screen.css">
   <link rel="stylesheet" href="css/perfil.css">
+  <link rel="stylesheet" href="css/progreso.css">
+  <link rel="stylesheet" href="css/calculadora.css">
   <link rel="stylesheet" href="minijuegos/css/minijuegos.css">
   <link rel="stylesheet" href="minijuegos/css/minijuego-carga-color.css">
+  <link rel="stylesheet" href="minijuegos/css/minijuego-carga-electrica.css">
+  <link rel="stylesheet" href="minijuegos/css/minijuego-spin.css">
+  <link rel="stylesheet" href="minijuegos/css/minijuego-masa.css">
+  <link rel="stylesheet" href="minijuegos/css/minijuego-decaimiento.css">
+  <link rel="stylesheet" href="minijuegos/css/minijuego-rayos-cosmicos.css">
   <link rel="stylesheet" href="minijuegos/css/minijuego-foton.css">
 </head>
 <body>
@@ -36,6 +43,7 @@
       <button class="nav-btn"        id="btn-intro" onclick="showScreen('intro')">Introducción</button>
       <button class="nav-btn"        id="btn-me"    onclick="showScreen('me')">Modelo Estándar</button>
       <button class="nav-btn" id="btn-higgs" onclick="showScreen('higgs')">⚛ Higgs</button>
+      <button class="nav-btn nav-btn-icon" id="btn-calc" onclick="Calculadora.toggle()" title="Calculadora científica" aria-label="Calculadora">🧮</button>
     </div>
   </nav>
 
@@ -105,6 +113,7 @@
 </div><!-- #app -->
 
 <!-- ── JAVASCRIPT — orden importa ── -->
+<script src="js/progreso.js"></script>   <!-- Progreso, desbloqueos y logros (PRIMERO) -->
 <script src="js/data.js"></script>       <!-- Datos de partículas y textos -->
 <script src="js/navigation.js"></script> <!-- showScreen(), estrellas -->
 <script src="js/intro.js"></script>      <!-- Pantalla de introducción -->
@@ -114,10 +123,16 @@
 <script src="js/home-sphere.js"></script><!-- Canvas: esfera energética -->
 <script src="js/home-geo.js"></script>
 <script src="js/perfil.js"></script>        <!-- Panel de perfil y logros -->
+<script src="js/calculadora.js"></script>   <!-- Calculadora científica flotante -->
 
 <!-- MINIJUEGOS -->
 <script src="minijuegos/js/data-minijuegos.js"></script>
 <script src="minijuegos/js/minijuego-carga-color.js"></script>
+<script src="minijuegos/js/minijuego-carga-electrica.js"></script>
+<script src="minijuegos/js/minijuego-spin.js"></script>
+<script src="minijuegos/js/minijuego-masa.js"></script>
+<script src="minijuegos/js/minijuego-decaimiento.js"></script>
+<script src="minijuegos/js/minijuego-rayos-cosmicos.js"></script>
 <script src="minijuegos/js/minijuego-foton.js"></script>
 <script src="minijuegos/js/minijuegos.js"></script>
 <script>

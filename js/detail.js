@@ -64,6 +64,20 @@ function buildJuegoBtn(propKey) {
   /* Renderizar con un pequeño delay para que el DOM exista */
   setTimeout(() => removeBgMJ(juego.asset, canvasId, 48), 50);
 
+  /* Minijuego aún no implementado: se muestra pero sin acción */
+  if (!juego.disponible) {
+    return `
+      <div class="prop-juego-btn prop-juego-btn-off"
+           title="Este minijuego estará disponible más adelante">
+        <canvas id="${canvasId}" width="48" height="48" class="mj-card-img"></canvas>
+        <div class="prop-juego-texto">
+          <div class="prop-juego-label">🔒 PRÓXIMAMENTE</div>
+          <div class="prop-juego-nombre">${juego.nombre}</div>
+        </div>
+      </div>
+    `;
+  }
+
   return `
     <div class="prop-juego-btn" onclick="abrirJuegoDesdeProp('${propKey}')">
       <canvas id="${canvasId}" width="48" height="48" class="mj-card-img"></canvas>

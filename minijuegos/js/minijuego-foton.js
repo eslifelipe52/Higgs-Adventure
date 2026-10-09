@@ -895,6 +895,8 @@ function fyDetR(opId, ejId, correcto) {
    NIVEL COMPLETO / RESULTADOS
    ════════════════════════════════════════════ */
 function fyNivelCompleto() {
+  /* Registro de progreso para el desbloqueo por etapas (js/progreso.js) */
+  if (typeof Progreso !== 'undefined') Progreso.moduloCompletado('foton', 'nivel' + fyState.nv.id);
   if(fyState.nv.puntuado){ fyMostrarResultados(); return; }
   const sig=fyState.idx+1;
   fyMostrarFb(true,
@@ -906,10 +908,10 @@ function fyNivelCompleto() {
 function fyMostrarResultados() {
   const pts=fyState.puntaje||0;
   const logro=FY_LOGROS.find(l=>pts>=l.min)||FY_LOGROS[FY_LOGROS.length-1];
-  const hist=JSON.parse(localStorage.getItem('fy_historial')||'[]');
-  hist.unshift({fecha:new Date().toLocaleDateString('es-MX'),puntaje:pts,logro:logro.nombre});
-  if(hist.length>10)hist.pop();
-  localStorage.setItem('fy_historial',JSON.stringify(hist));
+  /* Guardar en el historial unificado (js/progreso.js) */
+  if(typeof Progreso!=='undefined'){
+    Progreso.registrarPartida('foton',{puntaje:pts,combos:fyState.combos,errores:fyState.errores});
+  }
   fyMostrarFb(true,`${logro.emoji} ¡${logro.nombre}! ${pts} pts — ${fyState.combos} correctos, ${fyState.errores} errores.`,
     'Revisa tu perfil para ver el historial de logros.');
 }

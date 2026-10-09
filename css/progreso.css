@@ -1,0 +1,260 @@
+/* ══════════════════════════════════════════
+   css/progreso.css
+   Estilos del sistema de progreso:
+     · botón de calculadora en la nav
+     · aviso flotante de desbloqueo
+     · partículas y secciones bloqueadas
+     · sección de progreso dentro del perfil
+   ══════════════════════════════════════════ */
+
+/* ════════════════════════════════════════
+   BOTÓN ICONO EN LA NAV (calculadora)
+   ════════════════════════════════════════ */
+.nav-btn-icon {
+  padding: 8px 11px;
+  font-size: 13px;
+  letter-spacing: 0;
+  line-height: 1;
+}
+
+/* ════════════════════════════════════════
+   AVISO FLOTANTE DE DESBLOQUEO
+   ════════════════════════════════════════ */
+.progreso-aviso {
+  position: fixed;
+  top: 70px; left: 50%;
+  transform: translate(-50%, -16px);
+  z-index: 300;
+  max-width: min(560px, calc(100vw - 32px));
+  padding: 11px 22px;
+  background: linear-gradient(160deg, rgba(12,7,38,0.98), rgba(6,3,22,0.98));
+  border: 1px solid rgba(0,229,255,0.4);
+  border-radius: 999px;
+  color: var(--text);
+  font-family: 'Exo 2', sans-serif;
+  font-size: 13px;
+  text-align: center;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.55), 0 0 24px rgba(0,229,255,0.14);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+.progreso-aviso.visible {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+/* ════════════════════════════════════════
+   PARTÍCULAS BLOQUEADAS POR ETAPA
+   ════════════════════════════════════════ */
+.particle-cell.locked-stage {
+  background: repeating-linear-gradient(
+    135deg,
+    rgba(12,22,42,0.92) 0px, rgba(12,22,42,0.92) 7px,
+    rgba(18,30,54,0.92)  7px, rgba(18,30,54,0.92) 14px
+  );
+  border-color: rgba(255,215,64,0.16);
+  cursor: not-allowed;
+}
+.particle-cell.locked-stage:hover {
+  transform: none;
+  box-shadow: 0 0 12px rgba(255,215,64,0.12);
+}
+.particle-cell.locked-stage .p-symbol { font-size: 18px; }
+.particle-cell.locked-stage .p-name   { font-size: 8px; line-height: 1.35; }
+.particle-cell.locked-stage .p-name strong {
+  display: block; color: rgba(255,215,64,0.75);
+  font-family: 'Orbitron', monospace; font-size: 7.5px;
+  letter-spacing: 0.6px; margin-top: 3px;
+}
+
+/* ── Banner informativo sobre el grid del ME ── */
+.me-bloqueo-banner {
+  display: flex; align-items: center; justify-content: center;
+  gap: 10px; flex-wrap: wrap;
+  margin: 0 auto 12px;
+  max-width: 720px;
+  padding: 8px 16px;
+  font-size: 11px;
+  color: var(--text2);
+  background: rgba(255,215,64,0.05);
+  border: 1px solid rgba(255,215,64,0.18);
+  border-radius: 8px;
+  text-align: center;
+}
+.me-bloqueo-banner strong { color: rgba(255,215,64,0.9); }
+.me-bloqueo-banner.hidden { display: none; }
+.me-bloqueo-banner button {
+  font-family: 'Orbitron', monospace;
+  font-size: 9px; letter-spacing: 1px; text-transform: uppercase;
+  padding: 5px 12px; border-radius: 4px; cursor: pointer;
+  background: transparent; color: var(--accent);
+  border: 1px solid rgba(0,229,255,0.35);
+  transition: all 0.2s;
+}
+.me-bloqueo-banner button:hover {
+  background: rgba(0,229,255,0.1);
+  box-shadow: 0 0 12px rgba(0,229,255,0.2);
+}
+
+/* ════════════════════════════════════════
+   SECCIONES DEL HUB BLOQUEADAS
+   ════════════════════════════════════════ */
+.mj-sec-btn.bloqueada {
+  opacity: 0.42;
+  cursor: not-allowed;
+  filter: grayscale(0.85);
+}
+.mj-sec-btn.bloqueada::after {
+  content: ' 🔒';
+  font-size: 9px;
+}
+
+/* Aviso dentro del hub cuando la sección está bloqueada */
+.mj-bloqueo-aviso {
+  grid-column: 1 / -1;
+  display: flex; flex-direction: column; gap: 10px;
+  align-items: center; justify-content: center;
+  padding: 28px 22px; text-align: center;
+  border: 1px dashed rgba(255,215,64,0.25);
+  border-radius: 12px;
+  background: rgba(255,215,64,0.03);
+}
+.mj-bloqueo-aviso .mj-bloqueo-titulo {
+  font-family: 'Orbitron', monospace;
+  font-size: 12px; letter-spacing: 1.5px;
+  color: rgba(255,215,64,0.9); text-transform: uppercase;
+}
+.mj-bloqueo-aviso .mj-bloqueo-txt {
+  font-size: 11.5px; color: var(--text2); max-width: 460px; line-height: 1.6;
+}
+.mj-bloqueo-aviso .mj-bloqueo-lista {
+  display: flex; flex-wrap: wrap; gap: 8px; justify-content: center;
+}
+.mj-bloqueo-aviso .mj-bloqueo-chip {
+  font-size: 10px; padding: 4px 10px; border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.12);
+  color: var(--text2); background: rgba(255,255,255,0.03);
+}
+.mj-bloqueo-aviso .mj-bloqueo-chip.hecho {
+  border-color: rgba(0,229,255,0.4);
+  color: var(--accent);
+  background: rgba(0,229,255,0.07);
+}
+
+/* ════════════════════════════════════════
+   SECCIÓN DE PROGRESO EN EL PERFIL
+   ════════════════════════════════════════ */
+.perfil-etapa {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 10px; border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.07);
+  background: rgba(255,255,255,0.025);
+  margin-bottom: 6px;
+}
+.perfil-etapa.abierta {
+  border-color: rgba(0,229,255,0.3);
+  background: rgba(0,229,255,0.05);
+}
+.perfil-etapa.actual {
+  border-color: rgba(255,215,64,0.4);
+  background: rgba(255,215,64,0.06);
+  box-shadow: 0 0 12px rgba(255,215,64,0.1);
+}
+.perfil-etapa-icono { font-size: 15px; width: 20px; text-align: center; flex-shrink: 0; }
+.perfil-etapa-info  { flex: 1; min-width: 0; }
+.perfil-etapa-nombre {
+  font-family: 'Orbitron', monospace;
+  font-size: 9px; letter-spacing: 1px; text-transform: uppercase;
+  color: var(--text);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.perfil-etapa-detalle {
+  font-size: 9.5px; color: var(--text2); margin-top: 2px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.perfil-etapa-estado {
+  font-size: 9px; font-family: 'Orbitron', monospace;
+  letter-spacing: 0.5px; flex-shrink: 0;
+  color: var(--text2);
+}
+.perfil-etapa.abierta .perfil-etapa-estado { color: var(--accent); }
+
+/* Barra de progreso de la etapa en curso */
+.perfil-prog-barra-wrap {
+  height: 5px; border-radius: 999px; overflow: hidden;
+  background: rgba(255,255,255,0.07); margin: 8px 0 4px;
+}
+.perfil-prog-barra {
+  height: 100%; border-radius: 999px;
+  background: linear-gradient(90deg, #4fc3f7, #7c4dff);
+  transition: width 0.4s ease;
+}
+.perfil-prog-nota {
+  font-size: 9.5px; color: var(--text2); line-height: 1.5;
+}
+
+/* ── Lista de minijuegos con su avance ── */
+.perfil-juego-fila {
+  display: flex; align-items: center; gap: 8px;
+  padding: 6px 8px; border-radius: 6px;
+  font-size: 10.5px; color: var(--text2);
+}
+.perfil-juego-fila:hover { background: rgba(255,255,255,0.03); }
+.perfil-juego-nombre { flex: 1; color: var(--text); }
+.perfil-juego-prog {
+  font-family: 'Orbitron', monospace; font-size: 9px;
+  color: var(--text2); flex-shrink: 0;
+}
+.perfil-juego-fila.superado .perfil-juego-nombre { color: var(--accent); }
+.perfil-juego-fila.superado .perfil-juego-prog   { color: var(--accent); }
+
+/* ── Botón de reinicio de progreso ── */
+.perfil-reiniciar {
+  width: 100%; margin-top: 10px;
+  font-family: 'Orbitron', monospace;
+  font-size: 9px; letter-spacing: 1px; text-transform: uppercase;
+  padding: 7px; border-radius: 5px; cursor: pointer;
+  background: transparent; color: rgba(255,82,82,0.75);
+  border: 1px solid rgba(255,82,82,0.25);
+  transition: all 0.2s;
+}
+.perfil-reiniciar:hover {
+  background: rgba(255,82,82,0.08);
+  border-color: rgba(255,82,82,0.5);
+  color: #ff5252;
+}
+
+/* ── Botón de minijuego no disponible (panel de partícula) ── */
+.prop-juego-btn-off {
+  opacity: 0.5;
+  cursor: not-allowed;
+  filter: grayscale(0.7);
+}
+
+/* ── Historial unificado: 4 columnas
+      (fecha · minijuego · puntaje · logro) ── */
+.perfil-hist-head,
+.perfil-hist-row {
+  grid-template-columns: 1fr 1.25fr 62px 86px;
+}
+
+/* ── Pestañas de sección del perfil ── */
+.perfil-tabs {
+  display: flex; gap: 4px; padding: 10px 16px 0;
+}
+.perfil-tab {
+  flex: 1; padding: 7px 4px; cursor: pointer;
+  font-family: 'Orbitron', monospace;
+  font-size: 8.5px; letter-spacing: 0.8px; text-transform: uppercase;
+  background: transparent; color: var(--text2);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 6px; transition: all 0.2s;
+}
+.perfil-tab:hover { color: var(--accent); border-color: rgba(0,229,255,0.3); }
+.perfil-tab.active {
+  color: var(--accent);
+  border-color: rgba(0,229,255,0.45);
+  background: rgba(0,229,255,0.07);
+}
+.perfil-vista.hidden { display: none; }

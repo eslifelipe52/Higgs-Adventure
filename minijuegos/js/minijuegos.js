@@ -88,10 +88,14 @@ function renderSidebar() {
   sb.innerHTML = '';
 
   MINIJUEGOS_DATA.forEach(seccion => {
+    const abierta = Progreso.etapaDesbloqueada(seccion.fase);
     const btn = document.createElement('button');
-    btn.className = `mj-sec-btn ${seccion.id === seccionActiva ? 'active' : ''}`;
+    btn.className = `mj-sec-btn ${seccion.id === seccionActiva ? 'active' : ''} ${abierta ? '' : 'bloqueada'}`;
     btn.style.setProperty('--sec-color', seccion.color);
     btn.textContent = seccion.label;
+    btn.title = abierta
+      ? seccion.label
+      : `🔒 Se desbloquea en la Etapa ${seccion.fase}: ${Progreso.ETAPAS[seccion.fase].nombre}`;
     btn.addEventListener('click', () => {
       seccionActiva = seccion.id;
       renderSidebar();
@@ -101,11 +105,51 @@ function renderSidebar() {
   });
 }
 
+/* Devuelve la sección abierta de fase más alta */
+function _ultimaSeccionAbierta() {
+  let elegida = MINIJUEGOS_DATA[0];
+  MINIJUEGOS_DATA.forEach(s => { if (Progreso.etapaDesbloqueada(s.fase)) elegida = s; });
+  return elegida.id;
+}
+
+/* Aviso que sustituye al grid cuando la sección está bloqueada */
+function _bloqueoSeccionEl(seccion) {
+  const info = Progreso.requisitosEtapa(seccion.fase);
+  const nombre = id => {
+    const j = MINIJUEGOS_TODOS.find(x => x.id === id);
+    return j ? j.nombre : id;
+  };
+  const chips = (info.juegos || []).map(j => `
+    <span class="mj-bloqueo-chip ${j.superado ? 'hecho' : ''}">
+      ${j.superado ? '✅' : '◻'} ${nombre(j.id)} (${Math.min(j.hechos, j.requeridos)}/${j.requeridos})
+    </span>`).join('');
+
+  const div = document.createElement('div');
+  div.className = 'mj-bloqueo-aviso';
+  div.innerHTML = `
+    <div class="mj-bloqueo-titulo">🔒 ${seccion.label}</div>
+    <div class="mj-bloqueo-txt">
+      Esta sección se abre en la <strong>Etapa ${seccion.fase} · ${Progreso.ETAPAS[seccion.fase].nombre}</strong>.
+      Para desbloquearla hay que superar los niveles básicos de los minijuegos de la
+      Etapa ${info.etapa}:
+    </div>
+    <div class="mj-bloqueo-lista">${chips || '<span class="mj-bloqueo-chip">—</span>'}</div>
+    <div class="mj-bloqueo-txt">Abre tu perfil (👤) para ver el detalle de tu avance.</div>
+  `;
+  return div;
+}
+
 /* ── Grid: minijuegos de la sección activa ── */
 function renderGrid(seccionId) {
   const grid    = document.getElementById('mj-grid');
   const seccion = MINIJUEGOS_DATA.find(s => s.id === seccionId);
   grid.innerHTML = '';
+
+  /* Sección todavía bloqueada: mostramos qué falta en vez de las tarjetas */
+  if (!Progreso.etapaDesbloqueada(seccion.fase)) {
+    grid.appendChild(_bloqueoSeccionEl(seccion));
+    return;
+  }
 
   seccion.juegos.forEach(juego => {
     const card = document.createElement('div');
@@ -200,10 +244,19 @@ function cerrarPreview() {
    ════════════════════════════════════════════ */
 function abrirHub(seccionOpcional) {
   if (seccionOpcional) {
+    /* Sección pedida explícitamente: se muestra, aunque esté
+       bloqueada, para que el jugador vea qué le falta. */
     seccionActiva = seccionOpcional;
-    renderSidebar();
-    renderGrid(seccionOpcional);
+  } else {
+    /* Apertura normal: si la sección recordada ya no está
+       disponible, saltamos a la abierta de fase más alta. */
+    const sec = MINIJUEGOS_DATA.find(s => s.id === seccionActiva);
+    if (!sec || !Progreso.etapaDesbloqueada(sec.fase)) {
+      seccionActiva = _ultimaSeccionAbierta();
+    }
   }
+  renderSidebar();
+  renderGrid(seccionActiva);
   document.getElementById('minijuegos-hub').classList.remove('hidden');
 }
 
@@ -221,10 +274,18 @@ function abrirJuegoDesdeProp(propKey) {
   /* Buscar el juego por propKey en todas las secciones */
   for (const seccion of MINIJUEGOS_DATA) {
     const juego = seccion.juegos.find(j => j.propKey === propKey);
-    if (juego) {
-      abrirPreview(juego);
+    if (!juego) continue;
+
+    /* La sección puede estar todavía bloqueada por etapa */
+    if (!Progreso.etapaDesbloqueada(seccion.fase)) {
+      Progreso.avisar(
+        `🔒 "${juego.nombre}" se abre en la Etapa ${seccion.fase} · ` +
+        `${Progreso.ETAPAS[seccion.fase].nombre}.`
+      );
       return;
     }
+    abrirPreview(juego);
+    return;
   }
 }
 
@@ -275,4 +336,36 @@ function removeBgMJ(src, canvasId, size) {
   };
   img.onerror = () => console.warn('Asset no encontrado:', src);
   img.src = src;
+}
+
+/* ════════════════════════════════════════════
+   HELPER: Fondo oscuro cuadriculado
+   Estética común a todos los minijuegos.
+   Lo llaman spin, masa y decaimiento al inicio
+   de cada fotograma de sus canvas, así que debe
+   ser autónomo y no dejar estado sucio en el ctx.
+   ════════════════════════════════════════════ */
+function mjGridBackground(ctx, W, H) {
+  if (!ctx) return;
+
+  ctx.save();
+  ctx.clearRect(0, 0, W, H);
+
+  /* Degradado base: el mismo que usa el resto de minijuegos */
+  const bg = ctx.createLinearGradient(0, 0, 0, H);
+  bg.addColorStop(0, '#0a0520');
+  bg.addColorStop(1, '#04020f');
+  ctx.fillStyle = bg;
+  ctx.fillRect(0, 0, W, H);
+
+  /* Rejilla sutil cada 40 px (trazada en un solo path: es mucho más
+     económico que un stroke por línea, y esto corre en cada fotograma) */
+  ctx.strokeStyle = 'rgba(255,255,255,0.03)';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  for (let x = 0; x < W; x += 40) { ctx.moveTo(x + 0.5, 0); ctx.lineTo(x + 0.5, H); }
+  for (let y = 0; y < H; y += 40) { ctx.moveTo(0, y + 0.5); ctx.lineTo(W, y + 0.5); }
+  ctx.stroke();
+
+  ctx.restore();
 }

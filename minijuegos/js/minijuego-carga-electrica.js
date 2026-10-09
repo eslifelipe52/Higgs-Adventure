@@ -15,6 +15,10 @@ let ceScreen   = null;
 let ceState    = {};
 let ceRAF      = null;
 
+/* Bandera por módulo: evita registrar dos veces en Progreso
+   cuando el jugador repite un módulo ya superado. */
+const CE_REGISTRADOS = {};
+
 /* ════════════════════════════════════════════
    ENTRADA
    ════════════════════════════════════════════ */
@@ -610,6 +614,11 @@ function ceFuerzasResponder(idx) {
   btnSig.textContent = esUltimo ? 'Siguiente módulo →' : `Desafío ${nv.nivel + 1} →`;
   btnSig.addEventListener('click', () => {
     if (esUltimo) {
+      /* Módulo A superado: no tiene pantalla final propia */
+      if (!CE_REGISTRADOS.fuerzas) {
+        CE_REGISTRADOS.fuerzas = true;
+        if (typeof Progreso !== 'undefined') Progreso.moduloCompletado('carga-electrica', 'fuerzas');
+      }
       ceIniciarEtapa(1);
     } else {
       ceFuerzas.nivelIdx++;
@@ -845,6 +854,11 @@ function ceCableResponder(idx) {
   btnSig.style.marginTop = '8px';
   btnSig.addEventListener('click', () => {
     if (esUltimo) {
+      /* Módulo B superado: no tiene pantalla final propia */
+      if (!CE_REGISTRADOS.cable) {
+        CE_REGISTRADOS.cable = true;
+        if (typeof Progreso !== 'undefined') Progreso.moduloCompletado('carga-electrica', 'cable');
+      }
       ceCable.nivelIdx = 0;   /* reset para si el usuario vuelve */
       ceIniciarEtapa(2);
     } else {
@@ -1343,6 +1357,10 @@ function ceOndasRender() {
    PANTALLA FINAL DEL MÓDULO C
    ════════════════════════════════════════════ */
 function ceModuloFinal() {
+  if (!CE_REGISTRADOS.ondas) {
+    CE_REGISTRADOS.ondas = true;
+    if (typeof Progreso !== 'undefined') Progreso.moduloCompletado('carga-electrica', 'ondas');
+  }
   if (ceOndas.rafId)  { cancelAnimationFrame(ceOndas.rafId);  ceOndas.rafId  = null; }
   if (ceCable.rafId)  { cancelAnimationFrame(ceCable.rafId);  ceCable.rafId  = null; }
 
@@ -1800,6 +1818,10 @@ function ceQEDIrNivel(idx) {
 }
 
 function ceQEDFinal() {
+  if (!CE_REGISTRADOS.intercambio) {
+    CE_REGISTRADOS.intercambio = true;
+    if (typeof Progreso !== 'undefined') Progreso.moduloCompletado('carga-electrica', 'intercambio');
+  }
   if (ceQED.rafId) { cancelAnimationFrame(ceQED.rafId); ceQED.rafId = null; }
   const body = document.getElementById('ce-body');
   body.innerHTML = `
@@ -2271,6 +2293,10 @@ function ceFotRenderFotones(ctx, W, H, t, f, I, seg) {
 }
 
 function ceFotFinal() {
+  if (!CE_REGISTRADOS.fotones) {
+    CE_REGISTRADOS.fotones = true;
+    if (typeof Progreso !== 'undefined') Progreso.moduloCompletado('carga-electrica', 'fotones');
+  }
   if (ceFot.rafId) { cancelAnimationFrame(ceFot.rafId); ceFot.rafId = null; }
   const body = document.getElementById('ce-body');
   body.innerHTML = `
@@ -2857,6 +2883,10 @@ function ceFamCascada(ctx, x, y, dt, p) {
 }
 
 function ceFamFinal() {
+  if (!CE_REGISTRADOS.familias) {
+    CE_REGISTRADOS.familias = true;
+    if (typeof Progreso !== 'undefined') Progreso.moduloCompletado('carga-electrica', 'familias');
+  }
   if (ceFam.rafId) { cancelAnimationFrame(ceFam.rafId); ceFam.rafId = null; }
   const body = document.getElementById('ce-body');
   body.innerHTML = `
@@ -3310,6 +3340,10 @@ function ceAcoRender() {
 }
 
 function ceAcoFinal() {
+  if (!CE_REGISTRADOS.acoplamiento) {
+    CE_REGISTRADOS.acoplamiento = true;
+    if (typeof Progreso !== 'undefined') Progreso.moduloCompletado('carga-electrica', 'acoplamiento');
+  }
   if (ceAco.rafId) { cancelAnimationFrame(ceAco.rafId); ceAco.rafId = null; }
   const body = document.getElementById('ce-body');
   body.innerHTML = `
@@ -3749,6 +3783,10 @@ function ceNubeRender() {
 }
 
 function ceNubeFinal() {
+  if (!CE_REGISTRADOS.nube) {
+    CE_REGISTRADOS.nube = true;
+    if (typeof Progreso !== 'undefined') Progreso.moduloCompletado('carga-electrica', 'nube');
+  }
   if (ceNube.rafId) { cancelAnimationFrame(ceNube.rafId); ceNube.rafId = null; }
   const body = document.getElementById('ce-body');
   body.innerHTML = `
@@ -4375,6 +4413,10 @@ function ceColRender() {
 }
 
 function ceColFinal() {
+  if (!CE_REGISTRADOS.colectivo) {
+    CE_REGISTRADOS.colectivo = true;
+    if (typeof Progreso !== 'undefined') Progreso.moduloCompletado('carga-electrica', 'colectivo');
+  }
   if (ceCol.rafId) { cancelAnimationFrame(ceCol.rafId); ceCol.rafId = null; }
   const body = document.getElementById('ce-body');
   body.innerHTML = `

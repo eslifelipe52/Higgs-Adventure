@@ -621,6 +621,9 @@ function msE1NivelCompletado() {
   const btnEl = document.getElementById('ms-e1-btn-sig');
   if (!avEl) return;
 
+  /* Registro de progreso para el desbloqueo por etapas (js/progreso.js) */
+  if (typeof Progreso !== 'undefined') Progreso.moduloCompletado('masa', 'e1n' + (e1.nivelIdx + 1));
+
   const esUltimo = e1.nivelIdx >= MS_NIVELES_E1.length - 1;
 
   txtEl.innerHTML = esUltimo
@@ -1325,6 +1328,9 @@ function msE2NivelCompletado() {
   const btnEl = document.getElementById('e2-btn-sig');
   if (!avEl) return;
 
+  /* Registro de progreso para el desbloqueo por etapas (js/progreso.js) */
+  if (typeof Progreso !== 'undefined') Progreso.moduloCompletado('masa', 'e2n' + (e2.nivelIdx + 1));
+
   const esUltimo = e2.nivelIdx >= MS_NIVELES_E2.length - 1;
 
   txtEl.innerHTML = esUltimo
@@ -1676,6 +1682,10 @@ function msE3Decaer() {
   const btnEl = document.getElementById('ms-e3-btn-sig');
   if (e3.encontradas.size >= dec.validas.length) {
     e3.resuelto = true;
+
+    /* Registro de progreso para el desbloqueo por etapas (js/progreso.js) */
+    if (typeof Progreso !== 'undefined') Progreso.moduloCompletado('masa', 'e3n' + (e3.nivelIdx + 1));
+
     const esUltimo = e3.nivelIdx >= MS_DECAIMIENTOS.length - 1;
     if (btnEl) {
       btnEl.textContent = esUltimo ? '🏆 Ver conclusión →' : 'Siguiente nivel →';

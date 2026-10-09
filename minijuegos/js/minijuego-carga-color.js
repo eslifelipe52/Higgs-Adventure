@@ -807,6 +807,9 @@ function checkNivelCompleto() {
   if (!done) return;
   st.terminado=true;
 
+  /* Registro de progreso para el desbloqueo por etapas (js/progreso.js) */
+  if (typeof Progreso !== 'undefined') Progreso.moduloCompletado('carga-color', 'nivel' + nv.id);
+
   if (nv.puntuado) {
     setTimeout(() => mostrarResultadosFree(), 500);
   } else {
@@ -828,19 +831,14 @@ function mostrarResultadosFree() {
   const pts = st.puntaje || 0;
   const logro = getLogro(pts);
 
-  /* Guardar en localStorage hasta tener BD */
-  const hist = JSON.parse(localStorage.getItem('cc_historial') || '[]');
-  const entrada = {
-    fecha: new Date().toLocaleDateString('es-MX'),
-    puntaje: pts, combos: st.combos||0, errores: st.errores||0,
-    logro: logro.nombre
-  };
-  hist.unshift(entrada);
-  if (hist.length > 10) hist.pop();
-  localStorage.setItem('cc_historial', JSON.stringify(hist));
-
-  /* Actualizar perfil global */
-  actualizarPerfil();
+  /* Guardar en el historial unificado (js/progreso.js) */
+  if (typeof Progreso !== 'undefined') {
+    Progreso.registrarPartida('carga-color', {
+      puntaje: pts,
+      combos:  st.combos  || 0,
+      errores: st.errores || 0
+    });
+  }
 
   /* Overlay de resultados */
   const overlay = document.createElement('div');

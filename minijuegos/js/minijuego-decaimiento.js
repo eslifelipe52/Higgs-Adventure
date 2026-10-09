@@ -513,6 +513,11 @@ function diAConfirmar() {
     const hechas = diState.aResueltas.size;
     diProgreso(hechas / DI_A_PARTICULAS.length, hechas + ' / ' + DI_A_PARTICULAS.length + ' partículas');
     if (diState.aPartIdx >= DI_A_PARTICULAS.length) {
+      /* Módulo A superado: registra el avance una sola vez */
+      if (!diState.aProgreso && typeof Progreso !== 'undefined') {
+        diState.aProgreso = true;
+        Progreso.moduloCompletado('decaimiento', 'A');
+      }
       diRetoCumplido('¡Todas las partículas resueltas! Las leyes de conservación determinan qué decaimientos existen en la naturaleza.');
     } else {
       diState.aTransicion = false;
@@ -757,6 +762,11 @@ function diBPrediccion(tipo) {
     const hechos = diState.bIdx;
     diProgreso(hechos / DI_B_CASOS.length, hechos + ' / ' + DI_B_CASOS.length);
     if (diState.bIdx >= DI_B_CASOS.length) {
+      /* Módulo B superado: registra el avance una sola vez */
+      if (!diState.bProgreso && typeof Progreso !== 'undefined') {
+        diState.bProgreso = true;
+        Progreso.moduloCompletado('decaimiento', 'B');
+      }
       diRetoCumplido('¡Espectros dominados! 2 cuerpos → monoenergético; 3 cuerpos → continuo. El espectro continuo del decaimiento β fue la prueba de la existencia del neutrino.');
     } else {
       diBCargar();
@@ -964,6 +974,11 @@ function diCVerificar() {
   diProgreso(correctos / total, correctos + ' / ' + total + ' en posición correcta');
   diCRenderLista();
   if (correctos === total) {
+    /* Módulo C superado: registra el avance una sola vez */
+    if (!diState.cProgreso && typeof Progreso !== 'undefined') {
+      diState.cProgreso = true;
+      Progreso.moduloCompletado('decaimiento', 'C');
+    }
     diEstado('✔ ¡Orden perfecto!', true);
     diRetoCumplido('¡Vida media dominada! La fuerza fuerte (~10⁻²³s), la EM (~10⁻¹⁹s) y la débil (>10⁻¹⁰s) difieren en 13 órdenes de magnitud.');
   } else {
