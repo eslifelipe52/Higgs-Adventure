@@ -19,6 +19,7 @@
   <link rel="stylesheet" href="css/perfil.css">
   <link rel="stylesheet" href="css/progreso.css">
   <link rel="stylesheet" href="css/calculadora.css">
+  <link rel="stylesheet" href="css/auth.css">
   <link rel="stylesheet" href="minijuegos/css/minijuegos.css">
   <link rel="stylesheet" href="minijuegos/css/minijuego-carga-color.css">
   <link rel="stylesheet" href="minijuegos/css/minijuego-carga-electrica.css">
@@ -113,6 +114,7 @@
 </div><!-- #app -->
 
 <!-- ── JAVASCRIPT — orden importa ── -->
+<script src="js/firebase-config.js"></script> <!-- Configuración de Firebase (sin secretos) -->
 <script src="js/progreso.js"></script>   <!-- Progreso, desbloqueos y logros (PRIMERO) -->
 <script src="js/data.js"></script>       <!-- Datos de partículas y textos -->
 <script src="js/navigation.js"></script> <!-- showScreen(), estrellas -->
@@ -135,6 +137,13 @@
 <script src="minijuegos/js/minijuego-rayos-cosmicos.js"></script>
 <script src="minijuegos/js/minijuego-foton.js"></script>
 <script src="minijuegos/js/minijuegos.js"></script>
+
+<!-- AUTENTICACIÓN — se carga como módulo porque el SDK de Firebase
+     se distribuye en formato de módulos ES. Si Firebase no está
+     configurado, este archivo lo detecta y no hace nada: el sitio
+     sigue funcionando con el progreso local de siempre. -->
+<script type="module" src="js/auth.js"></script>
+
 <script>
   window.addEventListener('load', () => {
     initMinijuegos();

@@ -159,8 +159,46 @@ node tools/verificar.js
 
 Comprueba que todos los CSS/JS enlazados y los assets de los minijuegos existen,
 que no hay archivos huérfanos, que cada minijuego marcado como disponible tiene su
-función `iniciar_<id>()`, y que la lógica de desbloqueo por etapas funciona
-(progresión, persistencia y migración de historiales antiguos).
+función `iniciar_<id>()`, que la lógica de desbloqueo por etapas funciona
+(progresión, persistencia y migración de historiales antiguos) y que la capa de
+autenticación está bien formada (configuración, reglas de Firestore y fusión de
+progreso entre el equipo y la nube).
+
+### Cuentas de usuario (Firebase)
+
+El sitio puede funcionar con cuentas para que el progreso de cada alumno lo siga
+entre computadoras. **Es opcional y está desactivado por defecto**: mientras no se
+configure, todo funciona como siempre con el progreso guardado en el navegador.
+
+Los pasos están en **[docs/FIREBASE.md](docs/FIREBASE.md)**. En resumen: crear un
+proyecto en Firebase, pegar su configuración en `js/firebase-config.js`, activar
+los proveedores «Correo electrónico/contraseña» y «Anónimo», y pegar las reglas de
+[`firestore.rules`](firestore.rules) en la consola.
+
+![Pantalla de acceso](docs/capturas/06-pantalla-de-acceso.png)
+
+El diseño del acceso es **invitado primero**: el alumno empieza a jugar sin
+registrarse (por dentro se le crea una cuenta anónima y su progreso ya se guarda
+en la nube) y, cuando quiera, crea una cuenta con su correo. En ese momento el
+progreso **se conserva**, porque la cuenta anónima se vincula al correo en lugar
+de reemplazarse.
+
+![Perfil con la sección de cuenta](docs/capturas/07-perfil-con-cuenta.png)
+
+Archivos que intervienen:
+
+| Archivo | Papel |
+|---|---|
+| `js/firebase-config.js` | Configuración y comportamiento (invitado sí/no, etc.) |
+| `js/auth.js` | Módulo con el SDK: registro, acceso, invitado, vinculación y pantalla |
+| `js/progreso.js` | Guarda localmente y sincroniza con Firestore, fusionando ambos |
+| `js/perfil.js` | Sección de cuenta dentro del panel |
+| `css/auth.css` | Estilos de la pantalla de acceso |
+| `firestore.rules` | Reglas de seguridad (cada usuario solo ve lo suyo) |
+
+Nota importante: con cuentas activadas hay que abrir el sitio desde un servidor
+local (`http://`), no con doble clic (`file://`). Si se abre con `file://`, el
+perfil lo explica en lugar de fallar en silencio.
 
 ---
 

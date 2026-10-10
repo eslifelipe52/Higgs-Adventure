@@ -409,13 +409,214 @@ if (idsRotos.length) {
 }
 
 /* ════════════════════════════════════════
-   Resumen
+   H. Capa de autenticación (Firebase)
    ════════════════════════════════════════ */
-console.log('');
-if (fallos === 0 && avisos === 0) {
-  console.log('\x1b[32m✔ Todo correcto.\x1b[0m');
-} else {
-  console.log(`\x1b[1mResultado:\x1b[0m ${fallos} fallo(s), ${avisos} aviso(s).`);
+titulo('H. Capa de autenticación (Firebase)');
+
+/* Carga js/firebase-config.js en un contexto aislado.
+   `sustituir` permite probar el caso «ya configurado». */
+function cargarConfig(sustituir) {
+  const ctx = vm.createContext({ console, location: { protocol: 'https:' } });
+  let src = leer('js/firebase-config.js');
+  if (sustituir) {
+    /* Sustituimos SOLO el bloque de configuración. No se puede hacer un
+       reemplazo global de «'PEGA_AQUI'»: esa misma cadena aparece dentro
+       de firebaseEstaConfigurado() como centinela, y reescribirla
+       cambiaría el comportamiento de la función que queremos probar. */
+    src = src.replace(/const FIREBASE_CONFIG = \{[\s\S]*?\n\};/,
+      "const FIREBASE_CONFIG = {\n" +
+      "  apiKey:            'AIzaSyA1234567890abcdefghijklmnopqrst',\n" +
+      "  authDomain:        'higgs-adventure.firebaseapp.com',\n" +
+      "  projectId:         'higgs-adventure',\n" +
+      "  storageBucket:     'higgs-adventure.appspot.com',\n" +
+      "  messagingSenderId: '1234567890',\n" +
+      "  appId:             '1:1234567890:web:abcdef'\n" +
+      "};");
+  }
+  vm.runInContext(
+    src + '\n;globalThis.__C = { FIREBASE_CONFIG, FIREBASE_CDN, HIGGS_AUTH, ' +
+          'firebaseEstaConfigurado, estaEnArchivoLocal };',
+    ctx
+  );
+  return ctx.__C;
 }
-if (fallos > 0) console.log('\x1b[31mHay fallos que corregir.\x1b[0m');
-process.exit(fallos > 0 ? 1 : 0);
+
+probar('js/firebase-config.js expone lo esperado', () => {
+  const C = cargarConfig();
+  const faltan = ['FIREBASE_CONFIG', 'FIREBASE_CDN', 'HIGGS_AUTH',
+                  'firebaseEstaConfigurado', 'estaEnArchivoLocal'].filter(k => C[k] === undefined);
+  return faltan.length ? 'faltan: ' + faltan.join(', ') : true;
+});
+
+probar('La configuración tiene los 6 campos de Firebase', () => {
+  const campos = ['apiKey', 'authDomain', 'projectId', 'storageBucket', 'messagingSenderId', 'appId'];
+  const faltan = campos.filter(c => cargarConfig().FIREBASE_CONFIG[c] === undefined);
+  return faltan.length ? 'faltan: ' + faltan.join(', ') : true;
+});
+
+probar('Con marcadores «PEGA_AQUI», Firebase se considera sin configurar', () => {
+  return cargarConfig().firebaseEstaConfigurado() === false
+      || 'devolvió true con los marcadores puestos';
+});
+
+probar('Con una configuración real, Firebase se considera configurado', () => {
+  return cargarConfig(true).firebaseEstaConfigurado() === true
+      || 'no detectó una configuración válida';
+});
+
+probar('La URL del CDN tiene el formato oficial y versión fijada', () => {
+  const url = cargarConfig().FIREBASE_CDN;
+  return /^https:\/\/www\.gstatic\.com\/firebasejs\/\d+\.\d+\.\d+\/$/.test(url)
+      || 'es «' + url + '»';
+});
+
+probar('estaEnArchivoLocal() distingue file:// de http(s)', () => {
+  const mk = proto => {
+    const ctx = vm.createContext({ console, location: { protocol: proto } });
+    vm.runInContext(leer('js/firebase-config.js') + '\n;globalThis.__f = estaEnArchivoLocal;', ctx);
+    return ctx.__f;
+  };
+  if (mk('file:')()  !== true)  return 'no detecta file://';
+  if (mk('https:')() !== false) return 'confunde https con file://';
+  return true;
+});
+
+probar('firestore.rules existe y restringe el acceso al propio uid', () => {
+  if (!existe('firestore.rules')) return 'no existe el archivo';
+  const r = leer('firestore.rules');
+  if (!/service cloud\.firestore/.test(r))  return 'no declara el servicio';
+  if (!/request\.auth\.uid == uid/.test(r)) return 'no compara el uid del solicitante';
+  if (!/allow read/.test(r))                return 'no define lectura';
+  if (!/allow create, update/.test(r))      return 'no define escritura';
+  return true;
+});
+
+probar('La política de acceso tiene los ajustes esperados', () => {
+  const a = cargarConfig().HIGGS_AUTH;
+  if (typeof a.modoInvitado !== 'boolean')       return 'falta modoInvitado';
+  if (typeof a.exigirVerificacion !== 'boolean') return 'falta exigirVerificacion';
+  if (typeof a.retardoSubida !== 'number')       return 'falta retardoSubida';
+  if (a.retardoSubida < 200)                     return 'retardoSubida demasiado bajo';
+  return true;
+});
+
+probar('Progreso expone la capa de nube', () => {
+  const P = nuevoProgreso();
+  const fns = ['conectarNube', 'desconectarNube', 'bajarDeNube', 'subirAhora',
+               'estadoActual', 'reiniciarLocal', 'estadoNube'];
+  const faltan = fns.filter(f => typeof P[f] !== 'function');
+  return faltan.length ? 'faltan: ' + faltan.join(', ') : true;
+});
+
+probar('estadoNube() refleja la conexión del adaptador', () => {
+  const P = nuevoProgreso();
+  if (P.estadoNube().conectado) return 'dice conectado sin adaptador';
+  P.conectarNube({ cargar: async () => null, guardar: async () => {} });
+  if (!P.estadoNube().conectado) return 'no detecta el adaptador';
+  P.desconectarNube();
+  if (P.estadoNube().conectado) return 'no se desconecta';
+  return true;
+});
+
+probar('Las acciones de cuenta están definidas', () => {
+  const src = leer('js/perfil.js') + leer('js/auth.js');
+  const necesarias = ['abrirAuth', 'cerrarSesion', 'reenviarVerificacionAuth'];
+  const faltan = necesarias.filter(f => !new RegExp('function\\s+' + f + '\\s*\\(').test(src));
+  return faltan.length ? 'faltan: ' + faltan.join(', ') : true;
+});
+
+/* ── Pruebas asíncronas de la sincronización ── */
+(async () => {
+
+  async function probarAsync(desc, fn) {
+    try {
+      const r = await fn();
+      if (r === true || r === undefined) ok(desc);
+      else fallo(`${desc} → ${r}`);
+    } catch (e) {
+      fallo(`${desc} → excepción: ${e.message}`);
+    }
+  }
+
+  await probarAsync('Una cuenta nueva recibe el progreso hecho como invitado', async () => {
+    const P = nuevoProgreso();
+    P.moduloCompletado('spin', 'brujula');
+    let subido = null;
+    P.conectarNube({ cargar: async () => null, guardar: async (e) => { subido = e; } });
+    await P.bajarDeNube();
+    if (!subido) return 'no se subió nada a una cuenta vacía';
+    if (!subido.modulos.spin || !subido.modulos.spin.brujula) return 'el progreso local no viajó';
+    return true;
+  });
+
+  await probarAsync('Al entrar se FUSIONA lo local con lo remoto, sin perder nada', async () => {
+    const P = nuevoProgreso();
+    P.moduloCompletado('carga-color', 'a');
+    P.moduloCompletado('carga-color', 'b');
+
+    const remoto = {
+      modulos: { 'carga-color': { c: true }, spin: { brujula: true } },
+      superados: {},
+      historial: [{ juego: 'foton', fecha: '01/01/2026', puntaje: 500, combos: 2, errores: 1, logro: 'Oro' }],
+      etapaNotificada: 2
+    };
+    let subido = null;
+    P.conectarNube({ cargar: async () => remoto, guardar: async (e) => { subido = e; } });
+    await P.bajarDeNube();
+
+    const est = P.estadoActual();
+    if (!est.modulos['carga-color'].a || !est.modulos['carga-color'].b) return 'se perdió el progreso local';
+    if (!est.modulos['carga-color'].c)                                 return 'se perdió el progreso remoto';
+    if (!est.modulos.spin || !est.modulos.spin.brujula)                return 'no llegó el minijuego remoto';
+    if (est.historial.length !== 1)                                    return 'historial incorrecto: ' + est.historial.length;
+    if (est.etapaNotificada !== 2)                                     return 'no conservó la etapa más alta';
+    if (!subido)                                                       return 'no se subió el resultado de la fusión';
+    return true;
+  });
+
+  await probarAsync('El historial fusionado no duplica entradas repetidas', async () => {
+    const P = nuevoProgreso();
+    P.registrarPartida('foton', { puntaje: 500, combos: 2, errores: 1 });
+    /* La misma partida exacta, como si viniera de la nube */
+    const partida = Object.assign({}, P.historial()[0]);
+    P.conectarNube({ cargar: async () => ({ historial: [partida] }), guardar: async () => {} });
+    await P.bajarDeNube();
+    const n = P.historial().length;
+    return n === 1 || 'quedaron ' + n + ' entradas en lugar de 1';
+  });
+
+  await probarAsync('Sin nube conectada, subirAhora() no rompe nada', async () => {
+    const P = nuevoProgreso();
+    const r = await P.subirAhora();
+    return r === false || 'devolvió ' + r;
+  });
+
+  await probarAsync('Un fallo al subir se registra y no interrumpe el juego', async () => {
+    const P = nuevoProgreso();
+    P.conectarNube({ cargar: async () => null, guardar: async () => { throw new Error('sin red'); } });
+    const r = await P.subirAhora();
+    if (r !== false) return 'no informó del fallo';
+    if (!P.estadoNube().ultimoError) return 'no guardó el error';
+    return true;
+  });
+
+  await probarAsync('reiniciarLocal() vacía el progreso sin tocar la nube', async () => {
+    const P = nuevoProgreso();
+    P.moduloCompletado('spin', 'brujula');
+    P.reiniciarLocal();
+    return P.modulosCompletados('spin') === 0 || 'no se vació';
+  });
+
+  /* ════════════════════════════════════════
+     Resumen
+     ════════════════════════════════════════ */
+  console.log('');
+  if (fallos === 0 && avisos === 0) {
+    console.log('\x1b[32m✔ Todo correcto.\x1b[0m');
+  } else {
+    console.log(`\x1b[1mResultado:\x1b[0m ${fallos} fallo(s), ${avisos} aviso(s).`);
+  }
+  if (fallos > 0) console.log('\x1b[31mHay fallos que corregir.\x1b[0m');
+  process.exit(fallos > 0 ? 1 : 0);
+
+})();

@@ -129,8 +129,11 @@ const Progreso = (function () {
     }
   }
 
-  function _guardar() {
+  /* Guarda en el navegador. `sinSubir` se usa cuando el cambio viene
+     de la propia nube (no tiene sentido devolvérselo). */
+  function _guardar(sinSubir) {
     try { localStorage.setItem(CLAVE, JSON.stringify(_e)); } catch (err) { /* modo privado */ }
+    if (!sinSubir) _programarSubida();
   }
 
   /* Avisa a la interfaz (perfil, nav, banner del ME) de que
@@ -161,6 +164,123 @@ const Progreso = (function () {
     Object.keys(e.modulos).forEach(id => { if (_cuentaModulos(e, id) >= _requeridos(id)) e.superados[id] = true; });
     try { localStorage.setItem(CLAVE, JSON.stringify(e)); } catch (err) {}
     return e;
+  }
+
+  /* ════════════════════════════════════════
+     3b. CAPA DE NUBE (opcional)
+     El estado local sigue siendo la copia de trabajo, así que el
+     sitio funciona igual sin conexión y sin cuenta. Cuando hay
+     sesión iniciada, cada cambio se sube con un pequeño retardo
+     (para agrupar ráfagas) y, al entrar, lo que hubiera en la nube
+     se FUSIONA con lo local: así el progreso conseguido como
+     invitado nunca se pierde al crear la cuenta.
+
+     El adaptador lo inyecta js/auth.js: { cargar(), guardar(estado) }.
+     ════════════════════════════════════════ */
+  let _nube         = null;
+  let _subidaTimer  = null;
+  let _subiendo     = false;
+  let _ultimoError  = null;
+
+  function conectarNube(adaptador) { _nube = adaptador; _ultimoError = null; }
+
+  function desconectarNube() {
+    if (_subidaTimer) { clearTimeout(_subidaTimer); _subidaTimer = null; }
+    _nube = null; _subiendo = false; _ultimoError = null;
+  }
+
+  function _programarSubida() {
+    if (!_nube) return;
+    if (_subidaTimer) clearTimeout(_subidaTimer);
+    const retardo = (typeof HIGGS_AUTH !== 'undefined' && HIGGS_AUTH.retardoSubida) || 1500;
+    _subidaTimer = setTimeout(() => { subirAhora(); }, retardo);
+  }
+
+  /* Sube el estado ahora mismo. Devuelve true si lo consiguió. */
+  async function subirAhora() {
+    if (!_nube) return false;
+    if (_subidaTimer) { clearTimeout(_subidaTimer); _subidaTimer = null; }
+    _subiendo = true;
+    try {
+      await _nube.guardar(_e);
+      _ultimoError = null;
+      return true;
+    } catch (err) {
+      _ultimoError = err;
+      return false;
+    } finally {
+      _subiendo = false;
+    }
+  }
+
+  /* Fusiona dos estados sin perder nada de ninguno de los dos:
+     unión de módulos, unión de superados y concatenación del
+     historial sin duplicados. */
+  function _fusionar(a, b) {
+    const out = _estadoVacio();
+
+    const ids = {};
+    Object.keys(a.modulos || {}).forEach(k => { ids[k] = true; });
+    Object.keys(b.modulos || {}).forEach(k => { ids[k] = true; });
+    Object.keys(ids).forEach(id => {
+      out.modulos[id] = Object.assign({}, (a.modulos || {})[id] || {}, (b.modulos || {})[id] || {});
+    });
+
+    [a, b].forEach(lado => {
+      const s = lado.superados || {};
+      Object.keys(s).forEach(k => { if (s[k]) out.superados[k] = true; });
+    });
+
+    const vistos = {};
+    (a.historial || []).concat(b.historial || []).forEach(h => {
+      const clave = [h.juego, h.fecha, h.puntaje, h.combos, h.errores, h.logro].join('|');
+      if (vistos[clave]) return;
+      vistos[clave] = true;
+      out.historial.push(h);
+    });
+    out.historial = out.historial.slice(0, 40);
+
+    out.etapaNotificada = Math.max(a.etapaNotificada || 1, b.etapaNotificada || 1);
+    Object.keys(out.modulos).forEach(id => {
+      if (_cuentaModulos(out, id) >= _requeridos(id)) out.superados[id] = true;
+    });
+    return out;
+  }
+
+  /* Trae el progreso de la nube y lo fusiona con el local.
+     Si la cuenta es nueva (no hay nada remoto), sube lo local:
+     ese es el caso «jugué como invitado y ahora creé mi cuenta». */
+  async function bajarDeNube() {
+    if (!_nube) return false;
+    const remoto = await _nube.cargar();
+    if (!remoto) {
+      await subirAhora();
+      return true;
+    }
+    _e = _fusionar(_e, remoto);
+    _guardar(true);
+    _refrescarUI();
+    await subirAhora();
+    return true;
+  }
+
+  /* Copia del estado actual (para depurar o exportar) */
+  function estadoActual() { return JSON.parse(JSON.stringify(_e)); }
+
+  /* Vacía el progreso local SIN tocar la nube.
+     Se usa al cerrar sesión en un equipo compartido. */
+  function reiniciarLocal() {
+    _e = _estadoVacio();
+    _guardar(true);
+    _refrescarUI();
+  }
+
+  function estadoNube() {
+    return {
+      conectado:   !!_nube,
+      subiendo:    _subiendo,
+      ultimoError: _ultimoError ? (_ultimoError.message || String(_ultimoError)) : null
+    };
   }
 
   /* ════════════════════════════════════════
@@ -344,6 +464,9 @@ const Progreso = (function () {
     etapaDesbloqueada, etapaMaxima, requisitosEtapa, nombreEtapa,
     etapaDeParticula, particulaBloqueada,
     historial, mejorPuntaje, logroDe,
-    reiniciar, avisar
+    reiniciar, avisar,
+    /* capa de nube */
+    conectarNube, desconectarNube, bajarDeNube, subirAhora,
+    estadoActual, reiniciarLocal, estadoNube
   };
 })();

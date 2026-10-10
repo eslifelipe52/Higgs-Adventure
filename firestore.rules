@@ -1,0 +1,57 @@
+rules_version = '2';
+
+/* ══════════════════════════════════════════
+   firestore.rules — Higgs Adventure
+   Reglas de seguridad de Cloud Firestore.
+
+   ── CÓMO USARLO ────────────────────────────
+   1. Firebase Console → Firestore Database → pestaña «Reglas».
+   2. Borra lo que haya y pega TODO el contenido de este archivo.
+   3. Pulsa «Publicar».
+
+   ── QUÉ HACEN ESTAS REGLAS ─────────────────
+   Permiten que cada usuario lea y escriba ÚNICAMENTE su propio
+   documento de progreso. Sin esto, cualquiera que abriera el sitio
+   podría leer o modificar el progreso de todos los demás, porque
+   la configuración de Firebase viaja al navegador.
+
+   La estructura de datos es:
+       progreso/{uid}
+           modulos         mapa   módulos superados por minijuego
+           superados       mapa   minijuegos completados
+           historial       lista  últimas partidas puntuadas
+           etapaNotificada número última etapa anunciada
+           actualizado     marca  fecha de la última escritura
+   ══════════════════════════════════════════ */
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    /* Cada quien solo puede tocar su propio progreso.
+       request.auth.uid es el identificador del usuario que hace la
+       petición; si no ha iniciado sesión, request.auth es null. */
+    match /progreso/{uid} {
+
+      allow read: if request.auth != null
+                  && request.auth.uid == uid;
+
+      allow create, update: if request.auth != null
+                            && request.auth.uid == uid
+                            /* Solo se aceptan los campos esperados,
+                               y el historial no puede crecer sin control
+                               (evita que alguien llene la base de datos). */
+                            && request.resource.data.keys().hasOnly(
+                                 ['modulos', 'superados', 'historial',
+                                  'etapaNotificada', 'actualizado'])
+                            && request.resource.data.historial.size() <= 60;
+
+      allow delete: if request.auth != null
+                    && request.auth.uid == uid;
+    }
+
+    /* Todo lo demás queda cerrado por omisión. */
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

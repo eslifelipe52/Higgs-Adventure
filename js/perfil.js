@@ -23,14 +23,64 @@ function initPerfil() {
   btn.addEventListener('click', togglePerfil);
   nav.insertBefore(btn, nav.querySelector('.nav-btns'));
 
+  /* Botón de cuenta, al final de la navegación */
+  const btnCuenta = document.createElement('button');
+  btnCuenta.id          = 'btn-cuenta';
+  btnCuenta.textContent = 'Entrar';
+  btnCuenta.title       = 'Tu cuenta';
+  btnCuenta.addEventListener('click', () => {
+    const A = (typeof HiggsAuth !== 'undefined') ? HiggsAuth : null;
+    if (!A) { togglePerfil(); return; }
+    const u = A.estado().usuario;
+    /* Con una cuenta de correo, el botón lleva al perfil;
+       como invitado o sin sesión, abre la pantalla de acceso. */
+    if (u && !u.anonimo) togglePerfil();
+    else A.abrir('entrar');
+  });
+  nav.querySelector('.nav-btns').appendChild(btnCuenta);
+
   /* Panel de perfil */
   const panel = document.createElement('div');
   panel.id        = 'perfil-panel';
   panel.className = 'perfil-panel hidden';
   document.getElementById('app').appendChild(panel);
 
+  /* Reaccionar a los cambios de sesión y de sincronización */
+  if (typeof HiggsAuth !== 'undefined') {
+    HiggsAuth.alCambiar(() => {
+      if (typeof HiggsAuth.pintar === 'function') HiggsAuth.pintar();
+      const p = document.getElementById('perfil-panel');
+      if (p && !p.classList.contains('hidden')) renderPerfil();
+    });
+  }
+
   renderPerfil();
   actualizarAvatarPerfil();
+}
+
+/* ══════════════════════════════════════════
+   ACCIONES DE CUENTA
+   ══════════════════════════════════════════ */
+function abrirAuth(modo) {
+  if (typeof HiggsAuth === 'undefined') return;
+  cerrarPerfil();
+  HiggsAuth.abrir(modo || 'entrar');
+}
+
+function cerrarSesion() {
+  if (typeof HiggsAuth === 'undefined') return;
+  if (!confirm('¿Cerrar sesión? Tu progreso queda guardado en tu cuenta y podrás recuperarlo al volver a entrar.')) return;
+  cerrarPerfil();
+  HiggsAuth.salir().catch(e => {
+    if (typeof Progreso !== 'undefined') Progreso.avisar('No se pudo cerrar sesión: ' + (e.message || e));
+  });
+}
+
+function reenviarVerificacionAuth() {
+  if (typeof HiggsAuth === 'undefined') return;
+  HiggsAuth.reenviarVerificacion()
+    .then(() => Progreso.avisar('📧 Te enviamos un correo para confirmar tu cuenta.'))
+    .catch(e => Progreso.avisar('No se pudo enviar el correo: ' + (e.message || e)));
 }
 
 /* ── Toggle ── */
@@ -245,6 +295,114 @@ function _vistaHistorial() {
 }
 
 /* ══════════════════════════════════════════
+   SECCIÓN DE CUENTA
+   ══════════════════════════════════════════ */
+function _authEstado() {
+  if (typeof HiggsAuth === 'undefined') {
+    return { modo: 'sin-configurar', usuario: null, mensaje: '', sincronizando: false };
+  }
+  return HiggsAuth.estado();
+}
+
+function _nombreMostrado(est) {
+  const u = est.usuario;
+  if (!u) return 'JUGADOR';
+  if (u.anonimo) return 'INVITADO';
+  const base = u.nombre || (u.correo || '').split('@')[0] || 'JUGADOR';
+  return base.toUpperCase();
+}
+
+function _vistaCuenta() {
+  const est = _authEstado();
+  const u   = est.usuario;
+
+  /* ── Firebase todavía no configurado, o abierto con file:// ── */
+  if (est.modo === 'sin-configurar' || est.modo === 'archivo-local') {
+    return `
+      <div class="perfil-cuenta">
+        <div class="perfil-cuenta-icono">💾</div>
+        <div class="perfil-cuenta-info">
+          <div class="perfil-cuenta-titulo">Progreso local</div>
+          <div class="perfil-cuenta-detalle">Guardado solo en este navegador</div>
+        </div>
+      </div>
+      <div class="perfil-cuenta-aviso">${est.mensaje || ''}</div>`;
+  }
+
+  if (est.modo === 'cargando') {
+    return `
+      <div class="perfil-cuenta">
+        <div class="perfil-cuenta-icono">⏳</div>
+        <div class="perfil-cuenta-info">
+          <div class="perfil-cuenta-titulo">Conectando…</div>
+          <div class="perfil-cuenta-detalle">Preparando las cuentas</div>
+        </div>
+      </div>`;
+  }
+
+  if (est.modo === 'error') {
+    return `
+      <div class="perfil-cuenta">
+        <div class="perfil-cuenta-icono">⚠️</div>
+        <div class="perfil-cuenta-info">
+          <div class="perfil-cuenta-titulo">Sin conexión con la nube</div>
+          <div class="perfil-cuenta-detalle">Sigues jugando con progreso local</div>
+        </div>
+      </div>
+      <div class="perfil-cuenta-aviso">${est.mensaje || ''}</div>`;
+  }
+
+  /* ── Sin sesión ── */
+  if (!u) {
+    return `
+      <div class="perfil-cuenta">
+        <div class="perfil-cuenta-icono">👤</div>
+        <div class="perfil-cuenta-info">
+          <div class="perfil-cuenta-titulo">Sin sesión</div>
+          <div class="perfil-cuenta-detalle">Entra para llevar tu progreso a cualquier equipo</div>
+        </div>
+      </div>
+      <div class="perfil-cuenta-btns">
+        <button class="perfil-cuenta-btn" onclick="abrirAuth('entrar')">Entrar</button>
+        <button class="perfil-cuenta-btn" onclick="abrirAuth('crear')">Crear cuenta</button>
+      </div>`;
+  }
+
+  /* ── Sesión anónima (invitado) ── */
+  if (u.anonimo) {
+    const detalle = est.sincronizando
+      ? 'Sincronizando tu progreso…'
+      : 'Tu progreso ya se guarda en la nube';
+    return `
+      <div class="perfil-cuenta invitado">
+        <div class="perfil-cuenta-icono">🎒</div>
+        <div class="perfil-cuenta-info">
+          <div class="perfil-cuenta-titulo">Jugando como invitado</div>
+          <div class="perfil-cuenta-detalle">${detalle}</div>
+        </div>
+      </div>
+      <div class="perfil-cuenta-btns">
+        <button class="perfil-cuenta-btn" onclick="abrirAuth('crear')">Crear cuenta y conservar mi progreso</button>
+        <button class="perfil-cuenta-btn" onclick="abrirAuth('entrar')">Ya tengo una cuenta</button>
+      </div>`;
+  }
+
+  /* ── Cuenta con correo ── */
+  return `
+    <div class="perfil-cuenta">
+      <div class="perfil-cuenta-icono">${u.verificado ? '✅' : '📧'}</div>
+      <div class="perfil-cuenta-info">
+        <div class="perfil-cuenta-titulo">${_nombreMostrado(est)}</div>
+        <div class="perfil-cuenta-detalle" title="${u.correo}">${u.correo}</div>
+      </div>
+    </div>
+    <div class="perfil-cuenta-btns">
+      ${u.verificado ? '' : '<button class="perfil-cuenta-btn" onclick="reenviarVerificacionAuth()">Confirmar mi correo</button>'}
+      <button class="perfil-cuenta-btn peligro" onclick="cerrarSesion()">Cerrar sesión</button>
+    </div>`;
+}
+
+/* ══════════════════════════════════════════
    RENDER DEL PANEL
    ══════════════════════════════════════════ */
 function renderPerfil() {
@@ -252,21 +410,26 @@ function renderPerfil() {
   if (!panel) return;
 
   const etapaMax = Progreso.etapaMaxima();
+  const est      = _authEstado();
 
   const cuerpo =
     _perfilVista === 'logros'    ? _vistaLogros()    :
     _perfilVista === 'historial' ? _vistaHistorial() :
                                    _vistaProgreso();
 
+  const enNube = est.modo === 'listo' && est.usuario;
+
   panel.innerHTML = `
     <div class="perfil-header">
       <div class="perfil-avatar-big">👤</div>
       <div class="perfil-header-info">
-        <div class="perfil-username retro-text">JUGADOR</div>
+        <div class="perfil-username retro-text">${_nombreMostrado(est)}</div>
         <div class="perfil-sub">Explorador del Modelo Estándar · Etapa ${etapaMax}</div>
       </div>
       <button class="perfil-close" onclick="cerrarPerfil()">✕</button>
     </div>
+
+    <div class="perfil-section">${_vistaCuenta()}</div>
 
     <div class="perfil-tabs">
       <button class="perfil-tab ${_perfilVista === 'progreso'  ? 'active' : ''}"
@@ -280,7 +443,9 @@ function renderPerfil() {
     <div class="perfil-vista">${cuerpo}</div>
 
     <div class="perfil-footer">
-      Progreso guardado en este navegador (localStorage).
+      ${enNube
+        ? 'Progreso sincronizado con tu cuenta.'
+        : 'Progreso guardado en este navegador (localStorage).'}
     </div>
   `;
 }
