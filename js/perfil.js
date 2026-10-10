@@ -320,18 +320,42 @@ function _avisoSincronizacion() {
   const n = Progreso.estadoNube();
   if (!n.conectado || !n.ultimoError) return '';
 
-  const dePermisos = /permission-denied|insufficient|unauthorized/i.test(n.ultimoError);
-  const detalle = dePermisos
-    ? 'Parece que las reglas de seguridad de Firestore todavía no están publicadas. ' +
-      'Copia el contenido de <b>firestore.rules</b> en Firestore&nbsp;→&nbsp;Reglas y pulsa Publicar.'
-    : 'Detalle técnico: ' + n.ultimoError;
+  const dePermisos = /permission-denied|insufficient/i.test(n.ultimoError);
+  const deRed      = /unavailable|network|failed to fetch|offline/i.test(n.ultimoError);
+
+  let detalle;
+  if (dePermisos) {
+    detalle = 'Las reglas de seguridad de Firestore todavía no permiten guardar. ' +
+              'Copia el contenido de <b>firestore.rules</b> en Firestore&nbsp;→&nbsp;Reglas y pulsa Publicar.';
+  } else if (deRed) {
+    detalle = 'No se pudo conectar con el servidor de la nube. Suele ser la conexión a internet ' +
+              'o un <b>bloqueador de anuncios</b> del navegador (Opera, Brave, uBlock…) que corta ' +
+              'las conexiones a Google.';
+  } else {
+    detalle = 'Detalle técnico: ' + n.ultimoError;
+  }
 
   return `
     <div class="perfil-sync-error">
       ⚠️ <b>No se pudo guardar en la nube.</b><br>
       ${detalle}<br>
       <span class="perfil-sync-nota">Tu progreso no se ha perdido: sigue guardado en este navegador.</span>
+      <button class="perfil-cuenta-btn" style="margin-top:8px" onclick="reintentarSincronizacion()">
+        Reintentar ahora
+      </button>
     </div>`;
+}
+
+/* Botón «Reintentar» del aviso anterior */
+function reintentarSincronizacion() {
+  if (typeof Progreso === 'undefined') return;
+  Progreso.avisar('Reintentando guardar…');
+  Progreso.subirAhora().then(ok => {
+    Progreso.avisar(ok
+      ? '✅ Progreso guardado en la nube.'
+      : '❌ Sigue sin poder guardarse. Revisa tu conexión o el bloqueador del navegador.');
+    renderPerfil();
+  });
 }
 
 function _vistaCuenta() {
