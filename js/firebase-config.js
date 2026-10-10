@@ -27,12 +27,12 @@
    ══════════════════════════════════════════ */
 
 const FIREBASE_CONFIG = {
-  apiKey:            'PEGA_AQUI_TU_API_KEY',
-  authDomain:        'PEGA_AQUI.firebaseapp.com',
-  projectId:         'PEGA_AQUI',
-  storageBucket:     'PEGA_AQUI.appspot.com',
-  messagingSenderId: 'PEGA_AQUI',
-  appId:             'PEGA_AQUI'
+  apiKey: "AIzaSyAmvEKp5VfIliJl5-bhCziHHBqUp6KAPJo",
+  authDomain: "higgs-adventure.firebaseapp.com",
+  projectId: "higgs-adventure",
+  storageBucket: "higgs-adventure.firebasestorage.app",
+  messagingSenderId: "80047839248",
+  appId: "1:80047839248:web:18007d820596be6a1b5295"
 };
 
 /* Versión del SDK de Firebase que se descarga desde el CDN oficial.

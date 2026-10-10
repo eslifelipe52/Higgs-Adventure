@@ -156,14 +156,42 @@ dominios autorizados, o el acceso fallará con el error
 
 ## 10. Problemas frecuentes
 
+**Antes de nada:** abre la página de diagnóstico que viene incluida. Te dice en
+un segundo si el problema son las reglas, la configuración o la sesión.
+
+```
+http://localhost:8000/tools/diagnostico.html
+```
+
+Puedes añadir `?soloLectura=1` al final para que compruebe sin escribir nada en
+tu base de datos.
+
 | Mensaje que ves | Qué significa | Solución |
 |---|---|---|
+| **«Firestore está rechazando el acceso (reglas de seguridad)»** | Las reglas siguen en el modo cerrado por defecto | Paso 5 |
 | «El proveedor no está habilitado» | No activaste el método de acceso | Paso 3 |
 | «Este dominio no está autorizado» | Falta tu dominio en la lista | Paso 6 |
 | «No se pudo descargar el SDK de Firebase» | Sin internet, o la versión del SDK cambió | Revisa la conexión; si persiste, actualiza `FIREBASE_SDK_VERSION` en `js/firebase-config.js` |
 | Las cuentas no aparecen y el perfil dice «Progreso local» | La configuración sigue con `PEGA_AQUI` | Paso 2 |
-| Todo funciona pero al recargar no hay progreso | Las reglas de Firestore rechazan la escritura | Revisa la pestaña **Reglas** y la consola del navegador (F12) |
+| Todo funciona pero al recargar no hay progreso | Las reglas rechazan la escritura | Paso 5 |
 | «Demasiados intentos seguidos» | Límite de seguridad de Firebase | Espera unos minutos |
+| La página se queda en «Comprobando…» | Se abrió con `file://` | Paso 6 |
+
+### El error más habitual
+
+El «modo de producción» de Firestore, que es el que se elige al crearla, **deja
+la base cerrada a todo el mundo** por defecto. Es una decisión de seguridad
+correcta, pero significa que hasta que no pegues `firestore.rules` y pulses
+**Publicar**, el acceso funciona (las cuentas viven en otro servicio) pero
+**nada se guarda**: ni el progreso ni los logros.
+
+El síntoma exacto es este:
+
+- En **Authentication → Users** sí aparece el usuario (anónimo al principio).
+- En **Firestore → Datos** no hay ninguna colección `progreso`.
+- El perfil muestra «Jugando como invitado», pero el progreso no viaja.
+
+Si ves eso, es el paso 5. Vuelve a pegarlo y publica.
 
 ---
 

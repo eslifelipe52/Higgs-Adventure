@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Diagnóstico de Firebase — Higgs Adventure</title>
+  <style>
+    :root { --accent: #00e5ff; --ok: #69f0ae; --mal: #ff5252; --aviso: #ffd740; }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; padding: 28px;
+      background: #05020f; color: #d8e4f0;
+      font-family: 'Segoe UI', system-ui, sans-serif; font-size: 14px; line-height: 1.6;
+    }
+    .caja { max-width: 900px; margin: 0 auto; }
+    h1 {
+      font-size: 20px; letter-spacing: 2px; margin: 0 0 4px;
+      background: linear-gradient(90deg,#4fc3f7,#7c4dff);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .sub { color: #7d8fa8; font-size: 12px; margin-bottom: 22px; }
+    h2 { font-size: 13px; letter-spacing: 1px; text-transform: uppercase; color: var(--accent);
+         margin: 26px 0 10px; border-bottom: 1px solid rgba(0,229,255,0.18); padding-bottom: 6px; }
+    .fila { display: flex; gap: 10px; padding: 7px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+    .etq { flex: 0 0 240px; color: #8fa2ba; }
+    .val { flex: 1; word-break: break-word; }
+    .si  { color: var(--ok); font-weight: 600; }
+    .no  { color: var(--mal); font-weight: 600; }
+    .ojo { color: var(--aviso); font-weight: 600; }
+    code { background: rgba(255,255,255,0.07); padding: 1px 6px; border-radius: 4px;
+           font-family: Consolas, monospace; font-size: 12.5px; }
+    .veredicto { padding: 16px 20px; border-radius: 10px; margin: 20px 0; font-size: 14.5px;
+                 border: 1px solid; }
+    .veredicto.bien  { background: rgba(105,240,174,0.07); border-color: rgba(105,240,174,0.4); }
+    .veredicto.mal   { background: rgba(255,82,82,0.08);  border-color: rgba(255,82,82,0.45); }
+    .veredicto.ojo   { background: rgba(255,215,64,0.07); border-color: rgba(255,215,64,0.35); }
+    .veredicto b { display: block; margin-bottom: 6px; font-size: 15px; }
+    ol, ul { margin: 8px 0 0 20px; padding: 0; }
+    li { margin-bottom: 5px; }
+    .cargando { color: var(--aviso); }
+    pre { background: rgba(0,0,0,0.4); padding: 12px; border-radius: 8px; overflow-x: auto;
+          font-size: 12px; color: #9fb3c8; }
+  </style>
+</head>
+<body>
+<div class="caja">
+  <h1>DIAGNÓSTICO DE FIREBASE</h1>
+  <div class="sub">
+    Comprueba la configuración, el acceso y el permiso de escritura en Firestore.
+    Ábrelo con <code>http://localhost:8000/tools/diagnostico.html</code>, no con doble clic.
+  </div>
+  <div id="salida"><div class="cargando">Comprobando…</div></div>
+</div>
+
+<!-- La configuración real del proyecto -->
+<script src="../js/firebase-config.js"></script>
+
+<script type="module">
+const S = document.getElementById('salida');
+const filas = [];
+let veredicto = null;
+
+function fila(etq, val)       { filas.push({ etq, val }); }
+function pinta() {
+  let html = '';
+  if (veredicto) html += `<div class="veredicto ${veredicto.tipo}"><b>${veredicto.titulo}</b>${veredicto.texto}</div>`;
+  html += filas.map(f => `<div class="fila"><div class="etq">${f.etq}</div><div class="val">${f.val}</div></div>`).join('');
+  S.innerHTML = html;
+}
+const si  = t => `<span class="si">SÍ</span> ${t || ''}`;
+const no  = t => `<span class="no">NO</span> ${t || ''}`;
+const ojo = t => `<span class="ojo">${t}</span>`;
+
+function fallar(titulo, texto) { veredicto = { tipo: 'mal', titulo, texto }; pinta(); }
+function avisar(titulo, texto) { veredicto = { tipo: 'ojo', titulo, texto }; pinta(); }
+function bien(titulo, texto)   { veredicto = { tipo: 'bien', titulo, texto }; pinta(); }
+
+/* Red de seguridad: si algo falla antes de llegar al veredicto, la página
+   debe decirlo en vez de quedarse en «Comprobando…» para siempre. Una
+   página de diagnóstico que falla en silencio no sirve de nada. */
+function errorGlobal(detalle) {
+  if (!veredicto) fallar('El diagnóstico no pudo completarse', 'Detalle: ' + detalle);
+}
+window.addEventListener('error', e => errorGlobal(e.message || 'error desconocido'));
+window.addEventListener('unhandledrejection', e => {
+  const r = e.reason;
+  errorGlobal((r && (r.code || r.message)) || String(r));
+});
+
+/* ── 1. Configuración ── */
+fila('Página abierta desde', location.protocol === 'file:'
+  ? no('estás en <code>file://</code>; usa un servidor local')
+  : si('<code>' + location.origin + '</code>'));
+
+const configurado = (typeof firebaseEstaConfigurado === 'function') && firebaseEstaConfigurado();
+fila('Configuración de Firebase', configurado
+  ? si('detectada en <code>js/firebase-config.js</code>')
+  : no('sigue con los marcadores <code>PEGA_AQUI</code>'));
+
+if (!configurado) {
+  fallar('Falta pegar tu configuración',
+    'Abre <code>js/firebase-config.js</code> y sustituye los valores <code>PEGA_AQUI…</code> ' +
+    'por los de tu proyecto (Firebase Console → Configuración del proyecto → Tus apps → Web). ' +
+    'Los pasos están en <code>docs/FIREBASE.md</code>.');
+  throw new Error('sin configurar');
+}
+fila('Proyecto', '<code>' + FIREBASE_CONFIG.projectId + '</code>');
+
+/* Firebase Auth necesita un origen http(s). Desde file:// no falla con un
+   error claro: la petición se queda colgada, así que lo cortamos aquí. */
+if (location.protocol === 'file:') {
+  fallar('Abre esta página desde un servidor local',
+    'Estás en <code>file://</code>, y las cuentas necesitan un origen <code>http://</code>. ' +
+    'Desde la carpeta del proyecto ejecuta <code>python -m http.server 8000</code> y abre ' +
+    '<code>http://localhost:8000/tools/diagnostico.html</code>.');
+  document.title = 'DIAGNOSTICO-FALLO';
+  throw new Error('diagnóstico detenido: origen file://');
+}
+
+/* ── 2. Descarga del SDK ── */
+let appMod, authMod, fsMod;
+try {
+  [appMod, authMod, fsMod] = await Promise.all([
+    import(FIREBASE_CDN + 'firebase-app.js'),
+    import(FIREBASE_CDN + 'firebase-auth.js'),
+    import(FIREBASE_CDN + 'firebase-firestore.js')
+  ]);
+  fila('SDK de Firebase', si('descargado desde <code>' + FIREBASE_CDN + '</code>'));
+} catch (e) {
+  fila('SDK de Firebase', no(e.message || e));
+  fallar('No se pudo descargar el SDK',
+    'Revisa tu conexión a internet. Si persiste, cambia <code>FIREBASE_SDK_VERSION</code> ' +
+    'en <code>js/firebase-config.js</code> por la versión más reciente.');
+  throw e;
+}
+
+const app = appMod.initializeApp(FIREBASE_CONFIG);
+const auth = authMod.getAuth(app);
+const db   = fsMod.getFirestore(app);
+
+/* ── 3. Sesión ── */
+function usuarioActual() {
+  return new Promise(res => {
+    const quitar = authMod.onAuthStateChanged(auth, u => { quitar(); res(u); });
+  });
+}
+let user = await usuarioActual();
+if (!user) {
+  try {
+    const cred = await authMod.signInAnonymously(auth);
+    user = cred.user;
+    fila('Sesión', si('se creó una cuenta de invitado nueva'));
+  } catch (e) {
+    fila('Sesión', no(e.code || e.message));
+    if (String(e.code) === 'auth/operation-not-allowed') {
+      fallar('El acceso anónimo está desactivado',
+        'Ve a Firebase Console → Authentication → Método de acceso (Sign-in method) y activa ' +
+        '<b>Anónimo</b>. Sin eso, el modo invitado no puede funcionar.');
+    } else {
+      fallar('No se pudo iniciar sesión', 'Error: <code>' + (e.code || e.message) + '</code>');
+    }
+    throw e;
+  }
+} else {
+  fila('Sesión', si('ya había una sesión abierta'));
+}
+fila('Tipo de cuenta', user.isAnonymous
+  ? 'invitado (anónima)'
+  : 'con correo: <code>' + user.email + '</code>');
+fila('Identificador (uid)', '<code>' + user.uid + '</code>');
+
+/* ── 4. Progreso guardado en este navegador ── */
+let local = null;
+try { local = JSON.parse(localStorage.getItem('higgs_progreso') || 'null'); } catch (e) {}
+if (!local) {
+  fila('Progreso local', no('no hay nada guardado en este navegador'));
+} else {
+  const juegos = Object.keys(local.modulos || {});
+  const detalle = juegos.map(id => `<code>${id}</code> (${Object.keys(local.modulos[id]).length} módulos)`).join(', ');
+  fila('Progreso local', juegos.length
+    ? si(detalle)
+    : ojo('existe pero sin módulos completados'));
+  fila('Partidas en el historial', String((local.historial || []).length));
+}
+
+/* ── 5. Lectura desde Firestore ── */
+const ref = fsMod.doc(db, 'progreso', user.uid);
+let lecturaOk = false, docExiste = false;
+try {
+  const snap = await fsMod.getDoc(ref);
+  lecturaOk = true;
+  docExiste = snap.exists();
+  fila('Lectura de Firestore', si(docExiste
+    ? 'el documento existe y se pudo leer'
+    : 'permitida (el documento todavía no existe)'));
+} catch (e) {
+  fila('Lectura de Firestore', no('<code>' + (e.code || e.message) + '</code>'));
+}
+
+/* ── 6. Escritura en Firestore ── */
+/* Con ?soloLectura=1 se omite la escritura: útil para diagnosticar sin
+   tocar la base de datos. */
+const soloLectura = new URLSearchParams(location.search).has('soloLectura');
+let escrituraOk = false;
+if (!lecturaOk) {
+  fila('Escritura en Firestore', ojo('no se probó: la lectura ya falló'));
+} else if (soloLectura) {
+  fila('Escritura en Firestore', ojo('omitida (modo solo lectura)'));
+} else {
+  try {
+    /* Se escribe exactamente lo que escribe la aplicación, para que las
+       reglas lo evalúen igual. Con «merge» no se borra nada que ya exista. */
+    const estado = local || { modulos: {}, superados: {}, historial: [], etapaNotificada: 1 };
+    await fsMod.setDoc(ref, {
+      modulos:         estado.modulos         || {},
+      superados:       estado.superados       || {},
+      historial:       (estado.historial || []).slice(0, 60),
+      etapaNotificada: estado.etapaNotificada || 1,
+      actualizado:     fsMod.serverTimestamp()
+    }, { merge: true });
+    escrituraOk = true;
+    fila('Escritura en Firestore', si('se guardó correctamente'));
+  } catch (e) {
+    fila('Escritura en Firestore', no('<code>' + (e.code || e.message) + '</code>'));
+  }
+}
+
+/* ── 7. Veredicto ── */
+const esPermiso = t => /permission-denied|insufficient|unauthorized/i.test(t);
+const huboPermiso = filas.some(f => esPermiso(String(f.val)));
+
+if (lecturaOk && soloLectura) {
+  avisar('La lectura funciona (no se probó la escritura)',
+    'Firestore aceptó la lectura, así que las reglas están publicadas y permiten el acceso. ' +
+    'Quita <code>?soloLectura=1</code> de la dirección y recarga para comprobar también la escritura.');
+} else if (lecturaOk && escrituraOk) {
+  if (local && Object.keys(local.modulos || {}).length) {
+    bien('Todo funciona correctamente',
+      'Tu configuración, tus reglas y tu progreso están bien. ' +
+      'Recarga la página del juego (<code>http://localhost:8000</code>) y el perfil debería ' +
+      'mostrar «Jugando como invitado». Si completaste un módulo antes de arreglar las reglas, ' +
+      'ese avance pudo perderse: vuelve a completarlo y se subirá solo.');
+  } else {
+    avisar('La conexión funciona, pero no hay progreso que subir',
+      'Firestore acepta lecturas y escrituras, así que la configuración está bien. ' +
+      'En este navegador no hay ningún módulo completado. ' +
+      'Abre el juego, completa un módulo entero y vuelve aquí para comprobar que se sube.');
+  }
+} else if (huboPermiso) {
+  fallar('Firestore está rechazando el acceso (reglas de seguridad)',
+    'Es el problema más habitual, y significa que las reglas todavía no están publicadas. ' +
+    'En Firestore, el «modo de producción» deja la base cerrada a todo el mundo por defecto. ' +
+    'Para arreglarlo:' +
+    '<ol>' +
+    '<li>Firebase Console → <b>Firestore Database</b> → pestaña <b>Reglas</b>.</li>' +
+    '<li>Borra lo que haya y pega <b>todo</b> el contenido de <code>firestore.rules</code> de tu proyecto.</li>' +
+    '<li>Pulsa <b>Publicar</b> y recarga esta página.</li>' +
+    '</ol>');
+} else {
+  fallar('Algo falló al conectar con Firestore',
+    'Revisa los detalles de arriba. Si el error menciona <code>unauthorized-domain</code>, ' +
+    'agrega <code>localhost</code> en Authentication → Settings → Dominios autorizados.');
+}
+pinta();
+
+/* Guardamos el resultado en el título para poder leerlo desde fuera */
+document.title = (veredicto && veredicto.tipo === 'bien') ? 'DIAGNOSTICO-OK' : 'DIAGNOSTICO-FALLO';
+</script>
+</body>
+</html>

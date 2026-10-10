@@ -259,3 +259,21 @@
   color: var(--text2); font-style: italic;
   padding: 8px 0 0;
 }
+
+/* ════════════════════════════════════════
+   AVISO DE FALLO AL SINCRONIZAR
+   Aparece cuando Firestore rechaza guardar
+   (por ejemplo, si faltan las reglas).
+   ════════════════════════════════════════ */
+.perfil-sync-error {
+  margin-top: 10px; padding: 9px 11px;
+  border-radius: 7px; font-size: 10.5px; line-height: 1.5;
+  background: rgba(255,82,82,0.09);
+  border: 1px solid rgba(255,82,82,0.4);
+  color: #ff8a80;
+}
+.perfil-sync-error b { color: #ff5252; }
+.perfil-sync-nota {
+  display: block; margin-top: 5px;
+  color: var(--text2); font-size: 9.5px; font-style: italic;
+}

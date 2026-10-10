@@ -312,6 +312,28 @@ function _nombreMostrado(est) {
   return base.toUpperCase();
 }
 
+/* Aviso cuando la nube rechaza guardar. Sin esto, un fallo de
+   permisos o de conexión pasaría completamente desapercibido:
+   el progreso se seguiría guardando en el navegador y nada más. */
+function _avisoSincronizacion() {
+  if (typeof Progreso === 'undefined' || typeof Progreso.estadoNube !== 'function') return '';
+  const n = Progreso.estadoNube();
+  if (!n.conectado || !n.ultimoError) return '';
+
+  const dePermisos = /permission-denied|insufficient|unauthorized/i.test(n.ultimoError);
+  const detalle = dePermisos
+    ? 'Parece que las reglas de seguridad de Firestore todavía no están publicadas. ' +
+      'Copia el contenido de <b>firestore.rules</b> en Firestore&nbsp;→&nbsp;Reglas y pulsa Publicar.'
+    : 'Detalle técnico: ' + n.ultimoError;
+
+  return `
+    <div class="perfil-sync-error">
+      ⚠️ <b>No se pudo guardar en la nube.</b><br>
+      ${detalle}<br>
+      <span class="perfil-sync-nota">Tu progreso no se ha perdido: sigue guardado en este navegador.</span>
+    </div>`;
+}
+
 function _vistaCuenta() {
   const est = _authEstado();
   const u   = est.usuario;
@@ -429,7 +451,7 @@ function renderPerfil() {
       <button class="perfil-close" onclick="cerrarPerfil()">✕</button>
     </div>
 
-    <div class="perfil-section">${_vistaCuenta()}</div>
+    <div class="perfil-section">${_vistaCuenta()}${_avisoSincronizacion()}</div>
 
     <div class="perfil-tabs">
       <button class="perfil-tab ${_perfilVista === 'progreso'  ? 'active' : ''}"

@@ -415,24 +415,40 @@ titulo('H. Capa de autenticación (Firebase)');
 
 /* Carga js/firebase-config.js en un contexto aislado.
    `sustituir` permite probar el caso «ya configurado». */
-function cargarConfig(sustituir) {
+/* Carga js/firebase-config.js en un contexto aislado.
+   modo:  undefined    → deja el archivo tal cual está
+          'real'       → inyecta una configuración completa y válida
+          'marcadores' → inyecta los marcadores PEGA_AQUI
+
+   Se sustituye SOLO el bloque de configuración. No se puede hacer un
+   reemplazo global de «'PEGA_AQUI'»: esa misma cadena aparece dentro de
+   firebaseEstaConfigurado() como centinela, y reescribirla cambiaría el
+   comportamiento de la función que queremos probar. */
+function cargarConfig(modo) {
   const ctx = vm.createContext({ console, location: { protocol: 'https:' } });
   let src = leer('js/firebase-config.js');
-  if (sustituir) {
-    /* Sustituimos SOLO el bloque de configuración. No se puede hacer un
-       reemplazo global de «'PEGA_AQUI'»: esa misma cadena aparece dentro
-       de firebaseEstaConfigurado() como centinela, y reescribirla
-       cambiaría el comportamiento de la función que queremos probar. */
-    src = src.replace(/const FIREBASE_CONFIG = \{[\s\S]*?\n\};/,
-      "const FIREBASE_CONFIG = {\n" +
-      "  apiKey:            'AIzaSyA1234567890abcdefghijklmnopqrst',\n" +
-      "  authDomain:        'higgs-adventure.firebaseapp.com',\n" +
-      "  projectId:         'higgs-adventure',\n" +
-      "  storageBucket:     'higgs-adventure.appspot.com',\n" +
-      "  messagingSenderId: '1234567890',\n" +
-      "  appId:             '1:1234567890:web:abcdef'\n" +
-      "};");
+
+  if (modo === 'real' || modo === 'marcadores') {
+    const bloque = (modo === 'real')
+      ? "const FIREBASE_CONFIG = {\n" +
+        "  apiKey:            'AIzaSyA1234567890abcdefghijklmnopqrst',\n" +
+        "  authDomain:        'higgs-adventure.firebaseapp.com',\n" +
+        "  projectId:         'higgs-adventure',\n" +
+        "  storageBucket:     'higgs-adventure.appspot.com',\n" +
+        "  messagingSenderId: '1234567890',\n" +
+        "  appId:             '1:1234567890:web:abcdef'\n" +
+        "};"
+      : "const FIREBASE_CONFIG = {\n" +
+        "  apiKey:            'PEGA_AQUI_TU_API_KEY',\n" +
+        "  authDomain:        'PEGA_AQUI.firebaseapp.com',\n" +
+        "  projectId:         'PEGA_AQUI',\n" +
+        "  storageBucket:     'PEGA_AQUI.appspot.com',\n" +
+        "  messagingSenderId: 'PEGA_AQUI',\n" +
+        "  appId:             'PEGA_AQUI'\n" +
+        "};";
+    src = src.replace(/const FIREBASE_CONFIG = \{[\s\S]*?\n\};/, bloque);
   }
+
   vm.runInContext(
     src + '\n;globalThis.__C = { FIREBASE_CONFIG, FIREBASE_CDN, HIGGS_AUTH, ' +
           'firebaseEstaConfigurado, estaEnArchivoLocal };',
@@ -455,14 +471,23 @@ probar('La configuración tiene los 6 campos de Firebase', () => {
 });
 
 probar('Con marcadores «PEGA_AQUI», Firebase se considera sin configurar', () => {
-  return cargarConfig().firebaseEstaConfigurado() === false
+  return cargarConfig('marcadores').firebaseEstaConfigurado() === false
       || 'devolvió true con los marcadores puestos';
 });
 
 probar('Con una configuración real, Firebase se considera configurado', () => {
-  return cargarConfig(true).firebaseEstaConfigurado() === true
+  return cargarConfig('real').firebaseEstaConfigurado() === true
       || 'no detectó una configuración válida';
 });
+
+/* Estado real del proyecto: informativo, no es un fallo en ningún caso */
+{
+  const yaConfigurado = cargarConfig().firebaseEstaConfigurado();
+  const proyecto = yaConfigurado ? cargarConfig().FIREBASE_CONFIG.projectId : '';
+  console.log('  \x1b[90m·\x1b[0m Estado del proyecto: ' + (yaConfigurado
+    ? 'Firebase configurado (proyecto «' + proyecto + '») → las cuentas están activas'
+    : 'sin configurar → el progreso se guarda solo en el navegador'));
+}
 
 probar('La URL del CDN tiene el formato oficial y versión fijada', () => {
   const url = cargarConfig().FIREBASE_CDN;
@@ -524,6 +549,56 @@ probar('Las acciones de cuenta están definidas', () => {
   const faltan = necesarias.filter(f => !new RegExp('function\\s+' + f + '\\s*\\(').test(src));
   return faltan.length ? 'faltan: ' + faltan.join(', ') : true;
 });
+
+/* ════════════════════════════════════════
+   I. Scripts en línea dentro de los HTML
+   Nada más los revisaba: un error de sintaxis en un <script> dentro
+   de un .html deja la página muda y no lo detecta node --check.
+   ════════════════════════════════════════ */
+titulo('I. Sintaxis de los scripts en línea de los HTML');
+
+{
+  /* Todos los .html del proyecto (se saltan .git, node_modules y assets) */
+  const htmls = [];
+  (function recorrer(dir) {
+    const abs = path.join(RAIZ, dir);
+    for (const e of fs.readdirSync(abs, { withFileTypes: true })) {
+      const rel = dir ? dir + '/' + e.name : e.name;
+      if (e.isDirectory()) {
+        if (['.git', 'node_modules', 'assets', 'docs'].indexOf(e.name) >= 0) continue;
+        recorrer(rel);
+      } else if (/\.html$/i.test(e.name)) {
+        htmls.push(rel);
+      }
+    }
+  })('');
+
+  let revisados = 0;
+
+  htmls.forEach(rel => {
+    const src = leer(rel);
+    const re = /<script([^>]*)>([\s\S]*?)<\/script>/gi;
+    let m, i = 0;
+    while ((m = re.exec(src)) !== null) {
+      const attrs = m[1] || '';
+      if (/\bsrc\s*=/.test(attrs)) continue;   /* scripts externos */
+      if (!m[2].trim()) continue;              /* vacíos */
+      i++; revisados++;
+      const esModulo = /type\s*=\s*["']module["']/.test(attrs);
+      try {
+        /* Para los módulos envolvemos en una función async porque usan
+           await de nivel superior. */
+        new vm.Script(esModulo ? `(async () => {${m[2]}\n})` : m[2],
+                      { filename: rel + ' bloque ' + i });
+        ok(rel + ' · bloque ' + i + (esModulo ? ' (módulo)' : ''));
+      } catch (e) {
+        fallo(rel + ' · bloque ' + i + ' → ' + e.message);
+      }
+    }
+  });
+
+  if (revisados === 0) aviso('no se encontró ningún script en línea que revisar');
+}
 
 /* ── Pruebas asíncronas de la sincronización ── */
 (async () => {
