@@ -169,6 +169,7 @@ tu base de datos.
 | Mensaje que ves | Qué significa | Solución |
 |---|---|---|
 | **«Firestore está rechazando el acceso (reglas de seguridad)»** | Las reglas siguen en el modo cerrado por defecto | Paso 5 |
+| **`unavailable`** | El navegador **no consigue comunicarse** con Firestore. No es culpa de tus reglas ni de tu configuración | «No se llega a Firestore», abajo |
 | «El proveedor no está habilitado» | No activaste el método de acceso | Paso 3 |
 | «Este dominio no está autorizado» | Falta tu dominio en la lista | Paso 6 |
 | «No se pudo descargar el SDK de Firebase» | Sin internet, o la versión del SDK cambió | Revisa la conexión; si persiste, actualiza `FIREBASE_SDK_VERSION` en `js/firebase-config.js` |
@@ -177,7 +178,7 @@ tu base de datos.
 | «Demasiados intentos seguidos» | Límite de seguridad de Firebase | Espera unos minutos |
 | La página se queda en «Comprobando…» | Se abrió con `file://` | Paso 6 |
 
-### El error más habitual
+### El error más habitual: las reglas
 
 El «modo de producción» de Firestore, que es el que se elige al crearla, **deja
 la base cerrada a todo el mundo** por defecto. Es una decisión de seguridad
@@ -190,8 +191,32 @@ El síntoma exacto es este:
 - En **Authentication → Users** sí aparece el usuario (anónimo al principio).
 - En **Firestore → Datos** no hay ninguna colección `progreso`.
 - El perfil muestra «Jugando como invitado», pero el progreso no viaja.
+- La página de diagnóstico dice **`permission-denied`**.
 
 Si ves eso, es el paso 5. Vuelve a pegarlo y publica.
+
+### No se llega a Firestore (`unavailable`)
+
+Si la página de diagnóstico dice **`unavailable`** en lugar de
+`permission-denied`, el problema es distinto: **tus reglas están bien** y el
+navegador simplemente no puede hablar con `firestore.googleapis.com`.
+
+Las causas, por orden de probabilidad:
+
+1. **Un bloqueador de anuncios o de rastreadores.** uBlock Origin, AdGuard o las
+   protecciones de Brave cortan conexiones a dominios de Google.
+   **Prueba primero esto:** abre el sitio en una ventana de incógnito con las
+   extensiones desactivadas (**Ctrl+Shift+N**). Si ahí funciona, ya sabes quién
+   es: desactiva el bloqueador para `localhost` o añádelo a la lista blanca.
+2. **Un antivirus con escudo web** (Avast, Kaspersky, ESET, Norton) filtrando la
+   conexión. Desactívalo un momento para comprobar.
+3. **La red** (la de la escuela, una VPN o un proxy) bloqueando dominios de
+   Google.
+4. **Estar sin conexión.** La página de diagnóstico lo indica en la fila «El
+   navegador dice estar».
+
+La propia página incluye un sondeo directo a `firestore.googleapis.com`, así que
+sabrás si la red llega a Google o si el bloqueo está en tu equipo.
 
 ---
 

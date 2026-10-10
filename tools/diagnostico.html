@@ -183,18 +183,47 @@ if (!local) {
   fila('Partidas en el historial', String((local.historial || []).length));
 }
 
-/* ── 5. Lectura desde Firestore ── */
-const ref = fsMod.doc(db, 'progreso', user.uid);
-let lecturaOk = false, docExiste = false;
+/* ── 5. Conectividad con los servidores de Firestore ── */
+fila('El navegador dice estar', navigator.onLine
+  ? si('en línea')
+  : no('sin conexión a internet'));
+
+/* Sondeo directo al servidor: distingue «no se llega» de «se llega pero
+   Firestore rechaza». Con mode:'no-cors' evitamos que un problema de CORS
+   se confunda con un problema de red. */
+let alcanza = null;
 try {
-  const snap = await fsMod.getDoc(ref);
-  lecturaOk = true;
-  docExiste = snap.exists();
+  await fetch('https://firestore.googleapis.com/', { mode: 'no-cors', cache: 'no-store' });
+  alcanza = true;
+} catch (e) {
+  alcanza = false;
+}
+fila('Alcance de firestore.googleapis.com', alcanza
+  ? si('el servidor responde')
+  : no('no se pudo contactar: algo está bloqueando la conexión'));
+
+/* ── 6. Lectura desde Firestore ── */
+const ref = fsMod.doc(db, 'progreso', user.uid);
+let lecturaOk = false, docExiste = false, lecturaError = null, intentos = 0;
+for (let i = 1; i <= 3 && !lecturaOk; i++) {
+  intentos = i;
+  try {
+    const snap = await fsMod.getDoc(ref);
+    lecturaOk = true;
+    docExiste = snap.exists();
+  } catch (e) {
+    lecturaError = e;
+    if (i < 3) await new Promise(r => setTimeout(r, 1200));
+  }
+}
+if (lecturaOk) {
   fila('Lectura de Firestore', si(docExiste
     ? 'el documento existe y se pudo leer'
     : 'permitida (el documento todavía no existe)'));
-} catch (e) {
-  fila('Lectura de Firestore', no('<code>' + (e.code || e.message) + '</code>'));
+} else {
+  const cod = (lecturaError && (lecturaError.code || lecturaError.message)) || 'desconocido';
+  fila('Lectura de Firestore', no('<code>' + cod + '</code> tras ' + intentos +
+    (intentos === 1 ? ' intento' : ' intentos')));
 }
 
 /* ── 6. Escritura en Firestore ── */
@@ -225,9 +254,12 @@ if (!lecturaOk) {
   }
 }
 
-/* ── 7. Veredicto ── */
-const esPermiso = t => /permission-denied|insufficient|unauthorized/i.test(t);
-const huboPermiso = filas.some(f => esPermiso(String(f.val)));
+/* ── 8. Veredicto ── */
+const esPermiso      = t => /permission-denied|insufficient/i.test(t);
+const esNoDisponible = t => /unavailable|failed to fetch|network|ERR_/i.test(t);
+const textos = filas.map(f => String(f.val)).join(' ');
+const huboPermiso      = esPermiso(textos);
+const huboNoDisponible = esNoDisponible(textos);
 
 if (lecturaOk && soloLectura) {
   avisar('La lectura funciona (no se probó la escritura)',
@@ -246,11 +278,31 @@ if (lecturaOk && soloLectura) {
       'En este navegador no hay ningún módulo completado. ' +
       'Abre el juego, completa un módulo entero y vuelve aquí para comprobar que se sube.');
   }
+} else if (huboNoDisponible) {
+  fallar('No se pudo contactar con Firestore (no es culpa de tus reglas)',
+    'El error <code>unavailable</code> significa que el navegador no consiguió hablar con ' +
+    '<code>firestore.googleapis.com</code>. Tus reglas y tu configuración están bien: ' +
+    'el problema está en el camino hasta el servidor.' +
+    '<ol>' +
+    '<li><b>Prueba primero esto:</b> abre el sitio en una ventana de incógnito con las ' +
+        'extensiones desactivadas (<b>Ctrl+Shift+N</b>). Si ahí funciona, el culpable es una ' +
+        'extensión: un bloqueador de anuncios o de rastreadores (uBlock, AdGuard, las ' +
+        'protecciones de Brave), que está cortando las conexiones a Google.</li>' +
+    '<li>Un <b>antivirus con escudo web</b> (Avast, Kaspersky, ESET, Norton) puede estar ' +
+        'filtrando la conexión. Prueba a desactivarlo un momento.</li>' +
+    '<li>La <b>red de la escuela o una VPN</b> pueden bloquear dominios de Google.</li>' +
+    '<li>Mira la fila «Alcance de firestore.googleapis.com» de arriba: si sale en rojo, ' +
+        'confirma que algo bloquea la conexión desde este equipo o esta red.</li>' +
+    '<li>También puedes probar otro navegador (Edge) para descartar el perfil de Chrome.</li>' +
+    '</ol>' +
+    (alcanza === false
+      ? '<b>El sondeo directo también falló</b>, así que hay un bloqueo claro en este equipo o esta red.'
+      : '<b>El sondeo directo sí funcionó</b>, así que la red llega a Google: el bloqueo ' +
+        'probablemente sea de una extensión o del antivirus.'));
 } else if (huboPermiso) {
   fallar('Firestore está rechazando el acceso (reglas de seguridad)',
-    'Es el problema más habitual, y significa que las reglas todavía no están publicadas. ' +
-    'En Firestore, el «modo de producción» deja la base cerrada a todo el mundo por defecto. ' +
-    'Para arreglarlo:' +
+    'Las reglas todavía no permiten el acceso. En Firestore, el «modo de producción» deja la ' +
+    'base cerrada a todo el mundo por defecto. Para arreglarlo:' +
     '<ol>' +
     '<li>Firebase Console → <b>Firestore Database</b> → pestaña <b>Reglas</b>.</li>' +
     '<li>Borra lo que haya y pega <b>todo</b> el contenido de <code>firestore.rules</code> de tu proyecto.</li>' +
