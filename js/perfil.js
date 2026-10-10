@@ -346,11 +346,13 @@ function _avisoSincronizacion() {
     </div>`;
 }
 
-/* Botón «Reintentar» del aviso anterior */
+/* Botón «Reintentar» del aviso anterior. Usa Progreso.reintentar(), que
+   sabe si hay que repetir solo la subida o el ciclo completo (leer y
+   luego fusionar), según dónde haya fallado. */
 function reintentarSincronizacion() {
-  if (typeof Progreso === 'undefined') return;
+  if (typeof Progreso === 'undefined' || typeof Progreso.reintentar !== 'function') return;
   Progreso.avisar('Reintentando guardar…');
-  Progreso.subirAhora().then(ok => {
+  Progreso.reintentar().then(ok => {
     Progreso.avisar(ok
       ? '✅ Progreso guardado en la nube.'
       : '❌ Sigue sin poder guardarse. Revisa tu conexión o el bloqueador del navegador.');

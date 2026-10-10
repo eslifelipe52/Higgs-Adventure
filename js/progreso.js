@@ -181,12 +181,16 @@ const Progreso = (function () {
   let _subidaTimer  = null;
   let _subiendo     = false;
   let _ultimoError  = null;
+  /* true cuando el último intento falló en la LECTURA. Importa porque
+     en ese caso no se debe escribir: habría que leer primero para no
+     pisar el progreso que el alumno tenga en otro equipo. */
+  let _falloLectura = false;
 
-  function conectarNube(adaptador) { _nube = adaptador; _ultimoError = null; }
+  function conectarNube(adaptador) { _nube = adaptador; _ultimoError = null; _falloLectura = false; }
 
   function desconectarNube() {
     if (_subidaTimer) { clearTimeout(_subidaTimer); _subidaTimer = null; }
-    _nube = null; _subiendo = false; _ultimoError = null;
+    _nube = null; _subiendo = false; _ultimoError = null; _falloLectura = false;
   }
 
   function _programarSubida() {
@@ -196,17 +200,22 @@ const Progreso = (function () {
     _subidaTimer = setTimeout(() => { subirAhora(); }, retardo);
   }
 
-  /* Sube el estado ahora mismo. Devuelve true si lo consiguió. */
+  /* Sube el estado ahora mismo. Devuelve true si lo consiguió.
+     Cuando el resultado cambia (de bien a mal o al revés) refresca la
+     interfaz, para que el aviso del perfil aparezca y desaparezca solo. */
   async function subirAhora() {
     if (!_nube) return false;
     if (_subidaTimer) { clearTimeout(_subidaTimer); _subidaTimer = null; }
     _subiendo = true;
+    const habiaError = !!_ultimoError;
     try {
       await _nube.guardar(_e);
       _ultimoError = null;
+      if (habiaError) _refrescarUI();
       return true;
     } catch (err) {
       _ultimoError = err;
+      if (!habiaError) _refrescarUI();
       return false;
     } finally {
       _subiendo = false;
@@ -249,10 +258,26 @@ const Progreso = (function () {
 
   /* Trae el progreso de la nube y lo fusiona con el local.
      Si la cuenta es nueva (no hay nada remoto), sube lo local:
-     ese es el caso «jugué como invitado y ahora creé mi cuenta». */
+     ese es el caso «jugué como invitado y ahora creé mi cuenta».
+
+     Si la LECTURA falla (sin conexión, red bloqueada…), NO se escribe:
+     escribir sin haber leído antes podría pisar el progreso que el
+     alumno tenga hecho en otra computadora. Se anota el error para que
+     el perfil lo muestre, y se reintenta el ciclo completo más tarde. */
   async function bajarDeNube() {
     if (!_nube) return false;
-    const remoto = await _nube.cargar();
+
+    let remoto = null;
+    try {
+      remoto = await _nube.cargar();
+      _falloLectura = false;
+    } catch (err) {
+      _ultimoError  = err;
+      _falloLectura = true;
+      _refrescarUI();
+      return false;
+    }
+
     if (!remoto) {
       await subirAhora();
       return true;
@@ -263,6 +288,22 @@ const Progreso = (function () {
     await subirAhora();
     return true;
   }
+
+  /* Reintenta lo que quedó pendiente. Si falló la lectura hay que
+     repetir el ciclo completo (leer y luego fusionar y subir); si solo
+     falló la subida, basta con volver a subir. */
+  function reintentar() {
+    if (!_nube) return Promise.resolve(false);
+    return _falloLectura ? bajarDeNube() : subirAhora();
+  }
+
+  /* Si el navegador recupera la conexión y quedó algo pendiente,
+     lo reintentamos sin que el usuario tenga que hacer nada. */
+  try {
+    window.addEventListener('online', () => {
+      if (_nube && _ultimoError) reintentar();
+    });
+  } catch (err) { /* entorno sin window (por ejemplo, las pruebas) */ }
 
   /* Copia del estado actual (para depurar o exportar) */
   function estadoActual() { return JSON.parse(JSON.stringify(_e)); }
@@ -277,9 +318,10 @@ const Progreso = (function () {
 
   function estadoNube() {
     return {
-      conectado:   !!_nube,
-      subiendo:    _subiendo,
-      ultimoError: _ultimoError ? (_ultimoError.message || String(_ultimoError)) : null
+      conectado:    !!_nube,
+      subiendo:     _subiendo,
+      falloLectura: _falloLectura,
+      ultimoError:  _ultimoError ? (_ultimoError.message || String(_ultimoError)) : null
     };
   }
 
@@ -466,7 +508,7 @@ const Progreso = (function () {
     historial, mejorPuntaje, logroDe,
     reiniciar, avisar,
     /* capa de nube */
-    conectarNube, desconectarNube, bajarDeNube, subirAhora,
+    conectarNube, desconectarNube, bajarDeNube, subirAhora, reintentar,
     estadoActual, reiniciarLocal, estadoNube
   };
 })();

@@ -162,6 +162,7 @@ function nuevoProgreso() {
   };
   const sandbox = {
     localStorage, document: doc, console,
+    window: { addEventListener: () => {} },
     setTimeout: () => 0, clearTimeout: () => {}
   };
   const ctx = vm.createContext(sandbox);
@@ -672,6 +673,39 @@ titulo('I. Sintaxis de los scripts en línea de los HTML');
     const r = await P.subirAhora();
     if (r !== false) return 'no informó del fallo';
     if (!P.estadoNube().ultimoError) return 'no guardó el error';
+    return true;
+  });
+
+  await probarAsync('Si la LECTURA falla, se avisa y NO se escribe a ciegas', async () => {
+    const P = nuevoProgreso();
+    P.moduloCompletado('spin', 'brujula');
+    let seEscribio = false;
+    P.conectarNube({
+      cargar:  async () => { throw new Error('unavailable'); },
+      guardar: async () => { seEscribio = true; }
+    });
+    await P.bajarDeNube();
+    if (!P.estadoNube().ultimoError)  return 'no se registró el error: el perfil no avisaría de nada';
+    if (!P.estadoNube().falloLectura) return 'no se marcó como fallo de lectura';
+    if (seEscribio)                   return 'escribió sin haber leído: podría pisar el progreso de otro equipo';
+    return true;
+  });
+
+  await probarAsync('reintentar() repite el ciclo completo y acaba subiendo', async () => {
+    const P = nuevoProgreso();
+    P.moduloCompletado('spin', 'brujula');
+    let lecturaFalla = true, subido = null;
+    P.conectarNube({
+      cargar:  async () => { if (lecturaFalla) throw new Error('unavailable'); return null; },
+      guardar: async (e) => { subido = e; }
+    });
+    await P.bajarDeNube();                       /* primer intento: falla la lectura */
+    if (subido) return 'no debería haber subido nada todavía';
+    lecturaFalla = false;                        /* el alumno arregla su conexión */
+    const ok = await P.reintentar();
+    if (!ok) return 'reintentar() no tuvo éxito';
+    if (!subido || !subido.modulos.spin) return 'no se subió el progreso tras reintentar';
+    if (P.estadoNube().ultimoError) return 'el error anterior no se limpió';
     return true;
   });
 
