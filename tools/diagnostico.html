@@ -117,7 +117,41 @@ if (location.protocol === 'file:') {
   throw new Error('diagnóstico detenido: origen file://');
 }
 
-/* ── 2. Descarga del SDK ── */
+/* ── 2. ¿Existe realmente la base de datos? ──
+   Esto es decisivo y el SDK no lo dice: cuando la base de datos no existe (o es
+   de edición Enterprise), el cliente solo devuelve «unavailable», un mensaje
+   engañoso que apunta a la red. La REST API sí lo distingue: NOT_FOUND si no
+   existe, PERMISSION_DENIED si existe y las reglas protegen los datos. */
+let estadoBase = 'desconocido';
+try {
+  const urlBase = 'https://firestore.googleapis.com/v1/projects/' +
+                  encodeURIComponent(FIREBASE_CONFIG.projectId) +
+                  '/databases/(default)/documents/progreso?key=' +
+                  encodeURIComponent(FIREBASE_CONFIG.apiKey);
+  const r = await fetch(urlBase);
+  if (r.status === 404) {
+    estadoBase = 'no-existe';
+    fila('La base de datos (comprobación directa)',
+      no('no existe, o es de edición <b>Enterprise</b>'));
+  } else if (r.status === 403 || r.status === 401) {
+    estadoBase = 'existe';
+    fila('La base de datos (comprobación directa)',
+      si('existe y las reglas protegen los datos'));
+  } else if (r.ok) {
+    estadoBase = 'existe';
+    fila('La base de datos (comprobación directa)', si('existe'));
+  } else {
+    estadoBase = 'otro';
+    fila('La base de datos (comprobación directa)',
+      ojo('respuesta inesperada: HTTP ' + r.status));
+  }
+} catch (e) {
+  estadoBase = 'sin-red';
+  fila('La base de datos (comprobación directa)',
+    ojo('no se pudo comprobar por REST: ' + (e.message || e)));
+}
+
+/* ── 3. Descarga del SDK ── */
 let appMod, authMod, fsMod;
 try {
   [appMod, authMod, fsMod] = await Promise.all([
@@ -261,7 +295,21 @@ const textos = filas.map(f => String(f.val)).join(' ');
 const huboPermiso      = esPermiso(textos);
 const huboNoDisponible = esNoDisponible(textos);
 
-if (lecturaOk && soloLectura) {
+if (estadoBase === 'no-existe') {
+  fallar('La base de datos de Firestore no existe (o es de edición Enterprise)',
+    'Esto explica el error <code>unavailable</code>: el SDK busca una base en ' +
+    '<code>(default)</code>, no la encuentra, y en lugar de decirlo con claridad devuelve ' +
+    'un error de red. <b>No es tu configuración ni tus reglas.</b>' +
+    '<ol>' +
+    '<li>Firebase Console → <b>Firestore Database</b>.</li>' +
+    '<li>Si hay una base en la lista, mira la columna <b>Edition</b>: debe decir ' +
+        '<b>Standard</b>. Si dice <b>Enterprise</b>, bórrala (es seguro si está vacía) y ' +
+        'crea otra Standard.</li>' +
+    '<li>Si no hay ninguna, pulsa <b>Crear base de datos</b> y elige edición <b>Standard</b>, ' +
+        'modo <b>Nativo</b> y modo <b>de producción</b>. Espera a que termine.</li>' +
+    '<li>Vuelve a publicar las reglas de <code>firestore.rules</code>: una base nueva nace cerrada.</li>' +
+    '</ol>');
+} else if (lecturaOk && soloLectura) {
   avisar('La lectura funciona (no se probó la escritura)',
     'Firestore aceptó la lectura, así que las reglas están publicadas y permiten el acceso. ' +
     'Quita <code>?soloLectura=1</code> de la dirección y recarga para comprobar también la escritura.');

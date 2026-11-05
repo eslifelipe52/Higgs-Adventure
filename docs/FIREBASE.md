@@ -71,10 +71,28 @@ Lo que nunca debe subirse al repositorio es la clave de **cuenta de servicio**
 
 ## 4. Crear la base de datos
 
+> ⚠️ **Elige la edición STANDARD, no Enterprise.**
+> Firestore ahora ofrece dos ediciones y el asistente puede ofrecerte
+> Enterprise. Los SDK de Firebase, que son los que usa este proyecto, están
+> hechos para **Standard**. Con una base Enterprise *todo parece correcto en la
+> consola*, pero la aplicación falla con el error `unavailable`, la REST API
+> responde que la base «does not exist» y no se guarda nada. No hay ningún
+> mensaje que lo explique, así que es un fallo muy difícil de diagnosticar.
+> Si ya creaste una Enterprise, tendrás que borrarla y crear otra Standard
+> (es seguro si está vacía).
+
 1. Menú lateral: **Compilación → Firestore Database**.
 2. Pulsa **Crear base de datos**.
-3. Elige **Modo de producción** (las reglas del paso siguiente se encargan de todo).
-4. Ubicación: la que te proponga; `us-central1` o `southamerica-east1` funcionan bien.
+3. **Edición: Standard.** Comprueba este punto antes de seguir.
+4. Modo: **Nativo** (*Native mode*). **No** elijas «Modo Datastore».
+5. Elige **Modo de producción** (las reglas del paso siguiente se encargan de todo).
+6. Ubicación: la que te proponga; `us-central1` o `southamerica-east1` funcionan bien.
+   *No se puede cambiar después.*
+7. Pulsa **Crear** y **espera a que termine**. No cierres la pestaña hasta que
+   desaparezca el indicador de progreso.
+
+Para comprobarlo, abre la lista **Databases** y mira la columna **Edition**: debe
+decir **Standard**. Si dice Enterprise, no funcionará.
 
 ## 5. Pegar las reglas de seguridad
 
@@ -169,7 +187,7 @@ tu base de datos.
 | Mensaje que ves | Qué significa | Solución |
 |---|---|---|
 | **«Firestore está rechazando el acceso (reglas de seguridad)»** | Las reglas siguen en el modo cerrado por defecto | Paso 5 |
-| **`unavailable`** | El navegador **no consigue comunicarse** con Firestore. No es culpa de tus reglas ni de tu configuración | «No se llega a Firestore», abajo |
+| **`unavailable`** | O la base no existe o es de edición **Enterprise**, o algo corta la conexión. Tus reglas no son el problema | «No se llega a Firestore», abajo |
 | «El proveedor no está habilitado» | No activaste el método de acceso | Paso 3 |
 | «Este dominio no está autorizado» | Falta tu dominio en la lista | Paso 6 |
 | «No se pudo descargar el SDK de Firebase» | Sin internet, o la versión del SDK cambió | Revisa la conexión; si persiste, actualiza `FIREBASE_SDK_VERSION` en `js/firebase-config.js` |
@@ -198,25 +216,41 @@ Si ves eso, es el paso 5. Vuelve a pegarlo y publica.
 ### No se llega a Firestore (`unavailable`)
 
 Si la página de diagnóstico dice **`unavailable`** en lugar de
-`permission-denied`, el problema es distinto: **tus reglas están bien** y el
-navegador simplemente no puede hablar con `firestore.googleapis.com`.
+`permission-denied`, tus **reglas** están bien y el problema es otro. Hay dos
+causas posibles, y conviene descartar la primera antes de tocar el navegador:
 
-Las causas, por orden de probabilidad:
+**1. La base de datos es de edición Enterprise (o no existe).** Es la causa más
+traicionera porque en la consola *todo parece correcto*.
 
-1. **Un bloqueador de anuncios o de rastreadores.** uBlock Origin, AdGuard o las
-   protecciones de Brave cortan conexiones a dominios de Google.
-   **Prueba primero esto:** abre el sitio en una ventana de incógnito con las
-   extensiones desactivadas (**Ctrl+Shift+N**). Si ahí funciona, ya sabes quién
-   es: desactiva el bloqueador para `localhost` o añádelo a la lista blanca.
-2. **Un antivirus con escudo web** (Avast, Kaspersky, ESET, Norton) filtrando la
-   conexión. Desactívalo un momento para comprobar.
-3. **La red** (la de la escuela, una VPN o un proxy) bloqueando dominios de
-   Google.
+Compruébalo en dos segundos: pega esta dirección en el navegador, sustituyendo
+`TU_API_KEY` por la de `js/firebase-config.js`:
+
+```
+https://firestore.googleapis.com/v1/projects/TU_PROJECT_ID/databases/(default)/documents/progreso?key=TU_API_KEY
+```
+
+- **`does not exist` / `NOT_FOUND`** → la base no está donde el SDK la busca:
+  o no se creó, o es de **edición Enterprise**. Solución: paso 4, crea una base
+  **Standard**.
+- **`PERMISSION_DENIED`** → la base existe y las reglas están protegiendo los
+  datos. Ese es el resultado correcto; el problema estará en el navegador.
+- **Error de conexión** → no hay red o algo la bloquea.
+
+**2. Algo en el navegador corta las conexiones a Google.** Esta causa solo
+aplica si la comprobación anterior dio `PERMISSION_DENIED`:
+
+1. **Bloqueadores de anuncios o de rastreadores.** uBlock Origin, AdGuard, las
+   protecciones de Brave u **Opera GX** (que tiene dos ajustes separados: el
+   bloqueador de anuncios y el de rastreadores). El SDK de Firestore usa
+   conexiones persistentes, y esos filtros las cortan aunque dejen pasar las
+   peticiones normales. **Prueba en una ventana de incógnito (Ctrl+Shift+N).**
+2. **Antivirus con escudo web** (Avast, Kaspersky, ESET, Norton).
+3. **La red**: la de la escuela, una VPN o un proxy bloqueando dominios de Google.
 4. **Estar sin conexión.** La página de diagnóstico lo indica en la fila «El
    navegador dice estar».
 
-La propia página incluye un sondeo directo a `firestore.googleapis.com`, así que
-sabrás si la red llega a Google o si el bloqueo está en tu equipo.
+La página de diagnóstico incluye un sondeo directo a `firestore.googleapis.com`,
+así que sabrás si la red llega a Google o si el bloqueo está en tu equipo.
 
 ---
 
