@@ -44,6 +44,7 @@ let _auth      = null;
 let _db        = null;
 let _suscriptores = [];
 let _ui        = null;
+let _modoUI    = 'entrar';   /* pestaña activa de la pantalla de acceso */
 
 /* ── Utilidades ── */
 function _avisar() {
@@ -193,6 +194,7 @@ async function _alCambiarUsuario(user) {
   }
 
   _pintarUsuario();
+  _pintarNota();
   _avisar();
 
   /* Refrescar la interfaz que depende del progreso */
@@ -356,6 +358,7 @@ function _crearUI() {
 
   function ponerModo(nuevo) {
     modo = nuevo;
+    _modoUI = nuevo;
     ov.querySelector('#auth-tab-entrar').classList.toggle('active', nuevo === 'entrar');
     ov.querySelector('#auth-tab-crear').classList.toggle('active', nuevo === 'crear');
     ov.querySelector('#auth-campo-nombre').style.display = (nuevo === 'crear') ? '' : 'none';
@@ -365,6 +368,7 @@ function _crearUI() {
       ? 'Crea una cuenta para llevar tu progreso a cualquier equipo'
       : 'Tu progreso, en cualquier computadora';
     mostrarMsg('');
+    _pintarNota();
   }
 
   async function ejecutar(fn) {
@@ -470,10 +474,18 @@ function _abrirObligatorio() {
 function _pintarNota() {
   if (!_ui || !_ui._elNota) return;
   const u = _estado.usuario;
+
   if (u && u.anonimo) {
-    _ui._elNota.innerHTML =
-      'Estás jugando como <strong>invitado</strong>. Crea una cuenta y tu progreso ' +
-      'se conservará tal como está ahora.';
+    /* La confusión más habitual: como invitado, «Entrar» solo sirve si ya
+       tenías una cuenta de antes. Para conservar el progreso actual hay que
+       CREAR la cuenta. */
+    _ui._elNota.innerHTML = (_modoUI === 'entrar')
+      ? 'Estás jugando como <strong>invitado</strong>. Si todavía no tienes cuenta, ' +
+        'pulsa <strong>Crear cuenta</strong>: así conservas el progreso que llevas ahora. ' +
+        '«Entrar» es solo para cuentas que ya existan.'
+      : 'Crearemos tu cuenta y <strong>conservaremos el progreso que llevas como invitado</strong>.';
+  } else if (u && !u.anonimo) {
+    _ui._elNota.innerHTML = 'Sesión iniciada como <strong>' + u.correo + '</strong>.';
   } else {
     _ui._elNota.textContent =
       'Al crear una cuenta solo guardamos tu correo y tu progreso de juego. Nada más.';
