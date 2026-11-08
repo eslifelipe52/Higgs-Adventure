@@ -239,19 +239,28 @@ async function _entrarComoInvitadoSiProcede() {
 /* ══════════════════════════════════════════
    4. OPERACIONES
    ══════════════════════════════════════════ */
+/* Crea la cuenta con correo. Devuelve { user, vinculada }.
+   `vinculada` es true solo si se pudo convertir la sesión anónima actual en
+   una cuenta con correo, conservando el mismo identificador (y por tanto el
+   mismo progreso en la nube). Si es false, se creó una cuenta nueva.
+
+   Que sea false sin querer es justo el fallo silencioso que hay que evitar:
+   el alumno ve «cuenta creada» pero su progreso de invitado se queda en otra
+   cuenta. Por eso el resultado se informa de forma explícita en la interfaz. */
 async function registrar(correo, contrasena, nombre) {
   const u = _estado.usuario;
-  /* Si ya hay una sesión anónima, la «vinculamos»: así el progreso
-     conseguido como invitado pasa a la cuenta nueva sin perderse. */
-  if (u && u.anonimo) {
+  const eraInvitado = !!(u && u.anonimo);
+
+  if (eraInvitado) {
     const cred = _fb.auth.EmailAuthProvider.credential(correo, contrasena);
     const res  = await _fb.auth.linkWithCredential(_auth.currentUser, cred);
     if (nombre) { try { await _fb.auth.updateProfile(res.user, { displayName: nombre }); } catch (e) {} }
-    return res.user;
+    return { user: res.user, vinculada: true };
   }
+
   const res = await _fb.auth.createUserWithEmailAndPassword(_auth, correo, contrasena);
   if (nombre) { try { await _fb.auth.updateProfile(res.user, { displayName: nombre }); } catch (e) {} }
-  return res.user;
+  return { user: res.user, vinculada: false };
 }
 
 async function entrar(correo, contrasena) {
@@ -397,8 +406,17 @@ function _crearUI() {
 
     ejecutar(async () => {
       if (modo === 'crear') {
-        await registrar(correo, contra, elNombre.value.trim());
-        await _trasEntrar('¡Cuenta creada! Tu progreso ya está guardado en la nube.');
+        const r = await registrar(correo, contra, elNombre.value.trim());
+        if (r.vinculada) {
+          await _trasEntrar('¡Cuenta creada! Conservamos el progreso que tenías como invitado.');
+        } else {
+          await _trasEntrar(
+            '¡Cuenta creada! Tu progreso de este navegador se ha subido a la cuenta nueva.',
+            'Aviso: no había una sesión de invitado activa, así que la cuenta se creó desde ' +
+            'cero en vez de vincularse a la de invitado. Lo que habías jugado en este ' +
+            'navegador se ha subido igualmente, porque seguía guardado aquí.'
+          );
+        }
       } else {
         await entrar(correo, contra);
         await _trasEntrar('¡Bienvenido de nuevo! Hemos recuperado tu progreso.');
@@ -434,8 +452,11 @@ function _crearUI() {
   _ui._elNota = elNota;
 }
 
-/* Después de entrar o registrarse */
-async function _trasEntrar(mensajeOk) {
+/* Después de entrar o registrarse.
+   `aviso` se usa cuando hay algo que el usuario DEBE leer (por ejemplo, que la
+   cuenta no se pudo vincular a la de invitado): en ese caso la ventana se queda
+   abierta en lugar de cerrarse sola. */
+async function _trasEntrar(mensajeOk, aviso) {
   const verificado = _auth.currentUser && _auth.currentUser.emailVerified;
   const exigir = (typeof HIGGS_AUTH !== 'undefined' && HIGGS_AUTH.exigirVerificacion === true);
 
@@ -446,6 +467,10 @@ async function _trasEntrar(mensajeOk) {
                       'Revisa tu bandeja (y la carpeta de spam).', 'info');
     }
     return;
+  }
+  if (aviso) {
+    if (_ui && _ui._mostrarMsg) _ui._mostrarMsg(aviso, 'info');
+    return;                       /* no se cierra: hay que leerlo */
   }
   if (_ui && _ui._mostrarMsg) _ui._mostrarMsg(mensajeOk, 'ok');
   setTimeout(_cerrarUI, 1400);
