@@ -16,15 +16,66 @@
 /* ── Header con instrucción del nivel ── */
 .cc-header {
   flex-shrink: 0;
-  padding: 10px 20px;
-  background: linear-gradient(90deg, rgba(30,10,80,0.95), rgba(10,5,40,0.95));
-  border-bottom: 1px solid rgba(124,77,255,0.4);
-  text-align: center;
+  padding: 0;
+  position: relative;
+  overflow: hidden;
 }
+
+/* Línea animada de acento superior */
+.cc-header::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, transparent, #00b0ff, #ffd740, #00b0ff, transparent);
+  animation: cc-header-line 3s linear infinite;
+}
+@keyframes cc-header-line {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+.cc-instruccion-wrap {
+  display: flex; align-items: center; gap: 14px;
+  padding: 12px 24px;
+  background: linear-gradient(90deg,
+    rgba(0,30,60,0.97) 0%,
+    rgba(5,15,40,0.97) 40%,
+    rgba(5,15,40,0.97) 60%,
+    rgba(0,30,60,0.97) 100%
+  );
+  border-bottom: 1px solid rgba(0,180,255,0.4);
+  box-shadow: 0 4px 24px rgba(0,180,255,0.12), inset 0 1px 0 rgba(255,255,255,0.05);
+}
+
+.cc-instruccion-icon {
+  font-size: 22px; flex-shrink: 0;
+  animation: cc-icon-pulse 2s ease-in-out infinite;
+}
+@keyframes cc-icon-pulse {
+  0%,100% { transform: scale(1);    opacity: 1; }
+  50%      { transform: scale(1.15); opacity: 0.8; }
+}
+
 .cc-instruccion {
-  font-size: 13px; color: #c5b0ff;
-  line-height: 1.6; margin: 0;
-  max-width: 900px; margin: 0 auto;
+  font-family: 'Exo 2', sans-serif;
+  font-size: 14px; font-weight: 600;
+  color: #d0eeff;
+  line-height: 1.55; margin: 0; flex: 1;
+  text-align: center;
+  text-shadow: 0 0 20px rgba(79,195,247,0.3);
+}
+
+/* Etiqueta "INSTRUCCIÓN" a la izquierda */
+.cc-instruccion-label {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 7px; letter-spacing: 2px;
+  color: var(--accent);
+  text-shadow: 0 0 8px rgba(0,229,255,0.6);
+  flex-shrink: 0;
+  writing-mode: horizontal-tb;
+  white-space: nowrap;
+  border: 1px solid rgba(0,229,255,0.3);
+  padding: 4px 8px; border-radius: 3px;
+  background: rgba(0,229,255,0.06);
 }
 
 /* ── Cuerpo: panel + canvas ── */
@@ -35,15 +86,15 @@
 /* ── Panel izquierdo ── */
 .cc-panel {
   width: 200px; flex-shrink: 0;
-  background: rgba(8,4,28,0.9);
-  border-right: 1px solid rgba(124,77,255,0.25);
+  background: rgba(0,10,30,0.9);
+  border-right: 1px solid rgba(0,180,255,0.25);
   padding: 16px 12px;
   display: flex; flex-direction: column; gap: 10px;
 }
 
 .cc-panel-card {
-  background: rgba(124,77,255,0.1);
-  border: 1px solid rgba(124,77,255,0.3);
+  background: rgba(0,180,255,0.1);
+  border: 1px solid rgba(0,180,255,0.3);
   border-radius: 10px; padding: 10px 12px;
   clip-path: polygon(0 5px,5px 0,calc(100% - 5px) 0,100% 5px,100% calc(100% - 5px),calc(100% - 5px) 100%,5px 100%,0 calc(100% - 5px));
 }
@@ -70,11 +121,11 @@
 .cc-prog-wrap {
   height: 7px; background: rgba(255,255,255,0.07);
   border-radius: 10px; overflow: hidden;
-  border: 1px solid rgba(124,77,255,0.2);
+  border: 1px solid rgba(0,180,255,0.2);
 }
 .cc-prog-bar {
   height: 100%; width: 0%;
-  background: linear-gradient(90deg, #7c4dff, #00e5ff);
+  background: linear-gradient(90deg, #00b0ff, #4fc3f7);
   border-radius: 10px;
   transition: width 0.35s ease;
   box-shadow: 0 0 8px rgba(0,229,255,0.4);
@@ -89,28 +140,84 @@
   font-family: 'Press Start 2P', monospace;
   font-size: 8px; letter-spacing: 1px;
   padding: 10px 8px;
-  background: rgba(124,77,255,0.1);
-  border: 1px solid rgba(124,77,255,0.35);
-  color: #c5b0ff; border-radius: 4px;
+  background: rgba(0,180,255,0.1);
+  border: 1px solid rgba(0,180,255,0.35);
+  color: #80d8ff; border-radius: 4px;
   cursor: pointer; transition: all 0.2s;
   text-align: center; line-height: 1.5;
   clip-path: polygon(0 3px,3px 0,calc(100% - 3px) 0,100% 3px,100% calc(100% - 3px),calc(100% - 3px) 100%,3px 100%,0 calc(100% - 3px));
 }
 .cc-btn:hover {
-  background: rgba(124,77,255,0.25);
+  background: rgba(0,180,255,0.25);
   border-color: var(--accent);
   color: var(--accent);
-  box-shadow: 2px 2px 0 rgba(124,77,255,0.5);
+  box-shadow: 2px 2px 0 rgba(0,180,255,0.5);
   transform: translate(-1px,-1px);
 }
 .cc-btn-close {
-  margin-top: auto;
   border-color: rgba(0,229,255,0.25);
   color: rgba(0,229,255,0.6);
 }
 .cc-btn-close:hover {
   border-color: var(--accent);
   color: var(--accent);
+}
+/* Botón "Siguiente nivel/etapa" (aparece al completar) */
+.cc-btn-next {
+  margin-top: auto;
+  border-color: rgba(0,230,118,0.4);
+  color: #00e676;
+  background: rgba(0,230,118,0.08);
+}
+.cc-btn-next:hover {
+  border-color: #00e676; color: #69ffa6;
+  box-shadow: 2px 2px 0 rgba(0,230,118,0.4);
+}
+.cc-btn-next.hidden { display: none; }
+
+/* ── Dots de nivel dentro de la etapa (panel izquierdo) ── */
+.cc-niveles-dots {
+  display: flex; gap: 6px; flex-wrap: wrap;
+}
+.cc-nivel-dot {
+  width: 28px; height: 28px; border-radius: 6px;
+  font-family: 'Orbitron', monospace; font-size: 11px; font-weight: 700;
+  background: rgba(0,180,255,0.1);
+  border: 1px solid rgba(0,180,255,0.3);
+  color: var(--text2); cursor: pointer; transition: all 0.18s;
+}
+.cc-nivel-dot:hover  { border-color: var(--accent); color: var(--accent); }
+.cc-nivel-dot.active {
+  border-color: var(--accent); color: var(--accent);
+  background: rgba(0,229,255,0.14);
+  box-shadow: 0 0 8px rgba(0,229,255,0.3);
+}
+
+/* ── Barra de navegación inferior con etapas ── */
+.cc-nav-bar {
+  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 16px; gap: 12px;
+  background: rgba(5,2,20,0.95);
+  border-top: 1px solid rgba(0,180,255,0.2);
+}
+.cc-btn-volver { border-color: rgba(0,229,255,0.25); color: var(--text2); }
+.cc-etapa-dots { display: flex; gap: 8px; }
+.cc-etapa-dot {
+  font-family: 'Orbitron', monospace; font-size: 9px;
+  padding: 6px 12px; border-radius: 4px; cursor: pointer;
+  background: rgba(0,180,255,0.08);
+  border: 1px solid rgba(0,180,255,0.25);
+  color: var(--text2); transition: all 0.2s;
+}
+.cc-etapa-dot:hover  { border-color: var(--accent); color: var(--accent); }
+.cc-etapa-dot.active {
+  border-color: var(--accent); color: var(--accent);
+  background: rgba(0,229,255,0.1);
+}
+.cc-progreso-label {
+  font-family: 'Orbitron', monospace; font-size: 10px;
+  color: var(--text2); white-space: nowrap;
 }
 
 /* ── Canvas del juego ── */
@@ -153,41 +260,169 @@
   to   { transform: scale(1)   translateY(0);    opacity: 1; }
 }
 
-/* ════════════════════════════════════════
-   SELECTOR DE NIVELES
-   ════════════════════════════════════════ */
-.cc-nv-overlay {
-  position: absolute; inset: 0; z-index: 80;
-  background: rgba(2,0,12,0.88);
-  backdrop-filter: blur(6px);
-  display: flex; align-items: center; justify-content: center;
-}
-.cc-nv-overlay.hidden { display: none; }
 
-.cc-nv-wrap {
-  background: linear-gradient(135deg, rgba(16,8,45,0.98), rgba(6,3,22,0.98));
-  border: 1px solid rgba(124,77,255,0.45);
-  border-radius: 14px; padding: 28px 32px;
-  display: flex; flex-direction: column;
-  align-items: center; gap: 20px;
-  box-shadow: 0 0 40px rgba(124,77,255,0.2);
-  clip-path: polygon(0 10px,10px 0,calc(100% - 10px) 0,100% 10px,100% calc(100% - 10px),calc(100% - 10px) 100%,10px 100%,0 calc(100% - 10px));
+
+
+/* ══════════════════════════════════════════
+   ETAPA 3 — EL TEJIDO DE GLUONES
+   ══════════════════════════════════════════ */
+
+/* Objetivo del nivel en el panel */
+.g3-objetivo {
+  font-family: 'Exo 2', sans-serif;
+  font-size: 12px; font-weight: 700;
+  color: #d0eeff; line-height: 1.4;
+  padding: 4px 0;
 }
-.cc-nv-titulo {
-  font-size: 13px; color: var(--accent);
-  text-shadow: 0 0 14px rgba(0,229,255,0.5),
-               2px 2px 0 rgba(124,77,255,0.6);
+
+/* Estado (feedback persistente del objetivo) */
+.g3-estado {
+  margin-top: 6px;
+  font-family: 'Exo 2', sans-serif;
+  font-size: 10px; line-height: 1.5;
+  padding: 6px 8px; border-radius: 6px;
 }
-.cc-nv-grid {
-  display: grid; grid-template-columns: repeat(3,1fr); gap: 10px;
+.g3-estado.pend {
+  color: #80d8ff;
+  background: rgba(0,180,255,0.1);
+  border: 1px solid rgba(0,180,255,0.25);
 }
-.cc-nv-item {
-  font-size: 7px; padding: 10px 8px;
-  min-width: 80px;
+.g3-estado.ok {
+  color: #69ffa6;
+  background: rgba(0,230,118,0.1);
+  border: 1px solid rgba(0,230,118,0.35);
 }
-.cc-nv-activo {
-  border-color: var(--accent) !important;
-  color: var(--accent) !important;
-  background: rgba(0,229,255,0.1) !important;
-  box-shadow: 2px 2px 0 rgba(0,229,255,0.4) !important;
+
+/* Botones de crear/aniquilar par */
+.g3-btn-accion {
+  width: 100%;
+  margin-top: 6px;
+  justify-content: center;
+}
+.g3-btn-accion.activo {
+  border-color: #ff5252;
+  color: #ff8a80;
+  background: rgba(255,82,82,0.12);
+  box-shadow: 2px 2px 0 rgba(255,82,82,0.35);
+}
+
+/* ── Panel flotante de gluones aplicables ── */
+.g3-gluon-pop {
+  position: absolute;
+  left: 50%; top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 70;
+  width: 300px; max-width: 86vw;
+  background: linear-gradient(135deg, rgba(0,20,45,0.98), rgba(0,8,26,0.98));
+  border: 1px solid rgba(0,180,255,0.55);
+  border-radius: 14px;
+  box-shadow: 0 0 44px rgba(0,180,255,0.3);
+  padding: 16px;
+  animation: g3-pop-in 0.18s ease-out;
+}
+.g3-gluon-pop.hidden { display: none; }
+@keyframes g3-pop-in {
+  from { opacity: 0; transform: translate(-50%, -46%) scale(0.95); }
+  to   { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+}
+.g3-pop-title {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 9px; letter-spacing: 1px;
+  color: #80d8ff; text-align: center;
+  margin-bottom: 12px;
+}
+.g3-pop-list {
+  display: flex; flex-direction: column; gap: 7px;
+}
+
+/* Cada gluón aplicable */
+.g3-gluon-chip {
+  display: flex; align-items: center; justify-content: center;
+  gap: 10px;
+  padding: 11px 12px;
+  background: rgba(0,180,255,0.08);
+  border: 1px solid rgba(0,180,255,0.35);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.16s;
+}
+.g3-gluon-chip:hover {
+  background: rgba(0,180,255,0.2);
+  border-color: #4fc3f7;
+  transform: translateX(2px);
+}
+/* Gluón que no aplica a este par: SIGUE siendo clicable (muestra advertencia).
+   Se ve atenuado y con borde punteado, pero reacciona al pasar/clicar. */
+.g3-gluon-chip.invalido {
+  opacity: 0.55;
+  border-style: dashed;
+  border-color: rgba(0,180,255,0.25);
+  background: rgba(0,180,255,0.04);
+}
+.g3-gluon-chip.invalido:hover {
+  opacity: 0.9;
+  background: rgba(255,120,120,0.12);
+  border-color: rgba(255,120,120,0.6);
+  transform: translateX(2px);
+}
+.g3-gluon-chip.invalido .g3-chip-label {
+  color: rgba(255,255,255,0.7);
+}
+.g3-chip-na {
+  font-size: 15px; font-weight: 700;
+  color: #a08cc8;
+  width: 20px; text-align: center;
+}
+.g3-chip-label {
+  font-family: 'Orbitron', monospace;
+  font-size: 15px; font-weight: 700;
+  color: #fff;
+  padding: 2px 8px;
+  background: rgba(0,0,0,0.3);
+  border-radius: 5px;
+}
+.g3-chip-flecha {
+  font-family: 'Exo 2', sans-serif;
+  font-size: 13px; font-weight: 700;
+  color: #80d8ff;
+  display: flex; align-items: center; gap: 6px;
+}
+.g3-chip-flecha b { font-size: 15px; }
+
+.g3-pop-vacio {
+  font-family: 'Exo 2', sans-serif;
+  font-size: 11px; color: #9080c0; text-align: center;
+  padding: 8px;
+}
+.g3-pop-close {
+  display: block; margin: 12px auto 0;
+  background: none; border: none;
+  font-family: 'Exo 2', sans-serif;
+  font-size: 10px; color: #7060a0;
+  text-transform: uppercase; letter-spacing: 1px;
+  cursor: pointer;
+}
+.g3-pop-close:hover { color: #80d8ff; }
+
+
+/* Progreso de desafíos (rondas) dentro de un nivel de la Etapa 3 */
+.g3-rondas-dots {
+  display: flex; gap: 6px; flex-wrap: wrap;
+  margin: 8px 0 2px;
+}
+.g3-ronda-dot {
+  width: 14px; height: 14px; border-radius: 50%;
+  border: 1px solid rgba(0,180,255,0.4);
+  background: rgba(0,180,255,0.08);
+  transition: all 0.2s;
+}
+.g3-ronda-dot.actual {
+  border-color: #4fc3f7;
+  background: rgba(0,180,255,0.25);
+  box-shadow: 0 0 8px rgba(0,180,255,0.5);
+}
+.g3-ronda-dot.hecho {
+  border-color: #00e676;
+  background: #00e676;
+  box-shadow: 0 0 6px rgba(0,230,118,0.5);
 }

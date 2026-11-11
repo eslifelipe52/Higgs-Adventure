@@ -130,12 +130,20 @@ MINIJUEGOS_DATA.forEach(seccion => {
   });
 });
 
-/* Funciones implementadas que ningún juego declara */
 const idsDeclarados = new Set(
   MINIJUEGOS_DATA.reduce((a, s) => a.concat(s.juegos), [])
     .map(j => 'iniciar_' + j.id.replace(/-/g, '_'))
 );
-const sinRegistro = [...funciones].filter(f => !idsDeclarados.has(f));
+
+/* Funciones implementadas que ningún juego declara.
+   Se aceptan como válidas las «variantes» de un minijuego ya declarado:
+   iniciar_carga_color_libre() y iniciar_carga_color_gluones() son formas
+   alternativas de abrir carga-color, no minijuegos independientes. */
+const declaradas = [...idsDeclarados];
+const sinRegistro = [...funciones].filter(f => {
+  if (declaradas.indexOf(f) >= 0) return false;
+  return !declaradas.some(d => f.indexOf(d + '_') === 0);
+});
 if (sinRegistro.length) {
   sinRegistro.forEach(f => aviso(`${f}() existe pero ningún minijuego la declara`));
 }
