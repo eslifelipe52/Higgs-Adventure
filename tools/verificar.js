@@ -753,6 +753,44 @@ titulo('L. Contenido real de cada minijuego (perfil)');
   });
 }
 
+/* ════════════════════════════════════════
+   M. Rutas con hash
+   ════════════════════════════════════════ */
+titulo('M. Direcciones de cada pantalla (#hash)');
+
+{
+  const nav = leer('js/navigation.js');
+
+  probar('Las rutas cubren las pantallas principales', () => {
+    const requeridas = ['inicio', 'introduccion', 'modelo-estandar', 'higgs'];
+    const faltan = requeridas.filter(r => nav.indexOf("'" + r + "'") < 0);
+    if (faltan.length) return 'faltan rutas: ' + faltan.join(', ');
+    return true;
+  });
+
+  probar('La ruta se aplica al cargar, no al evaluar el script', () => {
+    /* navigation.js va antes que los minijuegos en index.html: si aplicara
+       la ruta de inmediato, #minijuego/… no encontraría iniciar_*(). */
+    if (!/addEventListener\('load'/.test(nav)) return 'no espera al evento load';
+    if (/^showScreen\('home'\);\s*$/m.test(nav)) {
+      return "queda un showScreen('home') suelto que se ejecuta antes que los minijuegos";
+    }
+    return true;
+  });
+
+  probar('El historial del navegador se atiende (atrás/adelante)', () => {
+    if (!/addEventListener\('hashchange'/.test(nav)) return 'no escucha hashchange';
+    if (!/_hashSilencioso/.test(nav)) return 'no evita reaplicar su propio cambio';
+    return true;
+  });
+
+  probar('Abrir un minijuego deja su dirección en la URL', () => {
+    const src = leer('minijuegos/js/minijuegos.js');
+    if (!/marcarMinijuego\s*\(/.test(src)) return 'iniciarJuego() no marca la ruta';
+    return true;
+  });
+}
+
 /* ── Pruebas asíncronas de la sincronización ── */
 (async () => {
 

@@ -199,6 +199,25 @@ función `iniciar_<id>()`, que la lógica de desbloqueo por etapas funciona
 autenticación está bien formada (configuración, reglas de Firestore y fusión de
 progreso entre el equipo y la nube).
 
+### Direcciones de cada pantalla
+
+Cada pantalla y cada minijuego tienen su propia dirección, así que **recargar
+la página no te devuelve al inicio** y un enlace se puede compartir:
+
+| Dirección | Pantalla |
+|---|---|
+| `#inicio` | Portada |
+| `#introduccion` | Introducción interactiva |
+| `#modelo-estandar` | Modelo Estándar |
+| `#higgs` | Bosón de Higgs (solo con la Etapa 4 abierta) |
+| `#minijuego/<id>` | Abre ese minijuego, p. ej. `#minijuego/carga-electrica` |
+
+Funcionan los botones **atrás y adelante** del navegador. Si la dirección pide
+algo bloqueado o que ya no existe, se cae al inicio y la URL se corrige sola.
+
+`showScreen()` sigue siendo la función de siempre para cambiar de pantalla; por
+dentro llama a `pintarPantalla()` y además actualiza la dirección.
+
 ### Legibilidad
 
 Toda la tipografía del sitio parte de un mínimo de **12 px**. El texto corrido

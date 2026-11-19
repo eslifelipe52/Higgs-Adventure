@@ -300,6 +300,9 @@ function iniciarJuego(id) {
     cerrarHub();
     cerrarPreview();
     window[fnName]();
+    /* La dirección pasa a #minijuego/<id> para que recargar te devuelva
+       al mismo juego (ver js/navigation.js). */
+    if (typeof marcarMinijuego === 'function') marcarMinijuego(id);
   } else {
     console.warn(`Minijuego "${id}" aún no implementado (función ${fnName} no encontrada).`);
   }
