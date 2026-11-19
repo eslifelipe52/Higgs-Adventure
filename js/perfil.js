@@ -163,14 +163,21 @@ function _vistaProgreso() {
   /* ── Minijuegos de la etapa en curso ── */
   const juegosEtapa = Progreso.ETAPAS[etapaMax].minijuegos;
   const filasJuegos = juegosEtapa.map(id => {
-    const hechos  = Progreso.modulosCompletados(id);
+    /* Se muestra el contenido REAL del minijuego (niveles o módulos),
+       no el umbral para desbloquear la etapa siguiente: ese umbral es
+       otra cosa y antes se presentaba como si fuera el total. */
+    const info    = Progreso.contenido(id);
+    const hechos  = Math.min(Progreso.modulosCompletados(id), info.total);
     const req     = Progreso.MODULOS_REQUERIDOS[id] || 1;
     const sup     = Progreso.superado(id);
     const nombre  = _perfilNombreJuego(id);
+    const pista   = sup
+      ? `Ya cumples el mínimo de ${req} para desbloquear la etapa siguiente.`
+      : `Necesitas ${req} para desbloquear la etapa siguiente.`;
     return `
       <div class="perfil-juego-fila ${sup ? 'superado' : ''}">
         <span class="perfil-juego-nombre">${sup ? '✅' : '◻'} ${nombre}</span>
-        <span class="perfil-juego-prog">${Math.min(hechos, req)} / ${req} módulos</span>
+        <span class="perfil-juego-prog" title="${pista}">${hechos} / ${info.total} ${info.unidad}</span>
       </div>`;
   }).join('');
 

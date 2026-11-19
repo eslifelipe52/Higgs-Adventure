@@ -709,6 +709,50 @@ titulo('K. Tamaño mínimo de letra (accesibilidad)');
   }
 }
 
+/* ════════════════════════════════════════
+   L. Progreso mostrado en el perfil
+   ════════════════════════════════════════ */
+titulo('L. Contenido real de cada minijuego (perfil)');
+
+{
+  probar('Cada minijuego declara su contenido y cabe en su umbral', () => {
+    const P = nuevoProgreso();
+    const problemas = [];
+
+    Object.keys(P.MODULOS_REQUERIDOS).forEach(id => {
+      const info = P.contenido(id);
+      const umbral = P.MODULOS_REQUERIDOS[id];
+      if (!P.CONTENIDO[id]) {
+        problemas.push(`${id}: sin total declarado en CONTENIDO`);
+      } else if (!(info.total > 0)) {
+        problemas.push(`${id}: total no válido (${info.total})`);
+      } else if (info.total < umbral) {
+        problemas.push(`${id}: tiene ${info.total} pero el umbral es ${umbral}`);
+      }
+      if (!info.unidad) problemas.push(`${id}: sin unidad`);
+    });
+
+    /* Y al revés: que no sobre ninguna clave huérfana */
+    Object.keys(P.CONTENIDO).forEach(id => {
+      if (P.MODULOS_REQUERIDOS[id] === undefined) {
+        problemas.push(`${id}: está en CONTENIDO pero no en MODULOS_REQUERIDOS`);
+      }
+    });
+
+    if (problemas.length) return problemas.join('; ');
+    return true;
+  });
+
+  probar('El perfil muestra el total real, no el umbral', () => {
+    const src = leer('js/perfil.js');
+    if (!/Progreso\.contenido\(/.test(src)) return 'el perfil no usa Progreso.contenido()';
+    if (/Math\.min\(hechos,\s*req\)\s*\/\s*\$\{req\}\s*módulos/.test(src)) {
+      return 'el perfil sigue mostrando el umbral como total';
+    }
+    return true;
+  });
+}
+
 /* ── Pruebas asíncronas de la sincronización ── */
 (async () => {
 

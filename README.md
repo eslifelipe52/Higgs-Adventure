@@ -151,6 +151,19 @@ Progreso.registrarPartida('foton', { puntaje: 620 });    // una ronda puntuada
 Las claves de módulo se guardan en un conjunto, así que repetir la misma clave
 nunca infla el progreso.
 
+Hay que distinguir dos números que no son lo mismo:
+
+| Constante | Qué significa |
+|---|---|
+| `MODULOS_REQUERIDOS` | Umbral para desbloquear la etapa siguiente |
+| `CONTENIDO` | Cuánto contenido tiene el minijuego de verdad, y cómo se llaman sus unidades |
+
+El perfil muestra el **contenido real** («3 / 12 niveles», «5 / 10 módulos»), no
+el umbral, y usa la unidad de cada juego: los hay con niveles y los hay con
+módulos. El umbral aparece en el tooltip de la fila. Así un minijuego puede
+estar «superado» (desbloquea la etapa siguiente) sin estar completo, y el
+número sigue diciendo la verdad.
+
 ### Desbloqueo dentro de los minijuegos
 
 Los cuatro minijuegos de la etapa 1 tienen a su vez **etapas internas** (Etapa 1, 2

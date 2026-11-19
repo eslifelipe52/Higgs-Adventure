@@ -79,6 +79,41 @@ const Progreso = (function () {
     'diagramas-higgs': 1
   };
 
+  /* Cuánto contenido tiene de verdad cada minijuego y cómo se llaman sus
+     unidades. MODULOS_REQUERIDOS es solo el umbral para desbloquear la
+     etapa siguiente, no el total: un minijuego puede estar «superado» con
+     la mitad de su contenido hecho. Esto es lo que se muestra en el
+     perfil, para que el progreso refleje el contenido real.
+
+     Los totales están contados de las listas de niveles de cada juego:
+       carga-color     12 niveles (11 + modo libre)
+       foton            6 niveles (5 + modo desafío)
+       masa            10 niveles (3 + 3 + 4)
+       spin            10 módulos
+       carga-electrica  9 módulos (3 etapas × 3)
+       rayos-cosmicos   5 niveles
+       decaimiento      3 módulos (A, B y C) */
+  const CONTENIDO = {
+    'carga-color':     { total: 12, unidad: 'niveles' },
+    'carga-electrica': { total: 9,  unidad: 'módulos' },
+    'spin':            { total: 10, unidad: 'módulos' },
+    'masa':            { total: 10, unidad: 'niveles' },
+    'decaimiento':     { total: 3,  unidad: 'módulos' },
+    'rayos-cosmicos':  { total: 5,  unidad: 'niveles' },
+    'foton':           { total: 6,  unidad: 'niveles' },
+    'gluon':           { total: 1,  unidad: 'nivel'  },
+    'boson-z':         { total: 1,  unidad: 'nivel'  },
+    'bosones-w':       { total: 1,  unidad: 'nivel'  },
+    'campo-higgs':     { total: 1,  unidad: 'nivel'  },
+    'diagramas-higgs': { total: 1,  unidad: 'nivel'  }
+  };
+
+  /* Contenido de un minijuego, con recaída a su umbral si no está listado */
+  function contenido(id) {
+    if (CONTENIDO[id]) return CONTENIDO[id];
+    return { total: _requeridos(id), unidad: 'módulos' };
+  }
+
   /* ════════════════════════════════════════
      2. LOGROS (medallas)
      ════════════════════════════════════════ */
@@ -508,9 +543,9 @@ const Progreso = (function () {
   function nombreEtapa(n) { return ETAPAS[n] ? ETAPAS[n].nombre : ('Etapa ' + n); }
 
   return {
-    ETAPAS, MEDALLAS, MODULOS_REQUERIDOS,
+    ETAPAS, MEDALLAS, MODULOS_REQUERIDOS, CONTENIDO,
     moduloCompletado, registrarPartida,
-    modulosCompletados, superado, juegosTocados,
+    modulosCompletados, contenido, superado, juegosTocados,
     etapaDesbloqueada, etapaMaxima, requisitosEtapa, nombreEtapa,
     etapaInternaDesbloqueada,
     etapaDeParticula, particulaBloqueada,
