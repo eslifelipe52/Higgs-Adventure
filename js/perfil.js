@@ -21,7 +21,6 @@ function initPerfil() {
   btn.title     = 'Mi perfil';
   btn.innerHTML = `<span class="perfil-avatar">👤</span>`;
   btn.addEventListener('click', togglePerfil);
-  nav.insertBefore(btn, nav.querySelector('.nav-btns'));
 
   /* Botón de cuenta, al final de la navegación */
   const btnCuenta = document.createElement('button');
@@ -37,7 +36,12 @@ function initPerfil() {
     if (u && !u.anonimo) togglePerfil();
     else A.abrir('entrar');
   });
-  nav.querySelector('.nav-btns').appendChild(btnCuenta);
+  /* Icono de perfil y botón de cuenta, juntos en el extremo derecho de la
+     navegación. Antes el icono se insertaba a la izquierda de los botones y
+     quedaba lejos del sitio donde se inicia sesión. */
+  const navBtns = nav.querySelector('.nav-btns');
+  navBtns.appendChild(btnCuenta);
+  navBtns.appendChild(btn);
 
   /* Panel de perfil */
   const panel = document.createElement('div');

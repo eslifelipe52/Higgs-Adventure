@@ -27,7 +27,9 @@
    ════════════════════════════════════════ */
 .perfil-panel {
   position: absolute;
-  top: 62px; left: 12px;
+  /* El panel se abre bajo el icono, que ahora vive en la esquina superior
+     derecha, junto al botón de cuenta. */
+  top: 62px; right: 12px; left: auto;
   width: 420px; max-height: calc(100vh - 80px);
   z-index: 200;
   background: linear-gradient(160deg, rgba(10,5,30,0.98), rgba(5,2,18,0.98));
