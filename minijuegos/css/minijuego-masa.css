@@ -305,16 +305,31 @@
   display: flex; gap: 12px; min-height: 0;
 }
 .ms-n0-canvas {
-  flex: 1; border-radius: 8px;
+  /* min-width/min-height en 0: el lienzo es un elemento flex y, sin esto,
+     su tamaño intrínseco le impedía encogerse y empujaba al panel de datos
+     fuera de la arena. */
+  flex: 1; min-width: 0; min-height: 0;
+  border-radius: 8px;
   border: 1px solid rgba(255,255,255,0.07);
-  background: #0a0520; min-height: 160px;
+  background: #0a0520;
 }
 .ms-n0-info {
-  width: 180px; flex-shrink: 0;
+  /* Más ancho que antes (180px) porque con la tipografía actual las filas
+     ya no cabían y el texto se pisaba. */
+  width: 240px; flex-shrink: 0;
   background: rgba(0,10,30,0.9);
   border: 1px solid rgba(0,180,255,0.2);
   border-radius: 8px; padding: 12px;
   display: flex; flex-direction: column; gap: 6px;
+  /* Esta columna vive en la fila central del grid (1fr). Se estira con el
+     resto de la arena (align-items: stretch por defecto) y, si su contenido
+     no cabe, se desplaza por dentro en vez de desbordarse sobre los
+     controles. Se usa min-height:0 y NO max-height:100%, porque el
+     porcentaje podía resolverse a 0 y dejar el panel invisible. */
+  min-height: 0;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0,180,255,0.2) transparent;
 }
 .ms-info-row {
   display: flex; justify-content: space-between; align-items: center;
