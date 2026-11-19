@@ -747,7 +747,7 @@ function ceModuloCable(body) {
 
         <div class="ce-panel-card ce-desafio-card" id="ce-cable-desafio">
           <div class="ce-panel-title">Desafío ${nv.nivel}/4 — ${nv.titulo}</div>
-          <p class="ce-desafio-desc" style="font-size:10px;color:var(--text2);line-height:1.5;margin:4px 0 8px">
+          <p class="ce-desafio-desc" style="font-size:12px;color:var(--text2);line-height:1.5;margin:4px 0 8px">
             ${nv.instruccion}
           </p>
           <p class="ce-desafio-pregunta">${nv.pregunta}</p>
@@ -770,7 +770,7 @@ function ceModuloCable(body) {
             B = μ₀I / (2πr)<br>
             <small>B proporcional a I,<br>inversamente proporcional a r</small>
           </div>
-          <p style="font-size:9px;color:var(--text2);margin-top:6px;line-height:1.5">
+          <p style="font-size:12px;color:var(--text2);margin-top:6px;line-height:1.5">
             <strong>Ørsted (1820):</strong> corriente → campo B.<br>
             <strong>Regla de la mano derecha:</strong><br>
             pulgar → I, dedos → sentido de B.
@@ -790,11 +790,11 @@ function ceModuloCable(body) {
             Corriente: <strong id="ce-I-val">${nv.iInicial > 0 ? '+' : ''}${nv.iInicial}%</strong>
           </label>
           <div style="display:flex;align-items:center;gap:8px">
-            <span style="font-size:11px;color:var(--text2)">⊗ −</span>
+            <span style="font-size:13px;color:var(--text2)">⊗ −</span>
             <input type="range" id="ce-I-slider" class="ms-slider"
                    min="-100" max="100" value="${nv.iInicial}"
                    oninput="ceCableSetI(this.value)">
-            <span style="font-size:11px;color:var(--text2)">+ ⊙</span>
+            <span style="font-size:13px;color:var(--text2)">+ ⊙</span>
           </div>
           <div class="ce-cable-status" id="ce-cable-status"></div>
         </div>
@@ -1119,7 +1119,7 @@ function ceModuloOndas(body) {
 
         <div class="ce-panel-card ce-desafio-card" id="ce-ondas-desafio">
           <div class="ce-panel-title">Desafío ${nv.nivel}/4 — ${nv.titulo}</div>
-          <p class="ce-desafio-desc" style="font-size:10px;color:var(--text2);line-height:1.5;margin:4px 0 8px">
+          <p class="ce-desafio-desc" style="font-size:12px;color:var(--text2);line-height:1.5;margin:4px 0 8px">
             ${nv.instruccion}
           </p>
           <p class="ce-desafio-pregunta">${nv.pregunta}</p>
@@ -1142,7 +1142,7 @@ function ceModuloOndas(body) {
             c = λ · f<br>
             <small>c = 3×10⁸ m/s (constante)</small>
           </div>
-          <p style="font-size:9px;color:var(--text2);margin-top:6px;line-height:1.5">
+          <p style="font-size:12px;color:var(--text2);margin-top:6px;line-height:1.5">
             〰 <strong>E</strong> — campo eléctrico (color del tramo)<br>
             🔵 <strong style="color:#26c6da">B</strong> — campo magnético (cian)<br>
             E ⊥ B ⊥ dirección de propagación
@@ -1163,11 +1163,11 @@ function ceModuloOndas(body) {
             — <span id="ce-espectro-label" class="ce-espectro-badge">—</span>
           </label>
           <div style="display:flex;align-items:center;gap:8px">
-            <span style="font-size:10px;color:var(--text2)">Baja f</span>
+            <span style="font-size:12px;color:var(--text2)">Baja f</span>
             <input type="range" id="ce-freq-slider" class="ms-slider"
                    min="0" max="100" value="${nv.freqInicial}"
                    oninput="ceOndasSetFreq(this.value)">
-            <span style="font-size:10px;color:var(--text2)">Alta f</span>
+            <span style="font-size:12px;color:var(--text2)">Alta f</span>
           </div>
           <div class="ce-espectro-bar">
             ${CE_ESPECTRO.map(e => `
@@ -1560,7 +1560,7 @@ function ceModuloIntercambio(body) {
 
         <div class="ce-panel-card ce-desafio-card" id="ce-qed-desafio">
           <div class="ce-panel-title">Desafío ${nv.nivel}/5 — ${nv.titulo}</div>
-          <p class="ce-desafio-desc" style="font-size:10px;color:var(--text2);line-height:1.5;margin:4px 0 8px">
+          <p class="ce-desafio-desc" style="font-size:12px;color:var(--text2);line-height:1.5;margin:4px 0 8px">
             ${nv.instruccion}
           </p>
           <p class="ce-desafio-pregunta">${nv.pregunta}</p>
@@ -1579,7 +1579,7 @@ function ceModuloIntercambio(body) {
 
         <div class="ce-panel-card" style="margin-top:8px">
           <div class="ce-panel-title">La analogía del hielo</div>
-          <p style="font-size:9px;color:var(--text2);margin-top:4px;line-height:1.55">
+          <p style="font-size:12px;color:var(--text2);margin-top:4px;line-height:1.55">
             Dos patinadores que se lanzan una pelota retroceden al lanzarla
             y al atraparla. En QED, la "pelota" es el <strong style="color:#ffd740">fotón virtual</strong>:
             transmite la fuerza sin que las partículas se toquen.
@@ -1998,7 +1998,7 @@ function ceModuloFotones(body) {
 
         <div class="ce-panel-card ce-desafio-card" id="ce-fot-desafio">
           <div class="ce-panel-title">Desafío ${nv.nivel}/5 — ${nv.titulo}</div>
-          <p class="ce-desafio-desc" style="font-size:10px;color:var(--text2);line-height:1.5;margin:4px 0 8px">
+          <p class="ce-desafio-desc" style="font-size:12px;color:var(--text2);line-height:1.5;margin:4px 0 8px">
             ${nv.instruccion}
           </p>
           <p class="ce-desafio-pregunta">${nv.pregunta}</p>
@@ -2041,19 +2041,19 @@ function ceModuloFotones(body) {
             — <span id="ce-fot-espectro" class="ce-espectro-badge">—</span>
           </label>
           <div style="display:flex;align-items:center;gap:8px">
-            <span style="font-size:10px;color:var(--text2)">Baja f</span>
+            <span style="font-size:12px;color:var(--text2)">Baja f</span>
             <input type="range" id="ce-fot-frec-slider" class="ms-slider"
                    min="0" max="100" value="40" oninput="ceFotSetFrec(this.value)">
-            <span style="font-size:10px;color:var(--text2)">Alta f</span>
+            <span style="font-size:12px;color:var(--text2)">Alta f</span>
           </div>
           <label class="ce-ctrl-label" style="margin-top:6px">
             Intensidad (nº de fotones): <strong id="ce-fot-int-val">40%</strong>
           </label>
           <div style="display:flex;align-items:center;gap:8px">
-            <span style="font-size:10px;color:var(--text2)">Pocos</span>
+            <span style="font-size:12px;color:var(--text2)">Pocos</span>
             <input type="range" id="ce-fot-int-slider" class="ms-slider"
                    min="0" max="100" value="40" oninput="ceFotSetInt(this.value)">
-            <span style="font-size:10px;color:var(--text2)">Muchos</span>
+            <span style="font-size:12px;color:var(--text2)">Muchos</span>
           </div>
         </div>
       </div>
@@ -2493,7 +2493,7 @@ function ceModuloFamilias(body) {
 
         <div class="ce-panel-card ce-desafio-card" id="ce-fam-desafio">
           <div class="ce-panel-title">Desafío ${nv.nivel}/5 — ${nv.titulo}</div>
-          <p class="ce-desafio-desc" style="font-size:10px;color:var(--text2);line-height:1.5;margin:4px 0 8px">
+          <p class="ce-desafio-desc" style="font-size:12px;color:var(--text2);line-height:1.5;margin:4px 0 8px">
             ${nv.instruccion}
           </p>
           <p class="ce-desafio-pregunta">${nv.pregunta}</p>
@@ -2516,7 +2516,7 @@ function ceModuloFamilias(body) {
             μ = g · (q / 2m) · S<br>
             <small>μ ∝ 1/masa — más masa, imán más débil</small>
           </div>
-          <p style="font-size:9px;color:var(--text2);margin-top:6px;line-height:1.5">
+          <p style="font-size:12px;color:var(--text2);margin-top:6px;line-height:1.5">
             Misma carga en las 3 familias, pero el muón pesa ×207 y el tau ×3477.
             Su inercia los hace responder muy distinto.
           </p>
@@ -3081,7 +3081,7 @@ function ceModuloAcoplamiento(body) {
 
         <div class="ce-panel-card ce-desafio-card" id="ce-aco-desafio">
           <div class="ce-panel-title">Desafío ${nv.nivel}/5 — ${nv.titulo}</div>
-          <p class="ce-desafio-desc" style="font-size:10px;color:var(--text2);line-height:1.5;margin:4px 0 8px">
+          <p class="ce-desafio-desc" style="font-size:12px;color:var(--text2);line-height:1.5;margin:4px 0 8px">
             ${nv.instruccion}
           </p>
           <p class="ce-desafio-pregunta">${nv.pregunta}</p>
@@ -3104,7 +3104,7 @@ function ceModuloAcoplamiento(body) {
             F ∝ q · E<br>
             <small>La fuerza es proporcional a la carga</small>
           </div>
-          <p style="font-size:9px;color:var(--text2);margin-top:6px;line-height:1.5">
+          <p style="font-size:12px;color:var(--text2);margin-top:6px;line-height:1.5">
             La carga es la "fuerza del gancho" que conecta la partícula al campo EM.
             A mayor carga → mayor fuerza → más probabilidad de emitir/absorber fotones.
           </p>
@@ -3123,9 +3123,9 @@ function ceModuloAcoplamiento(body) {
           <div class="ce-fam-selector" id="ce-aco-selector"></div>
           <div style="display:flex;align-items:center;justify-content:space-between;margin-top:8px;gap:10px">
             <div class="ce-aco-medidor-wrap">
-              <span class="ce-ctrl-label" style="font-size:10px">Acoplamiento:</span>
+              <span class="ce-ctrl-label" style="font-size:12px">Acoplamiento:</span>
               <div class="ce-aco-barra-bg"><div class="ce-aco-barra" id="ce-aco-barra"></div></div>
-              <span id="ce-aco-pct" style="font-size:10px;font-family:'Orbitron';color:var(--gold)">—</span>
+              <span id="ce-aco-pct" style="font-size:12px;font-family:'Orbitron';color:var(--gold)">—</span>
             </div>
             <button class="ce-qed-ctrl-btn ce-qed-play" id="ce-aco-accion" onclick="ceAcoToggleCampo()">🧲 Activar campo</button>
           </div>
@@ -3524,7 +3524,7 @@ function ceModuloNube(body) {
 
         <div class="ce-panel-card ce-desafio-card" id="ce-nube-desafio">
           <div class="ce-panel-title">Desafío ${nv.nivel}/5 — ${nv.titulo}</div>
-          <p class="ce-desafio-desc" style="font-size:10px;color:var(--text2);line-height:1.5;margin:4px 0 8px">
+          <p class="ce-desafio-desc" style="font-size:12px;color:var(--text2);line-height:1.5;margin:4px 0 8px">
             ${nv.instruccion}
           </p>
           <p class="ce-desafio-pregunta">${nv.pregunta}</p>
@@ -3543,7 +3543,7 @@ function ceModuloNube(body) {
 
         <div class="ce-panel-card" style="margin-top:8px">
           <div class="ce-panel-title">El vacío cuántico</div>
-          <p style="font-size:9px;color:var(--text2);margin-top:4px;line-height:1.55">
+          <p style="font-size:12px;color:var(--text2);margin-top:4px;line-height:1.55">
             El vacío no está vacío: hierve con pares virtuales <strong style="color:#4fc3f7">e⁻</strong> y
             <strong style="color:#ef5350">e⁺</strong> que apantallan la carga.
             La <strong style="color:#ffd740">carga efectiva depende de la distancia</strong>:
@@ -3565,10 +3565,10 @@ function ceModuloNube(body) {
             — carga efectiva medida: <strong id="ce-nube-carga" style="color:#ffd740">—</strong>
           </label>
           <div style="display:flex;align-items:center;gap:8px">
-            <span style="font-size:10px;color:var(--text2)">🔬 Muy cerca</span>
+            <span style="font-size:12px;color:var(--text2)">🔬 Muy cerca</span>
             <input type="range" id="ce-nube-slider" class="ms-slider"
                    min="2" max="100" value="85" oninput="ceNubeSetDist(this.value)">
-            <span style="font-size:10px;color:var(--text2)">Lejos 📡</span>
+            <span style="font-size:12px;color:var(--text2)">Lejos 📡</span>
           </div>
         </div>
       </div>
@@ -3957,7 +3957,7 @@ function ceModuloColectivo(body) {
 
         <div class="ce-panel-card ce-desafio-card" id="ce-col-desafio">
           <div class="ce-panel-title">Desafío ${nv.nivel}/5 — ${nv.titulo}</div>
-          <p class="ce-desafio-desc" style="font-size:10px;color:var(--text2);line-height:1.5;margin:4px 0 8px">
+          <p class="ce-desafio-desc" style="font-size:12px;color:var(--text2);line-height:1.5;margin:4px 0 8px">
             ${nv.instruccion}
           </p>
           ${nv.objetivo ? `<div class="ce-col-estado" id="ce-col-estado">⚙ Objetivo pendiente</div>` : ''}
@@ -3981,7 +3981,7 @@ function ceModuloColectivo(body) {
             E_total = Σ Eᵢ<br>
             <small>El campo total = suma vectorial de cada carga</small>
           </div>
-          ${nv.pista ? `<p style="font-size:9px;color:var(--text2);margin-top:6px;line-height:1.5">💡 ${nv.pista}</p>` : ''}
+          ${nv.pista ? `<p style="font-size:12px;color:var(--text2);margin-top:6px;line-height:1.5">💡 ${nv.pista}</p>` : ''}
         </div>
 
         <div class="ms-btn-row" style="margin-top:8px">
@@ -3995,17 +3995,17 @@ function ceModuloColectivo(body) {
         <div class="ce-ondas-controles">
           <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap">
             <div style="display:flex;align-items:center;gap:6px">
-              <span class="ce-ctrl-label" style="font-size:10px">Colocar:</span>
+              <span class="ce-ctrl-label" style="font-size:12px">Colocar:</span>
               <button class="ce-col-signo ce-col-pos selected" id="ce-col-btn-pos" onclick="ceColSetSigno(1)">+</button>
               <button class="ce-col-signo ce-col-neg" id="ce-col-btn-neg" onclick="ceColSetSigno(-1)">−</button>
             </div>
-            <div class="ce-ctrl-label" style="font-size:10px">
+            <div class="ce-ctrl-label" style="font-size:12px">
               Cargas: <strong id="ce-col-count">0</strong>/${CE_MAX_CARGAS}
               · Neta: <strong id="ce-col-neta" style="color:#ffd740">0</strong>
             </div>
             <button class="ce-qed-ctrl-btn ce-qed-rewind2" onclick="ceColLimpiar()">↺ Limpiar</button>
           </div>
-          <p style="font-size:9px;color:var(--text2);margin-top:4px;text-align:center">
+          <p style="font-size:12px;color:var(--text2);margin-top:4px;text-align:center">
             Clic en vacío = colocar carga (máx. ${CE_MAX_CARGAS}) · Arrastra una carga para moverla.
           </p>
         </div>

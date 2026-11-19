@@ -694,7 +694,7 @@ function diModuloB(body) {
         </div>
         <div class="di-panel-card">
           <div class="di-panel-title">Predicción</div>
-          <div id="di-b-reaccion" style="font-family:'Orbitron',monospace;font-size:13px;color:#4fc3f7;text-align:center;padding:6px 0">—</div>
+          <div id="di-b-reaccion" style="font-family:'Orbitron',monospace;font-size:14.5px;color:#4fc3f7;text-align:center;padding:6px 0">—</div>
           <div class="di-pred-btns">
             <button class="di-pred-btn" id="di-pred-cont" onclick="diBPrediccion('continuo')">〜 Continuo</button>
             <button class="di-pred-btn" id="di-pred-mono" onclick="diBPrediccion('mono')">| Monoenergético</button>
@@ -950,7 +950,7 @@ function diCRenderLista() {
               ondrop="diCDrop(${i})"
               id="di-c-item-${i}">
       <span class="di-vm-sym" style="color:${p.col}">${p.sym}</span>
-      <span style="font-size:9px;color:rgba(205,238,255,0.6)">${p.tau}</span>
+      <span style="font-size:12px;color:rgba(205,238,255,0.6)">${p.tau}</span>
       <span class="di-vm-fuerza ${fuerzaCls}">${fuerzaTxt}</span>
     </div>`;
   }).join('');

@@ -57,7 +57,7 @@
 
 .cc-instruccion {
   font-family: 'Exo 2', sans-serif;
-  font-size: 14px; font-weight: 600;
+  font-size: 15.5px; font-weight: 600;
   color: #d0eeff;
   line-height: 1.55; margin: 0; flex: 1;
   text-align: center;
@@ -67,7 +67,7 @@
 /* Etiqueta "INSTRUCCIÓN" a la izquierda */
 .cc-instruccion-label {
   font-family: 'Press Start 2P', monospace;
-  font-size: 7px; letter-spacing: 2px;
+  font-size: 12px; letter-spacing: 2px;
   color: var(--accent);
   text-shadow: 0 0 8px rgba(0,229,255,0.6);
   flex-shrink: 0;
@@ -100,22 +100,22 @@
 }
 .cc-panel-titulo {
   font-family: 'Press Start 2P', monospace;
-  font-size: 7px; color: var(--accent);
+  font-size: 12px; color: var(--accent);
   line-height: 1.6; margin-bottom: 6px;
   text-shadow: 0 0 8px rgba(0,229,255,0.4);
 }
 .cc-panel-desc {
-  font-size: 10px; color: #9080c0; line-height: 1.5;
+  font-size: 12px; color: #9080c0; line-height: 1.5;
 }
 .cc-panel-label {
-  font-size: 9px; color: #7060a0;
+  font-size: 12px; color: #7060a0;
   text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;
 }
 
 /* Barra de progreso */
 .cc-prog-val {
   font-family: 'Orbitron', monospace;
-  font-size: 14px; font-weight: 700;
+  font-size: 15.5px; font-weight: 700;
   color: var(--accent); margin-bottom: 5px;
 }
 .cc-prog-wrap {
@@ -138,7 +138,7 @@
 /* Botones del panel */
 .cc-btn {
   font-family: 'Press Start 2P', monospace;
-  font-size: 8px; letter-spacing: 1px;
+  font-size: 12px; letter-spacing: 1px;
   padding: 10px 8px;
   background: rgba(0,180,255,0.1);
   border: 1px solid rgba(0,180,255,0.35);
@@ -181,7 +181,7 @@
 }
 .cc-nivel-dot {
   width: 28px; height: 28px; border-radius: 6px;
-  font-family: 'Orbitron', monospace; font-size: 11px; font-weight: 700;
+  font-family: 'Orbitron', monospace; font-size: 13px; font-weight: 700;
   background: rgba(0,180,255,0.1);
   border: 1px solid rgba(0,180,255,0.3);
   color: var(--text2); cursor: pointer; transition: all 0.18s;
@@ -204,7 +204,7 @@
 .cc-btn-volver { border-color: rgba(0,229,255,0.25); color: var(--text2); }
 .cc-etapa-dots { display: flex; gap: 8px; }
 .cc-etapa-dot {
-  font-family: 'Orbitron', monospace; font-size: 9px;
+  font-family: 'Orbitron', monospace; font-size: 12px;
   padding: 6px 12px; border-radius: 4px; cursor: pointer;
   background: rgba(0,180,255,0.08);
   border: 1px solid rgba(0,180,255,0.25);
@@ -216,7 +216,7 @@
   background: rgba(0,229,255,0.1);
 }
 .cc-progreso-label {
-  font-family: 'Orbitron', monospace; font-size: 10px;
+  font-family: 'Orbitron', monospace; font-size: 12px;
   color: var(--text2); white-space: nowrap;
 }
 
@@ -252,7 +252,7 @@
   box-shadow: 0 0 20px rgba(220,60,40,0.2);
 }
 .cc-fb-msg {
-  font-size: 12px; line-height: 1.6; color: #e0e0ff;
+  font-size: 13.5px; line-height: 1.6; color: #e0e0ff;
   font-family: 'Exo 2', sans-serif;
 }
 @keyframes cc-fb-in {
@@ -270,7 +270,7 @@
 /* Objetivo del nivel en el panel */
 .g3-objetivo {
   font-family: 'Exo 2', sans-serif;
-  font-size: 12px; font-weight: 700;
+  font-size: 13.5px; font-weight: 700;
   color: #d0eeff; line-height: 1.4;
   padding: 4px 0;
 }
@@ -279,7 +279,7 @@
 .g3-estado {
   margin-top: 6px;
   font-family: 'Exo 2', sans-serif;
-  font-size: 10px; line-height: 1.5;
+  font-size: 12px; line-height: 1.5;
   padding: 6px 8px; border-radius: 6px;
 }
 .g3-estado.pend {
@@ -327,7 +327,7 @@
 }
 .g3-pop-title {
   font-family: 'Press Start 2P', monospace;
-  font-size: 9px; letter-spacing: 1px;
+  font-size: 12px; letter-spacing: 1px;
   color: #80d8ff; text-align: center;
   margin-bottom: 12px;
 }
@@ -369,13 +369,13 @@
   color: rgba(255,255,255,0.7);
 }
 .g3-chip-na {
-  font-size: 15px; font-weight: 700;
+  font-size: 16.5px; font-weight: 700;
   color: #a08cc8;
   width: 20px; text-align: center;
 }
 .g3-chip-label {
   font-family: 'Orbitron', monospace;
-  font-size: 15px; font-weight: 700;
+  font-size: 16.5px; font-weight: 700;
   color: #fff;
   padding: 2px 8px;
   background: rgba(0,0,0,0.3);
@@ -383,22 +383,22 @@
 }
 .g3-chip-flecha {
   font-family: 'Exo 2', sans-serif;
-  font-size: 13px; font-weight: 700;
+  font-size: 14.5px; font-weight: 700;
   color: #80d8ff;
   display: flex; align-items: center; gap: 6px;
 }
-.g3-chip-flecha b { font-size: 15px; }
+.g3-chip-flecha b { font-size: 16.5px; }
 
 .g3-pop-vacio {
   font-family: 'Exo 2', sans-serif;
-  font-size: 11px; color: #9080c0; text-align: center;
+  font-size: 13px; color: #9080c0; text-align: center;
   padding: 8px;
 }
 .g3-pop-close {
   display: block; margin: 12px auto 0;
   background: none; border: none;
   font-family: 'Exo 2', sans-serif;
-  font-size: 10px; color: #7060a0;
+  font-size: 12px; color: #7060a0;
   text-transform: uppercase; letter-spacing: 1px;
   cursor: pointer;
 }

@@ -186,6 +186,19 @@ función `iniciar_<id>()`, que la lógica de desbloqueo por etapas funciona
 autenticación está bien formada (configuración, reglas de Firestore y fusión de
 progreso entre el equipo y la nube).
 
+### Legibilidad
+
+Toda la tipografía del sitio parte de un mínimo de **12 px**. El texto corrido
+está entre 13 y 13,5 px y los títulos por encima de 18 px. Antes había 172
+declaraciones por debajo de 10 px —varias de 7 y 8 px— que resultaban ilegibles
+en pantallas pequeñas o para personas con baja visión.
+
+`node tools/verificar.js` incluye una comprobación que falla si vuelve a
+aparecer texto por debajo de 12 px, para que no se cuele otra vez al añadir
+pantallas nuevas.
+
+![Tipografía legible en el Modelo Estándar](docs/capturas/10-tipografia-legible.png)
+
 ### Cuentas de usuario (Firebase)
 
 El sitio puede funcionar con cuentas para que el progreso de cada alumno lo siga

@@ -24,7 +24,7 @@ function showDetail(p, type) {
       <div>
         <div class="detail-name">${p.name}</div>
         <span class="detail-type-badge badge-${type}">${typeLabelMap[type] || type}</span>
-        <div style="margin-top:8px;font-size:13px;color:var(--text2)">
+        <div style="margin-top:8px;font-size:14.5px;color:var(--text2)">
           Gen. ${p.gen || '—'} &nbsp;|&nbsp; Espín ${p.spin} &nbsp;|&nbsp; Carga ${p.charge}
         </div>
       </div>
@@ -127,7 +127,7 @@ function toggleProp(key, type) {
   area.innerHTML = `
     <div class="prop-expand">
       <div style="font-weight:600;color:var(--accent);margin-bottom:10px;
-                  font-size:14px;font-family:'Orbitron',monospace;letter-spacing:1px">
+                  font-size:15.5px;font-family:'Orbitron',monospace;letter-spacing:1px">
         ${info.title}
       </div>
       ${bodyHTML}

@@ -23,12 +23,12 @@
   border-bottom: 1px solid rgba(255,215,64,0.2);
 }
 .fy-header-title {
-  font-size: 12px; color: var(--gold);
+  font-size: 13.5px; color: var(--gold);
   text-shadow: 0 0 12px rgba(255,215,64,0.4), 2px 2px 0 rgba(180,100,0,0.5);
 }
-.fy-header-sub { font-size: 11px; color: var(--text2); flex: 1; }
+.fy-header-sub { font-size: 13px; color: var(--text2); flex: 1; }
 .fy-close-btn {
-  font-family: 'Orbitron', monospace; font-size: 10px;
+  font-family: 'Orbitron', monospace; font-size: 12px;
   padding: 7px 14px; border-radius: 4px;
   background: transparent; border: 1px solid rgba(255,215,64,0.25);
   color: rgba(255,215,64,0.6); cursor: pointer; transition: all 0.2s;
@@ -40,7 +40,7 @@
   flex-shrink: 0; padding: 8px 20px;
   background: linear-gradient(90deg,rgba(30,15,80,0.9),rgba(10,5,35,0.9));
   border-bottom: 1px solid rgba(124,77,255,0.2);
-  font-size: 12px; color: #c5b0ff; line-height: 1.5; text-align: center;
+  font-size: 13.5px; color: #c5b0ff; line-height: 1.5; text-align: center;
 }
 
 /* ════════════════════════════════════════
@@ -65,21 +65,21 @@
   border-radius: 8px; padding: 10px 12px;
 }
 .fy-panel-label {
-  font-size: 9px; color: var(--text2);
+  font-size: 12px; color: var(--text2);
   text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px;
 }
 .fy-consigna {
-  font-size: 12px; color: var(--text); line-height: 1.65; margin-bottom: 8px;
+  font-size: 13.5px; color: var(--text); line-height: 1.65; margin-bottom: 8px;
 }
 .fy-pista-btn {
-  font-size: 10px; background: transparent;
+  font-size: 12px; background: transparent;
   border: 1px solid rgba(255,215,64,0.22);
   color: rgba(255,215,64,0.6); border-radius: 4px;
   padding: 4px 10px; cursor: pointer; transition: all 0.2s;
 }
 .fy-pista-btn:hover { border-color:var(--gold); color:var(--gold); }
 .fy-pista {
-  margin-top: 8px; font-size: 11px; color: #a090d0; line-height: 1.6;
+  margin-top: 8px; font-size: 13px; color: #a090d0; line-height: 1.6;
   border-left: 2px solid rgba(255,215,64,0.3); padding-left: 8px;
 }
 .fy-pista.hidden { display: none; }
@@ -101,14 +101,14 @@
 .fy-bloque:active { transform: scale(0.96); }
 .fy-bloque-sym {
   font-family: 'Orbitron', monospace;
-  font-size: 14px; font-weight: 700; line-height: 1;
+  font-size: 15.5px; font-weight: 700; line-height: 1;
 }
-.fy-bloque-desc { font-size: 8px; opacity: 0.7; text-align: center; line-height: 1.2; }
+.fy-bloque-desc { font-size: 12px; opacity: 0.7; text-align: center; line-height: 1.2; }
 
 /* ── Leyenda de instrucciones ── */
-.fy-leyenda-card { font-size: 10px !important; }
+.fy-leyenda-card { font-size: 12px !important; }
 .fy-leyenda-item {
-  font-size: 10px; color: var(--text2); line-height: 1.8;
+  font-size: 12px; color: var(--text2); line-height: 1.8;
   display: flex; gap: 5px; align-items: flex-start;
 }
 .fy-leyenda-item b { color: var(--accent); font-weight: 600; }
@@ -116,7 +116,7 @@
 /* ── Progreso ── */
 .fy-prog-val {
   font-family: 'Orbitron', monospace;
-  font-size: 16px; font-weight: 700; color: var(--gold); margin-bottom: 5px;
+  font-size: 17px; font-weight: 700; color: var(--gold); margin-bottom: 5px;
 }
 .fy-prog-wrap {
   height: 6px; background: rgba(255,255,255,0.06);
@@ -136,7 +136,7 @@
 }
 .fy-btn {
   font-family: 'Press Start 2P', monospace;
-  font-size: 7px; letter-spacing: 1px;
+  font-size: 12px; letter-spacing: 1px;
   padding: 9px 8px; text-align: center; line-height: 1.5;
   background: rgba(124,77,255,0.1);
   border: 1px solid rgba(124,77,255,0.3);
@@ -175,7 +175,7 @@
 }
 .fy-connect-hint {
   position: absolute; bottom: 10px; right: 14px;
-  font-size: 10px; color: rgba(255,215,64,0.3);
+  font-size: 12px; color: rgba(255,215,64,0.3);
   pointer-events: none; font-family: 'Exo 2', sans-serif;
 }
 
@@ -206,11 +206,11 @@
 .fy-fb-ok .fy-fb-icon { color: #00e676; }
 .fy-fb-err .fy-fb-icon { color: #ff5252; }
 .fy-fb-msg {
-  font-size: 13px; color: #e0e0ff; line-height: 1.6;
+  font-size: 14.5px; color: #e0e0ff; line-height: 1.6;
   margin-bottom: 6px; font-weight: 600;
 }
 .fy-fb-exp {
-  font-size: 11px; color: var(--text2); line-height: 1.65;
+  font-size: 13px; color: var(--text2); line-height: 1.65;
 }
 @keyframes fy-fb-in {
   from { transform: scale(0.8) translateY(10px); opacity: 0; }
@@ -237,13 +237,13 @@
                      10px 100%,0 calc(100% - 10px));
 }
 .fy-niveles-title {
-  font-size: 12px; color: var(--gold);
+  font-size: 13.5px; color: var(--gold);
   text-shadow: 0 0 14px rgba(255,215,64,0.4),2px 2px 0 rgba(180,100,0,0.5);
 }
 .fy-niveles-grid {
   display: grid; grid-template-columns: repeat(3,1fr); gap: 10px;
 }
-.fy-nv-item { font-size: 7px; padding: 10px 8px; min-width: 80px; }
+.fy-nv-item { font-size: 12px; padding: 10px 8px; min-width: 80px; }
 .fy-nv-activo {
   border-color: var(--gold) !important; color: var(--gold) !important;
   background: rgba(255,215,64,0.1) !important;
@@ -271,12 +271,12 @@
   text-align: center; max-width: 520px; width: 100%;
 }
 .fy-det-label {
-  font-family: 'Orbitron', monospace; font-size: 9px;
+  font-family: 'Orbitron', monospace; font-size: 12px;
   color: var(--gold); letter-spacing: 2px; text-transform: uppercase;
   margin-bottom: 10px;
 }
 .fy-det-pre {
-  font-family: 'Orbitron', monospace; font-size: 13px;
+  font-family: 'Orbitron', monospace; font-size: 14.5px;
   color: var(--accent); line-height: 2; white-space: pre;
   text-align: left; display: inline-block;
 }
@@ -293,6 +293,6 @@
   display: block; width: 100%; margin-bottom: 7px;
   text-align: left; padding: 10px 14px !important;
   font-family: 'Exo 2',sans-serif !important;
-  font-size: 12px !important; letter-spacing: 0 !important;
+  font-size: 13.5px !important; letter-spacing: 0 !important;
   line-height: 1.5 !important;
 }

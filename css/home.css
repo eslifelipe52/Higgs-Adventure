@@ -51,12 +51,12 @@
 
 .home-sub {
   font-family: 'Orbitron', monospace;
-  font-size: 13px; color: var(--gold);
+  font-size: 14.5px; color: var(--gold);
   letter-spacing: 5px; margin-bottom: 32px; text-transform: uppercase;
 }
 
 .home-desc {
-  font-size: 15px; color: var(--text2);
+  font-size: 16.5px; color: var(--text2);
   max-width: 520px; line-height: 1.8; margin-bottom: 44px;
 }
 .home-desc em { color: var(--accent); font-style: normal; font-weight: 500; }
@@ -64,7 +64,7 @@
 /* ── Botón de inicio ── */
 .start-btn {
   font-family: 'Orbitron', monospace;
-  font-size: 12px; letter-spacing: 2px; font-weight: 700;
+  font-size: 13.5px; letter-spacing: 2px; font-weight: 700;
   padding: 15px 44px;
   background: rgba(0,229,255,0.08);
   border: 1px solid var(--accent);

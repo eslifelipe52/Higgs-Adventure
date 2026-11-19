@@ -280,7 +280,7 @@ function crearPantalla() {
           <div class="cc-prog-val"  id="cc-prog-val">0 / 5</div>
           <div class="cc-prog-wrap"><div class="cc-prog-bar" id="cc-prog-bar"></div></div>
           <div id="cc-prog-extra" style="display:none;margin-top:8px">
-            <div class="cc-panel-label" style="font-size:9px">Neutrones</div>
+            <div class="cc-panel-label" style="font-size:12px">Neutrones</div>
             <div class="cc-prog-val" id="cc-prog-val2">0 / 5</div>
             <div class="cc-prog-wrap"><div class="cc-prog-bar cc-prog-bar2" id="cc-prog-bar2"></div></div>
           </div>

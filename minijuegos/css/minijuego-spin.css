@@ -34,7 +34,7 @@
 }
 .sp-instruccion-label {
   font-family: 'Press Start 2P', monospace;
-  font-size: 7px; letter-spacing: 2px; color: #4fc3f7;
+  font-size: 12px; letter-spacing: 2px; color: #4fc3f7;
   text-shadow: 0 0 8px rgba(79,195,247,0.6);
   flex-shrink: 0; white-space: nowrap;
   border: 1px solid rgba(79,195,247,0.3);
@@ -47,7 +47,7 @@
 }
 .sp-instruccion {
   font-family: 'Exo 2', sans-serif;
-  font-size: 14px; font-weight: 600; color: #d0eeff;
+  font-size: 15.5px; font-weight: 600; color: #d0eeff;
   line-height: 1.55; margin: 0; flex: 1; text-align: center;
   text-shadow: 0 0 20px rgba(79,195,247,0.3);
 }
@@ -59,7 +59,7 @@
 }
 .sp-etapa-tab {
   font-family: 'Press Start 2P', monospace;
-  font-size: 7px; letter-spacing: 1px;
+  font-size: 12px; letter-spacing: 1px;
   padding: 6px 12px; border-radius: 4px; cursor: pointer;
   background: rgba(79,195,247,0.06);
   border: 1px solid rgba(79,195,247,0.22);
@@ -86,7 +86,7 @@
 }
 .sp-nivel-dots { display: flex; gap: 8px; flex-wrap: wrap; }
 .sp-nivel-dot {
-  font-family: 'Orbitron', monospace; font-size: 9px;
+  font-family: 'Orbitron', monospace; font-size: 12px;
   padding: 6px 12px; border-radius: 4px; cursor: pointer;
   background: rgba(0,180,255,0.06);
   border: 1px solid rgba(0,180,255,0.2);
@@ -95,14 +95,14 @@
 .sp-nivel-dot:hover  { border-color: #4fc3f7; color: #4fc3f7; }
 .sp-nivel-dot.active { border-color: #4fc3f7; color: #4fc3f7; background: rgba(79,195,247,0.1); }
 .sp-progreso-label {
-  font-family: 'Orbitron', monospace; font-size: 10px;
+  font-family: 'Orbitron', monospace; font-size: 12px;
   color: var(--text2); white-space: nowrap;
 }
 
 /* ── Botones ── */
 .sp-btn {
   font-family: 'Press Start 2P', monospace;
-  font-size: 7px; letter-spacing: 1px;
+  font-size: 12px; letter-spacing: 1px;
   padding: 9px 14px; text-align: center; line-height: 1.5;
   background: rgba(0,180,255,0.08);
   border: 1px solid rgba(0,180,255,0.3);
@@ -160,12 +160,12 @@
   display: flex; flex-direction: column; gap: 5px;
 }
 .sp-panel-title {
-  font-family: 'Orbitron', monospace; font-size: 8px;
+  font-family: 'Orbitron', monospace; font-size: 12px;
   letter-spacing: 1.5px; color: #4fc3f7;
   border-bottom: 1px solid rgba(79,195,247,0.15);
   padding-bottom: 6px; margin-bottom: 2px;
 }
-.sp-hint { font-size: 10px; color: var(--text2); line-height: 1.55; }
+.sp-hint { font-size: 12px; color: var(--text2); line-height: 1.55; }
 .sp-hint strong { color: var(--text); }
 
 /* Canvas */
@@ -177,12 +177,12 @@
 }
 .sp-canvas-legend {
   display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;
-  font-size: 10px; color: var(--text2); padding: 2px 0;
+  font-size: 12px; color: var(--text2); padding: 2px 0;
 }
 
 /* ── Reto + barra de progreso ── */
 .sp-reto {
-  font-size: 11px; color: var(--text); line-height: 1.5;
+  font-size: 13px; color: var(--text); line-height: 1.5;
 }
 .sp-reto b { color: #4fc3f7; }
 .sp-prog-wrap {
@@ -196,7 +196,7 @@
   border-radius: 10px; transition: width 0.3s ease;
 }
 .sp-prog-lbl {
-  font-family: 'Orbitron', monospace; font-size: 10px;
+  font-family: 'Orbitron', monospace; font-size: 12px;
   color: var(--text2); text-align: center; margin-top: 4px;
 }
 
@@ -205,7 +205,7 @@
 
 /* Tally en vivo (↑ vs ↓) */
 .sp-tally { display: flex; flex-direction: column; gap: 5px; margin: 6px 0; }
-.sp-tally-row { display: flex; align-items: center; gap: 6px; font-family: 'Orbitron',monospace; font-size: 12px; }
+.sp-tally-row { display: flex; align-items: center; gap: 6px; font-family: 'Orbitron',monospace; font-size: 13.5px; }
 .sp-tally-bar { flex: 1; height: 10px; border-radius: 6px; background: rgba(255,255,255,0.07); overflow: hidden; }
 .sp-tally-fill { height: 100%; width: 0%; transition: width 0.2s ease; }
 .sp-tally-fill.up   { background: #4fc3f7; }
@@ -217,7 +217,7 @@
   background: rgba(0,230,118,0.08);
   border: 1px solid rgba(0,230,118,0.35);
   border-radius: 10px; padding: 10px 12px;
-  font-size: 11px; color: #b2ffda; line-height: 1.5;
+  font-size: 13px; color: #b2ffda; line-height: 1.5;
 }
 .sp-exito-icon {
   font-family: 'Orbitron', monospace; font-weight: 900; font-size: 18px; color: #00e676;
@@ -225,25 +225,25 @@
 
 /* ── Medidores ── */
 .sp-ms-medidor {
-  font-family: 'Orbitron', monospace; font-size: 15px; font-weight: 700;
+  font-family: 'Orbitron', monospace; font-size: 16.5px; font-weight: 700;
   color: #4fc3f7; text-align: center;
   padding: 8px; border-radius: 6px;
   background: rgba(79,195,247,0.08); border: 1px solid rgba(79,195,247,0.25);
 }
 .sp-energia {
-  font-family: 'Orbitron', monospace; font-size: 12px; color: var(--gold);
+  font-family: 'Orbitron', monospace; font-size: 13.5px; color: var(--gold);
   text-align: center; padding: 6px; border-radius: 6px;
   background: rgba(255,215,64,0.07); border: 1px solid rgba(255,215,64,0.2);
 }
 .sp-ctrl-row {
   display: flex; align-items: center; gap: 8px;
-  font-size: 10px; color: var(--text2);
+  font-size: 12px; color: var(--text2);
 }
 .sp-ctrl-row input[type=range] { flex: 1; accent-color: #4fc3f7; }
 
 /* ── Estado (feedback) ── */
 .sp-estado {
-  font-size: 10px; line-height: 1.5; padding: 6px 8px; border-radius: 6px;
+  font-size: 12px; line-height: 1.5; padding: 6px 8px; border-radius: 6px;
   min-height: 14px;
 }
 .sp-estado.ok  { color: #69ffa6; background: rgba(0,230,118,0.1); border: 1px solid rgba(0,230,118,0.35); }
@@ -263,7 +263,7 @@
 .sp-orbital-nivel { display: flex; gap: 40px; align-items: flex-end; justify-content: center; }
 .sp-orbital-grupo { display: flex; flex-direction: column; align-items: center; gap: 8px; }
 .sp-orbital-label {
-  font-family: 'Orbitron', monospace; font-size: 14px; font-weight: 700;
+  font-family: 'Orbitron', monospace; font-size: 15.5px; font-weight: 700;
   color: #4fc3f7;
 }
 .sp-orbital-cajas { display: flex; gap: 6px; }
@@ -294,7 +294,7 @@
 .sp-e.up   { color: #4fc3f7; text-shadow: 0 0 8px rgba(79,195,247,0.7); }
 .sp-e.down { color: #ff8a80; text-shadow: 0 0 8px rgba(255,82,82,0.6); }
 .sp-orbital-conteo {
-  font-family: 'Orbitron', monospace; font-size: 11px; color: var(--text2);
+  font-family: 'Orbitron', monospace; font-size: 13px; color: var(--text2);
   margin-top: 10px;
 }
 
@@ -314,7 +314,7 @@
 /* Mini-indicadores de la secuencia de átomos (H · C · O · Ne) */
 .sp-atomos-mini { display: flex; gap: 6px; margin-top: 8px; justify-content: center; }
 .sp-atomo-chip {
-  font-family: 'Orbitron', monospace; font-size: 10px; font-weight: 700;
+  font-family: 'Orbitron', monospace; font-size: 12px; font-weight: 700;
   padding: 3px 7px; border-radius: 5px;
   border: 1px solid rgba(0,180,255,0.25); color: var(--text2);
   background: rgba(0,180,255,0.05);
@@ -325,7 +325,7 @@
 /* Selector de espín (nivel 3) */
 .sp-spin-sel { display: flex; gap: 6px; }
 .sp-spin-btn {
-  flex: 1; font-family: 'Orbitron', monospace; font-size: 11px;
+  flex: 1; font-family: 'Orbitron', monospace; font-size: 13px;
   padding: 8px 6px; border-radius: 6px; cursor: pointer;
   background: rgba(255,255,255,0.04);
   border: 1px solid rgba(255,255,255,0.2); color: var(--text2);
@@ -349,7 +349,7 @@
 }
 .sp-ferm-mini {
   width: 42px; height: 38px; cursor: pointer;
-  font-family: 'Orbitron',monospace; font-size: 15px; font-weight: 900;
+  font-family: 'Orbitron',monospace; font-size: 16.5px; font-weight: 900;
   color: var(--fc); background: rgba(0,180,255,0.05);
   border: 1px solid var(--fc, rgba(0,180,255,0.3));
   border-radius: 8px; transition: all 0.15s;
@@ -364,12 +364,12 @@
   border-color: #00e676; color: #69ffa6;
   background: rgba(0,230,118,0.12); text-shadow: 0 0 6px rgba(0,230,118,0.6);
 }
-.sp-ferm-mini.medido::after { content: ' ✓'; font-size: 9px; }
+.sp-ferm-mini.medido::after { content: ' ✓'; font-size: 12px; }
 
 /* Módulo B — selector de decaimientos + decisión */
 .sp-dec-selector { display: flex; flex-direction: column; gap: 5px; margin-bottom: 6px; }
 .sp-dec-opt {
-  font-family: 'Orbitron',monospace; font-size: 13px; text-align: left;
+  font-family: 'Orbitron',monospace; font-size: 14.5px; text-align: left;
   padding: 7px 10px; border-radius: 7px; cursor: pointer;
   background: rgba(0,180,255,0.05); border: 1px solid rgba(0,180,255,0.25);
   color: #d0eeff; transition: all 0.15s;
@@ -380,17 +380,17 @@
 .sp-dec-opt.resuelto::after { content: ' ✓'; }
 .sp-dec-decidir { display: flex; gap: 8px; margin-top: 6px; }
 .sp-dec-si, .sp-dec-no { flex: 1; }
-.sp-dec-exp { font-size: 11px; line-height: 1.5; color: var(--text2); margin-top: 6px; }
+.sp-dec-exp { font-size: 13px; line-height: 1.5; color: var(--text2); margin-top: 6px; }
 .sp-dec-exp.ok  { color: #b2ffda; }
 .sp-dec-exp.err { color: #ffc5c5; }
 
 /* Módulo D — tabla comparativa g/2 */
 .sp-gm-fila {
   display: flex; justify-content: space-between; align-items: center;
-  font-family: 'Orbitron',monospace; font-size: 12px; color: var(--text2);
+  font-family: 'Orbitron',monospace; font-size: 13.5px; color: var(--text2);
   padding: 3px 0; border-bottom: 1px solid rgba(255,255,255,0.06);
 }
-.sp-gm-fila b { font-size: 13px; }
+.sp-gm-fila b { font-size: 14.5px; }
 
 
 /* ════════════════════════════════════════
@@ -399,7 +399,7 @@
 
 /* Botones auxiliares usados por los módulos de la Etapa 3 */
 .sp-btn-sutil {
-  width: 100%; margin-top: 6px; font-size: 10px;
+  width: 100%; margin-top: 6px; font-size: 12px;
   border-color: rgba(255,255,255,0.18); color: var(--text2);
   background: rgba(255,255,255,0.03);
 }
@@ -422,7 +422,7 @@
 .sp-tri-btns .sp-btn-accion sub { font-size: 0.8em; }
 
 .sp-tri-btns { display: flex; gap: 5px; margin-bottom: 4px; }
-.sp-tri-btns .sp-btn-accion { margin-top: 0; font-size: 11px; padding: 7px 4px; }
+.sp-tri-btns .sp-btn-accion { margin-top: 0; font-size: 13px; padding: 7px 4px; }
 
 .sp-tri-tira { display: flex; gap: 6px; justify-content: center; flex-wrap: wrap; margin-bottom: 6px; }
 .sp-tri-chip {
@@ -432,8 +432,8 @@
   color: var(--bc); background: rgba(0,180,255,0.05);
   border: 1px solid var(--bc, rgba(0,180,255,0.3));
 }
-.sp-tri-chip b { font-family: 'Orbitron',monospace; font-size: 15px; font-weight: 900; text-shadow: 0 0 6px var(--bc); }
-.sp-tri-chip small { font-size: 8px; color: var(--text2); }
+.sp-tri-chip b { font-family: 'Orbitron',monospace; font-size: 16.5px; font-weight: 900; text-shadow: 0 0 6px var(--bc); }
+.sp-tri-chip small { font-size: 12px; color: var(--text2); }
 .sp-tri-chip:hover { transform: translateY(-2px); }
 .sp-tri-chip.sel {
   background: rgba(255,215,64,0.12); border-color: var(--gold);
@@ -443,7 +443,7 @@
 /* ── Listas de metas (Módulos B y C) ── */
 .sp-metas { list-style: none; margin: 8px 0 0; padding: 0; display: flex; flex-direction: column; gap: 4px; }
 .sp-metas li {
-  font-size: 10px; line-height: 1.4; color: var(--text2);
+  font-size: 12px; line-height: 1.4; color: var(--text2);
   padding: 4px 6px; border-radius: 5px;
   border: 1px solid rgba(255,255,255,0.08); background: rgba(255,255,255,0.02);
   transition: all 0.2s;
@@ -455,7 +455,7 @@
 /* ── Módulo C — opciones de pregunta ── */
 .sp-gl-ops { display: flex; flex-direction: column; gap: 5px; margin-top: 6px; }
 .sp-gl-op {
-  width: 100%; text-align: left; font-size: 11px; padding: 7px 10px;
+  width: 100%; text-align: left; font-size: 13px; padding: 7px 10px;
   border-color: rgba(0,180,255,0.25); color: #d0eeff;
 }
 .sp-gl-op:hover { border-color: #4fc3f7; background: rgba(79,195,247,0.1); }

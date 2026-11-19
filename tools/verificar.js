@@ -659,6 +659,56 @@ titulo('J. Bloqueo de las etapas internas de los minijuegos');
   });
 }
 
+/* ════════════════════════════════════════
+   K. Legibilidad: ningún texto por debajo de 12px
+   ════════════════════════════════════════ */
+titulo('K. Tamaño mínimo de letra (accesibilidad)');
+
+{
+  const MINIMO = 12;
+  const fuentesCss = [];
+  (function rec(dir) {
+    const abs = path.join(RAIZ, dir);
+    for (const e of fs.readdirSync(abs, { withFileTypes: true })) {
+      const rel = dir ? dir + '/' + e.name : e.name;
+      if (e.isDirectory()) {
+        /* Se saltan también las carpetas ocultas (.git, .chrome-tmp y
+           cualquier resto de pruebas), que no forman parte del sitio. */
+        if (e.name.startsWith('.') ||
+            ['node_modules', 'assets', 'docs'].indexOf(e.name) >= 0) continue;
+        rec(rel);
+      } else if (/\.(css|js|html)$/i.test(e.name)) {
+        fuentesCss.push(rel);
+      }
+    }
+  })('');
+
+  const pequenos = [];
+  let revisados = 0;
+
+  fuentesCss.forEach(rel => {
+    const src = leer(rel);
+    /* Solo valores absolutos en px: em/rem/% escalan con su contenedor. */
+    const re = /font-size\s*:\s*(\d+(?:\.\d+)?)px/gi;
+    let m;
+    while ((m = re.exec(src)) !== null) {
+      revisados++;
+      const px = parseFloat(m[1]);
+      if (px < MINIMO) {
+        const linea = src.slice(0, m.index).split('\n').length;
+        pequenos.push(`${rel}:${linea} → ${px}px`);
+      }
+    }
+  });
+
+  if (pequenos.length) {
+    pequenos.slice(0, 15).forEach(p => fallo(`${p}  (mínimo ${MINIMO}px)`));
+    if (pequenos.length > 15) fallo(`… y ${pequenos.length - 15} más`);
+  } else {
+    ok(`${revisados} declaraciones, todas ≥ ${MINIMO}px`);
+  }
+}
+
 /* ── Pruebas asíncronas de la sincronización ── */
 (async () => {
 

@@ -12,7 +12,7 @@
    ════════════════════════════════════════ */
 .nav-btn-icon {
   padding: 8px 11px;
-  font-size: 13px;
+  font-size: 14.5px;
   letter-spacing: 0;
   line-height: 1;
 }
@@ -32,7 +32,7 @@
   border-radius: 999px;
   color: var(--text);
   font-family: 'Exo 2', sans-serif;
-  font-size: 13px;
+  font-size: 14.5px;
   text-align: center;
   box-shadow: 0 8px 32px rgba(0,0,0,0.55), 0 0 24px rgba(0,229,255,0.14);
   opacity: 0;
@@ -61,10 +61,10 @@
   box-shadow: 0 0 12px rgba(255,215,64,0.12);
 }
 .particle-cell.locked-stage .p-symbol { font-size: 18px; }
-.particle-cell.locked-stage .p-name   { font-size: 8px; line-height: 1.35; }
+.particle-cell.locked-stage .p-name   { font-size: 12px; line-height: 1.35; }
 .particle-cell.locked-stage .p-name strong {
   display: block; color: rgba(255,215,64,0.75);
-  font-family: 'Orbitron', monospace; font-size: 7.5px;
+  font-family: 'Orbitron', monospace; font-size: 12px;
   letter-spacing: 0.6px; margin-top: 3px;
 }
 
@@ -75,7 +75,7 @@
   margin: 0 auto 12px;
   max-width: 720px;
   padding: 8px 16px;
-  font-size: 11px;
+  font-size: 13px;
   color: var(--text2);
   background: rgba(255,215,64,0.05);
   border: 1px solid rgba(255,215,64,0.18);
@@ -86,7 +86,7 @@
 .me-bloqueo-banner.hidden { display: none; }
 .me-bloqueo-banner button {
   font-family: 'Orbitron', monospace;
-  font-size: 9px; letter-spacing: 1px; text-transform: uppercase;
+  font-size: 12px; letter-spacing: 1px; text-transform: uppercase;
   padding: 5px 12px; border-radius: 4px; cursor: pointer;
   background: transparent; color: var(--accent);
   border: 1px solid rgba(0,229,255,0.35);
@@ -107,7 +107,7 @@
 }
 .mj-sec-btn.bloqueada::after {
   content: ' 🔒';
-  font-size: 9px;
+  font-size: 12px;
 }
 
 /* Aviso dentro del hub cuando la sección está bloqueada */
@@ -122,17 +122,17 @@
 }
 .mj-bloqueo-aviso .mj-bloqueo-titulo {
   font-family: 'Orbitron', monospace;
-  font-size: 12px; letter-spacing: 1.5px;
+  font-size: 13.5px; letter-spacing: 1.5px;
   color: rgba(255,215,64,0.9); text-transform: uppercase;
 }
 .mj-bloqueo-aviso .mj-bloqueo-txt {
-  font-size: 11.5px; color: var(--text2); max-width: 460px; line-height: 1.6;
+  font-size: 13px; color: var(--text2); max-width: 460px; line-height: 1.6;
 }
 .mj-bloqueo-aviso .mj-bloqueo-lista {
   display: flex; flex-wrap: wrap; gap: 8px; justify-content: center;
 }
 .mj-bloqueo-aviso .mj-bloqueo-chip {
-  font-size: 10px; padding: 4px 10px; border-radius: 999px;
+  font-size: 12px; padding: 4px 10px; border-radius: 999px;
   border: 1px solid rgba(255,255,255,0.12);
   color: var(--text2); background: rgba(255,255,255,0.03);
 }
@@ -161,22 +161,29 @@
   background: rgba(255,215,64,0.06);
   box-shadow: 0 0 12px rgba(255,215,64,0.1);
 }
-.perfil-etapa-icono { font-size: 15px; width: 20px; text-align: center; flex-shrink: 0; }
+.perfil-etapa-icono { font-size: 16.5px; width: 20px; text-align: center; flex-shrink: 0; }
 .perfil-etapa-info  { flex: 1; min-width: 0; }
+/* El nombre y el detalle se dejan fluir en varias líneas en lugar de
+   recortarse con puntos suspensivos: con la tipografía más grande el
+   texto se cortaba y se perdía información. */
 .perfil-etapa-nombre {
   font-family: 'Orbitron', monospace;
-  font-size: 9px; letter-spacing: 1px; text-transform: uppercase;
+  font-size: 12px; letter-spacing: 0.6px; text-transform: uppercase;
   color: var(--text);
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
 }
 .perfil-etapa-detalle {
-  font-size: 9.5px; color: var(--text2); margin-top: 2px;
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  font-size: 12px; color: var(--text2); margin-top: 2px;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
 }
 .perfil-etapa-estado {
-  font-size: 9px; font-family: 'Orbitron', monospace;
+  font-size: 12px; font-family: 'Orbitron', monospace;
   letter-spacing: 0.5px; flex-shrink: 0;
   color: var(--text2);
+  align-self: flex-start;
+  margin-top: 1px;
 }
 .perfil-etapa.abierta .perfil-etapa-estado { color: var(--accent); }
 
@@ -191,19 +198,19 @@
   transition: width 0.4s ease;
 }
 .perfil-prog-nota {
-  font-size: 9.5px; color: var(--text2); line-height: 1.5;
+  font-size: 12px; color: var(--text2); line-height: 1.5;
 }
 
 /* ── Lista de minijuegos con su avance ── */
 .perfil-juego-fila {
   display: flex; align-items: center; gap: 8px;
   padding: 6px 8px; border-radius: 6px;
-  font-size: 10.5px; color: var(--text2);
+  font-size: 12.5px; color: var(--text2);
 }
 .perfil-juego-fila:hover { background: rgba(255,255,255,0.03); }
 .perfil-juego-nombre { flex: 1; color: var(--text); }
 .perfil-juego-prog {
-  font-family: 'Orbitron', monospace; font-size: 9px;
+  font-family: 'Orbitron', monospace; font-size: 12px;
   color: var(--text2); flex-shrink: 0;
 }
 .perfil-juego-fila.superado .perfil-juego-nombre { color: var(--accent); }
@@ -213,7 +220,7 @@
 .perfil-reiniciar {
   width: 100%; margin-top: 10px;
   font-family: 'Orbitron', monospace;
-  font-size: 9px; letter-spacing: 1px; text-transform: uppercase;
+  font-size: 12px; letter-spacing: 1px; text-transform: uppercase;
   padding: 7px; border-radius: 5px; cursor: pointer;
   background: transparent; color: rgba(255,82,82,0.75);
   border: 1px solid rgba(255,82,82,0.25);
@@ -246,7 +253,7 @@
 .perfil-tab {
   flex: 1; padding: 7px 4px; cursor: pointer;
   font-family: 'Orbitron', monospace;
-  font-size: 8.5px; letter-spacing: 0.8px; text-transform: uppercase;
+  font-size: 12px; letter-spacing: 0.8px; text-transform: uppercase;
   background: transparent; color: var(--text2);
   border: 1px solid rgba(255,255,255,0.08);
   border-radius: 6px; transition: all 0.2s;
