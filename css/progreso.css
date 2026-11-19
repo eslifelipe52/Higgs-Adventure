@@ -1,21 +1,10 @@
 /* ══════════════════════════════════════════
    css/progreso.css
    Estilos del sistema de progreso:
-     · botón de calculadora en la nav
      · aviso flotante de desbloqueo
      · partículas y secciones bloqueadas
      · sección de progreso dentro del perfil
    ══════════════════════════════════════════ */
-
-/* ════════════════════════════════════════
-   BOTÓN ICONO EN LA NAV (calculadora)
-   ════════════════════════════════════════ */
-.nav-btn-icon {
-  padding: 8px 11px;
-  font-size: 14.5px;
-  letter-spacing: 0;
-  line-height: 1;
-}
 
 /* ════════════════════════════════════════
    AVISO FLOTANTE DE DESBLOQUEO

@@ -351,9 +351,6 @@ function ceModuloFuerzas(body) {
           </div>
         </div>
 
-        <div class="ms-btn-row" style="margin-top:8px">
-          <button class="calc-toggle-btn" onclick="Calculadora.toggle()">🧮 Calc</button>
-        </div>
       </div>
 
       <!-- Canvas de simulación -->
@@ -777,9 +774,6 @@ function ceModuloCable(body) {
           </p>
         </div>
 
-        <div class="ms-btn-row" style="margin-top:8px">
-          <button class="calc-toggle-btn" onclick="Calculadora.toggle()">🧮 Calc</button>
-        </div>
       </div>
 
       <!-- Canvas + slider -->
@@ -1149,9 +1143,6 @@ function ceModuloOndas(body) {
           </p>
         </div>
 
-        <div class="ms-btn-row" style="margin-top:8px">
-          <button class="calc-toggle-btn" onclick="Calculadora.toggle()">🧮 Calc</button>
-        </div>
       </div>
 
       <!-- Canvas + controles -->
@@ -1590,9 +1581,6 @@ function ceModuloIntercambio(body) {
           </div>
         </div>
 
-        <div class="ms-btn-row" style="margin-top:8px">
-          <button class="calc-toggle-btn" onclick="Calculadora.toggle()">🧮 Calc</button>
-        </div>
       </div>
 
       <!-- Canvas de simulación con controles de reproducción encima -->
@@ -2027,9 +2015,6 @@ function ceModuloFotones(body) {
           </button>
         </div>
 
-        <div class="ms-btn-row" style="margin-top:8px">
-          <button class="calc-toggle-btn" onclick="Calculadora.toggle()">🧮 Calc</button>
-        </div>
       </div>
 
       <!-- Canvas + controles -->
@@ -2522,9 +2507,6 @@ function ceModuloFamilias(body) {
           </p>
         </div>
 
-        <div class="ms-btn-row" style="margin-top:8px">
-          <button class="calc-toggle-btn" onclick="Calculadora.toggle()">🧮 Calc</button>
-        </div>
       </div>
 
       <!-- Canvas + controles -->
@@ -3110,9 +3092,6 @@ function ceModuloAcoplamiento(body) {
           </p>
         </div>
 
-        <div class="ms-btn-row" style="margin-top:8px">
-          <button class="calc-toggle-btn" onclick="Calculadora.toggle()">🧮 Calc</button>
-        </div>
       </div>
 
       <!-- Canvas + controles -->
@@ -3551,9 +3530,6 @@ function ceModuloNube(body) {
           </p>
         </div>
 
-        <div class="ms-btn-row" style="margin-top:8px">
-          <button class="calc-toggle-btn" onclick="Calculadora.toggle()">🧮 Calc</button>
-        </div>
       </div>
 
       <!-- Canvas + controles -->
@@ -3984,9 +3960,6 @@ function ceModuloColectivo(body) {
           ${nv.pista ? `<p style="font-size:12px;color:var(--text2);margin-top:6px;line-height:1.5">💡 ${nv.pista}</p>` : ''}
         </div>
 
-        <div class="ms-btn-row" style="margin-top:8px">
-          <button class="calc-toggle-btn" onclick="Calculadora.toggle()">🧮 Calc</button>
-        </div>
       </div>
 
       <!-- Canvas + controles -->

@@ -1436,7 +1436,6 @@ function msRenderEtapa3(body) {
             `).join('')}
             <span class="ms-e1-niveles-label">Nivel ${e3.nivelIdx+1} / ${MS_DECAIMIENTOS.length}</span>
           </div>
-          <button class="calc-toggle-btn" onclick="Calculadora.toggle()" style="margin-top:4px">🧮 Calculadora</button>
         </div>
 
         <!-- Paleta de partículas hijas -->
