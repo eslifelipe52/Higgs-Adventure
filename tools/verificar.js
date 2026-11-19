@@ -609,6 +609,56 @@ titulo('I. Sintaxis de los scripts en línea de los HTML');
   if (revisados === 0) aviso('no se encontró ningún script en línea que revisar');
 }
 
+/* ════════════════════════════════════════
+   J. Pestañas de etapa internas de los minijuegos
+   ════════════════════════════════════════ */
+titulo('J. Bloqueo de las etapas internas de los minijuegos');
+
+{
+  const conEtapas = [
+    { f: 'minijuegos/js/minijuego-carga-color.js',     n: 'Carga de Color' },
+    { f: 'minijuegos/js/minijuego-carga-electrica.js', n: 'Carga Eléctrica' },
+    { f: 'minijuegos/js/minijuego-spin.js',            n: 'Espín' },
+    { f: 'minijuegos/js/minijuego-masa.js',            n: 'Masa' }
+  ];
+
+  conEtapas.forEach(j => {
+    const src = leer(j.f);
+    const usaHelper = /etapaInternaDesbloqueada/.test(src);
+    const usaClase  = /etapa-tab-bloqueada/.test(src);
+    if (usaHelper && usaClase) {
+      ok(`${j.n}: respeta el desbloqueo global`);
+    } else {
+      const falta = [];
+      if (!usaHelper) falta.push('la comprobación etapaInternaDesbloqueada()');
+      if (!usaClase)  falta.push('la clase etapa-tab-bloqueada');
+      fallo(`${j.n}: le falta ${falta.join(' y ')}`);
+    }
+  });
+
+  probar('La hoja css/bloqueo-etapas.css se carga después de las de minijuegos', () => {
+    const h = leer('index.html');
+    const pBloqueo = h.indexOf('css/bloqueo-etapas.css');
+    const pUltimo  = h.indexOf('minijuegos/css/minijuego-foton.css');
+    if (pBloqueo < 0) return 'no está enlazada en index.html';
+    if (pUltimo >= 0 && pBloqueo < pUltimo) return 'debería ir después de las hojas de minijuegos';
+    return true;
+  });
+
+  probar('etapaInternaDesbloqueada(N) sigue a la etapa N+1 del proyecto', () => {
+    const P = nuevoProgreso();
+    if (!P.etapaInternaDesbloqueada(0)) return 'la pestaña 1 debería estar abierta desde el inicio';
+    if (P.etapaInternaDesbloqueada(1))  return 'la pestaña 2 no debería estarlo todavía';
+    /* Superamos la etapa 1 para abrir la 2 */
+    P.ETAPAS[1].minijuegos.forEach(id => {
+      for (let i = 0; i < P.MODULOS_REQUERIDOS[id]; i++) P.moduloCompletado(id, 'm' + i);
+    });
+    if (!P.etapaInternaDesbloqueada(1)) return 'la pestaña 2 debería abrirse con la etapa 2';
+    if (P.etapaInternaDesbloqueada(2))  return 'la pestaña 3 no debería abrirse aún';
+    return true;
+  });
+}
+
 /* ── Pruebas asíncronas de la sincronización ── */
 (async () => {
 

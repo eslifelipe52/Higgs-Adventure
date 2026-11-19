@@ -59,6 +59,12 @@ function spModulos() { return SP_ETAPAS[spState.etapa].modulos; }
    ════════════════════════════════════════════ */
 function iniciar_spin() {
   spState = { etapa: 0, nivelIdx: 0 };
+  /* Red de seguridad: si la etapa de arranque quedara bloqueada por el
+     progreso global, se fuerza la etapa 0 (siempre abierta). */
+  const arranqueBloqueada = (typeof Progreso !== 'undefined' && Progreso.etapaInternaDesbloqueada)
+    ? !Progreso.etapaInternaDesbloqueada(spState.etapa)
+    : false;
+  if (arranqueBloqueada) spState = { etapa: 0, nivelIdx: 0 };
   spCrearPantalla();
   spLanzarNivel();
 }
@@ -100,13 +106,30 @@ function spCrearPantalla() {
 function spRenderTabs() {
   const cont = document.getElementById('sp-etapa-tabs');
   if (!cont) return;
-  cont.innerHTML = SP_ETAPAS.map((e, i) => `
-    <button class="sp-etapa-tab ${spState.etapa === i ? 'active' : ''}"
-            onclick="spIrEtapa(${i})" title="${e.nombre}">${e.label}</button>
-  `).join('');
+  cont.innerHTML = SP_ETAPAS.map((e, i) => {
+    /* Pestaña bloqueada si el proyecto aún no abrió esa etapa interna */
+    const bloqueada = (typeof Progreso !== 'undefined' && Progreso.etapaInternaDesbloqueada)
+      ? !Progreso.etapaInternaDesbloqueada(i)
+      : false;
+    const title = bloqueada ? `🔒 Se abre al desbloquear la Etapa ${i + 1} del proyecto` : e.nombre;
+    return `
+    <button class="sp-etapa-tab ${spState.etapa === i ? 'active' : ''} ${bloqueada ? 'etapa-tab-bloqueada' : ''}"
+            onclick="spIrEtapa(${i})" title="${title}">${e.label}</button>
+    `;
+  }).join('');
 }
 
 function spIrEtapa(e) {
+  /* Respeta el desbloqueo global del proyecto: una etapa cerrada no navega */
+  const bloqueada = (typeof Progreso !== 'undefined' && Progreso.etapaInternaDesbloqueada)
+    ? !Progreso.etapaInternaDesbloqueada(e)
+    : false;
+  if (bloqueada) {
+    if (typeof Progreso !== 'undefined' && Progreso.avisar) {
+      Progreso.avisar(`🔒 La Etapa ${e + 1} todavía está bloqueada: avanza en el proyecto para abrirla.`);
+    }
+    return;
+  }
   if (e === spState.etapa) return;
   spCancelarRAF();
   spState.etapa = e;
@@ -141,7 +164,21 @@ function spSiguienteNivel() {
   if (spState.nivelIdx < spModulos().length - 1) {
     spIrNivel(spState.nivelIdx + 1);
   } else if (spState.etapa < SP_ETAPAS.length - 1) {
-    spIrEtapa(spState.etapa + 1);
+    /* Salto automático: solo si el proyecto ya abrió la etapa siguiente.
+       Si sigue cerrada, el minijuego termina aquí, igual que al acabar
+       la última etapa (cerrarSpin() vuelve al ME). */
+    const sig = spState.etapa + 1;
+    const bloqueada = (typeof Progreso !== 'undefined' && Progreso.etapaInternaDesbloqueada)
+      ? !Progreso.etapaInternaDesbloqueada(sig)
+      : false;
+    if (bloqueada) {
+      if (typeof Progreso !== 'undefined' && Progreso.avisar) {
+        Progreso.avisar(`🔒 La Etapa ${sig + 1} todavía está bloqueada: avanza en el proyecto para abrirla.`);
+      }
+      cerrarSpin();
+    } else {
+      spIrEtapa(sig);
+    }
   } else {
     cerrarSpin();
   }
@@ -206,8 +243,13 @@ function spRetoCumplido(mensaje) {
   spProgreso(1, mensaje || '¡Completado!');
   const cont = document.getElementById('sp-logro-cont');
   if (cont) {
+    /* Si la etapa siguiente está cerrada no habrá salto: el botón cierra el minijuego,
+       así que se rotula «Terminar ✓» en coherencia con spSiguienteNivel(). */
+    const sigBloqueada = (typeof Progreso !== 'undefined' && Progreso.etapaInternaDesbloqueada)
+      ? !Progreso.etapaInternaDesbloqueada(spState.etapa + 1)
+      : false;
     const esUltimo = spState.nivelIdx >= spModulos().length - 1
-                   && spState.etapa >= SP_ETAPAS.length - 1;
+                   && (spState.etapa >= SP_ETAPAS.length - 1 || sigBloqueada);
     cont.innerHTML = `
       <div class="sp-exito">
         <span class="sp-exito-icon">✓</span>

@@ -196,6 +196,28 @@ function ccEtapaDeNivel(idx) {
   return 0;
 }
 
+/* ¿Está cerrada la pestaña de etapa interna i (0,1,2)?
+   Sigue el desbloqueo global del proyecto (js/progreso.js) y se considera
+   desbloqueada si ese módulo no estuviera cargado. */
+function ccEtapaBloqueada(i) {
+  const bloqueada = (typeof Progreso !== 'undefined' && Progreso.etapaInternaDesbloqueada)
+    ? !Progreso.etapaInternaDesbloqueada(i)
+    : false;
+  return bloqueada;
+}
+
+/* La pestaña interna N (base 0) se abre junto con la etapa N+1 del proyecto */
+function ccTextoEtapaBloqueada(i) {
+  return `🔒 Se abre al desbloquear la Etapa ${i + 1} del proyecto`;
+}
+
+/* Aviso flotante (no bloqueante) al intentar abrir una etapa cerrada */
+function ccAvisarEtapaBloqueada(i) {
+  if (typeof Progreso !== 'undefined' && Progreso.avisar) {
+    Progreso.avisar(`🔒 Esta etapa se abre al desbloquear la Etapa ${i + 1} del proyecto`);
+  }
+}
+
 /* Número del nivel RELATIVO a su etapa (cada etapa empieza en 1) */
 function ccNivelRelativo(idx) {
   const e = ccEtapaDeNivel(idx);
@@ -320,6 +342,9 @@ function ajustarCanvas() {
    INICIAR NIVEL
    ════════════════════════════════════════════ */
 function iniciarNivel(idx) {
+  /* Estado inicial: si el nivel pedido pertenece a una etapa que sigue
+     bloqueada, se abre en su lugar la Etapa 1 (primer nivel). */
+  if (ccEtapaBloqueada(ccEtapaDeNivel(idx))) idx = 0;
   if (ccRAF) { cancelAnimationFrame(ccRAF); ccRAF = null; }
 
   const nv = CC_NIVELES[idx];
@@ -368,12 +393,17 @@ function ccRenderEtapaDots() {
   const cont = document.getElementById('cc-etapa-dots');
   if (!cont) return;
   const etapaActual = ccEtapaDeNivel(ccState.idx);
-  cont.innerHTML = CC_ETAPAS.map((e, i) => `
-    <button class="cc-etapa-dot ${i === etapaActual ? 'active' : ''}"
-            onclick="ccIrEtapa(${i})" title="${e.nombre}">
+  cont.innerHTML = CC_ETAPAS.map((e, i) => {
+    /* La pestaña se pinta bloqueada si su etapa del proyecto aún está cerrada */
+    const bloqueada = ccEtapaBloqueada(i);
+    const titulo = bloqueada ? ccTextoEtapaBloqueada(i) : e.nombre;
+    return `
+    <button class="cc-etapa-dot ${i === etapaActual ? 'active' : ''} ${bloqueada ? 'etapa-tab-bloqueada' : ''}"
+            onclick="ccIrEtapa(${i})" title="${titulo}">
       ${e.label}
     </button>
-  `).join('');
+  `;
+  }).join('');
   const lbl = document.getElementById('cc-progreso-label');
   if (lbl) lbl.textContent = `${CC_ETAPAS[etapaActual].label} · ${CC_ETAPAS[etapaActual].nombre}`;
 }
@@ -401,6 +431,9 @@ function ccRenderNivelesDots() {
 /* Ir al primer nivel de una etapa.
    La Etapa 3 (El Tejido de Gluones) usa un módulo propio. */
 function ccIrEtapa(e) {
+  /* Guarda de desbloqueo global: se comprueba ANTES de la vía de gluones
+     para que la Etapa 3 tampoco se pueda abrir si está cerrada. */
+  if (ccEtapaBloqueada(e)) { ccAvisarEtapaBloqueada(e); return; }
   const etapa = CC_ETAPAS[e];
   if (etapa.gluones) { iniciar_carga_color_gluones(); return; }
   iniciarNivel(etapa.indices[0]);
@@ -410,7 +443,14 @@ function ccIrEtapa(e) {
 function ccSiguienteNivel() {
   const sig = ccState.idx + 1;
   /* El nivel libre (índice CC_NIVEL_LIBRE) está fuera del flujo secuencial */
-  if (sig < CC_NIVEL_LIBRE) iniciarNivel(sig);
+  if (sig >= CC_NIVEL_LIBRE) return;
+  /* El avance automático se detiene si cruzaría a una etapa todavía cerrada */
+  const etapaSig = ccEtapaDeNivel(sig);
+  if (etapaSig !== ccEtapaDeNivel(ccState.idx) && ccEtapaBloqueada(etapaSig)) {
+    ccAvisarEtapaBloqueada(etapaSig);
+    return;
+  }
+  iniciarNivel(sig);
 }
 
 /* ════════════════════════════════════════════
@@ -1486,6 +1526,9 @@ const G3_NIVELES = [
 const G3_QR = 34;   /* radio de los quarks */
 
 function iniciar_carga_color_gluones() {
+  /* La Etapa 3 también es una pestaña del proyecto: si sigue cerrada no se
+     entra (protege la entrada directa, sin pasar por ccIrEtapa). */
+  if (ccEtapaBloqueada(2)) { ccAvisarEtapaBloqueada(2); return; }
   /* Cerrar la pantalla de arrastre si estaba abierta */
   if (ccRAF) { cancelAnimationFrame(ccRAF); ccRAF = null; }
   if (ccScreen) { ccScreen.remove(); ccScreen = null; ccCanvas = null; ccCtx = null; }
@@ -1695,18 +1738,25 @@ function g3IniciarNivel(idx, ronda) {
 function g3RenderEtapaDots() {
   const cont = document.getElementById('g3-etapa-dots');
   if (!cont) return;
-  cont.innerHTML = CC_ETAPAS.map((e, i) => `
-    <button class="cc-etapa-dot ${e.gluones ? 'active' : ''}"
-            onclick="g3IrEtapa(${i})" title="${e.nombre}">
+  cont.innerHTML = CC_ETAPAS.map((e, i) => {
+    /* Mismas 3 etapas del proyecto: se pintan con el mismo criterio */
+    const bloqueada = ccEtapaBloqueada(i);
+    const titulo = bloqueada ? ccTextoEtapaBloqueada(i) : e.nombre;
+    return `
+    <button class="cc-etapa-dot ${e.gluones ? 'active' : ''} ${bloqueada ? 'etapa-tab-bloqueada' : ''}"
+            onclick="g3IrEtapa(${i})" title="${titulo}">
       ${e.label}
     </button>
-  `).join('');
+  `;
+  }).join('');
   const lbl = document.getElementById('g3-progreso-label');
   if (lbl) lbl.textContent = 'Etapa 3 · El Tejido de Gluones';
 }
 
 /* Navegar a otra etapa desde el módulo de gluones */
 function g3IrEtapa(e) {
+  /* Guarda de desbloqueo global: no se sale hacia una etapa cerrada */
+  if (ccEtapaBloqueada(e)) { ccAvisarEtapaBloqueada(e); return; }
   const etapa = CC_ETAPAS[e];
   if (etapa.gluones) return;             /* ya estamos aquí */
   /* Volver a la pantalla de arrastre en el primer nivel de esa etapa */

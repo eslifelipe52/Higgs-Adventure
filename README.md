@@ -151,6 +151,28 @@ Progreso.registrarPartida('foton', { puntaje: 620 });    // una ronda puntuada
 Las claves de módulo se guardan en un conjunto, así que repetir la misma clave
 nunca infla el progreso.
 
+### Desbloqueo dentro de los minijuegos
+
+Los cuatro minijuegos de la etapa 1 tienen a su vez **etapas internas** (Etapa 1, 2
+y 3), que se corresponden con el contenido de las etapas del proyecto. Esas
+pestañas **no se pueden abrir antes de tiempo**: la pestaña *N* se habilita
+cuando se desbloquea la etapa *N* del proyecto.
+
+```js
+Progreso.etapaInternaDesbloqueada(1);   // ¿puede abrirse la Etapa 2 del minijuego?
+```
+
+Mientras están cerradas se ven atenuadas y con un candado, y al pulsarlas
+aparece un aviso en lugar de navegar. El avance automático también lo respeta:
+si al terminar una etapa la siguiente todavía está cerrada, el minijuego no
+salta a ella.
+
+![Etapas internas bloqueadas](docs/capturas/09-etapas-bloqueadas.png)
+
+Así funciona la **retroalimentación** que describe el proyecto: los minijuegos
+incorporan niveles nuevos a medida que el alumno avanza, en lugar de mostrar de
+golpe todo su contenido.
+
 ### Cómo verificar el proyecto
 
 ```bash

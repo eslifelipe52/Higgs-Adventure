@@ -252,7 +252,27 @@ function crearPantallaMasa() {
 /* ════════════════════════════════════════════
    INICIAR ETAPA
    ════════════════════════════════════════════ */
+/* ¿La etapa interna i (0, 1, 2) sigue cerrada por el progreso global?
+   Lleva guarda: si js/progreso.js no estuviera cargado, nada se bloquea. */
+function msEtapaBloqueada(i) {
+  const bloqueada = (typeof Progreso !== 'undefined' && Progreso.etapaInternaDesbloqueada)
+    ? !Progreso.etapaInternaDesbloqueada(i)
+    : false;
+  return bloqueada;
+}
+
 function msIniciarNivel(idx) {
+  /* Ninguna ruta entra en una etapa cerrada: los puntos del selector,
+     los botones «Ir a Etapa N →» y el avance automático pasan por aquí. */
+  if (msEtapaBloqueada(idx)) {
+    if (typeof Progreso !== 'undefined' && Progreso.avisar) {
+      Progreso.avisar(`🔒 Etapa ${idx + 1} bloqueada: se abre al desbloquear la Etapa ${idx + 1} del proyecto.`);
+    }
+    /* Si aún no hay ninguna etapa pintada (estado inicial), forzamos la 1 */
+    if (msState && typeof msState.idx === 'number') return;
+    idx = 0;
+  }
+
   /* Cancelar loops de animación de la etapa anterior antes de reiniciar estado */
   if (msState && msState.e3 && msState.e3.rafId) cancelAnimationFrame(msState.e3.rafId);
   if (msState && msState.n0 && msState.n0.rafId) cancelAnimationFrame(msState.n0.rafId);
@@ -1930,8 +1950,11 @@ function msOcultarFb() {
 function msRenderNivelDots() {
   const dots = document.getElementById('ms-nivel-dots');
   if (!dots) return;
+  /* Etapa cerrada (js/progreso.js): el punto se pinta como pestaña bloqueada */
+  const cerradas = [0,1,2].map(i => msEtapaBloqueada(i));
   dots.innerHTML = [0,1,2].map(i => `
-    <button class="ms-nivel-dot ${msState.idx===i?'active':''}"
+    <button class="ms-nivel-dot ${msState.idx===i?'active':''} ${cerradas[i]?'etapa-tab-bloqueada':''}"
+            ${cerradas[i] ? `title="🔒 Se abre al desbloquear la Etapa ${i + 1} del proyecto"` : ''}
             onclick="msIniciarNivel(${i})">
       ${i===0 ? 'Etapa 1' : i===1 ? 'Etapa 2' : 'Etapa 3'}
     </button>

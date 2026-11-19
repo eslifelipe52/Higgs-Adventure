@@ -1,0 +1,41 @@
+/* ══════════════════════════════════════════
+   css/bloqueo-etapas.css
+   Estado bloqueado de las pestañas de etapa
+   internas de los minijuegos (Etapa 1 / 2 / 3).
+
+   Se carga DESPUÉS de las hojas de cada minijuego, así que puede
+   ganar por orden de aparición sin necesidad de subir la
+   especificidad ni de usar selectores frágiles.
+
+   La lógica vive en js/progreso.js:
+     Progreso.etapaInternaDesbloqueada(i)
+   Cada minijuego añade la clase `etapa-tab-bloqueada` a las pestañas
+   cuya etapa correspondiente todavía no está abierta.
+   ══════════════════════════════════════════ */
+
+.etapa-tab-bloqueada {
+  opacity: 0.38 !important;
+  cursor: not-allowed !important;
+  filter: grayscale(0.9);
+  position: relative;
+}
+
+/* Candado junto a la etiqueta */
+.etapa-tab-bloqueada::after {
+  content: ' 🔒';
+  font-size: 0.9em;
+  opacity: 0.9;
+}
+
+/* Que no parezca pulsable al pasar el ratón */
+.etapa-tab-bloqueada:hover {
+  transform: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+  border-color: inherit;
+}
+
+/* Aviso flotante cuando se intenta abrir una etapa bloqueada */
+.progreso-aviso.etapa-cerrada {
+  border-color: rgba(255,215,64,0.45);
+}

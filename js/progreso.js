@@ -359,6 +359,14 @@ const Progreso = (function () {
     return max;
   }
 
+  /* Las pestañas internas de cada minijuego (Etapa 1, 2, 3) siguen el mismo
+     desbloqueo que las etapas del proyecto: la pestaña N (base 0) se abre
+     junto con la etapa N+1. Así el contenido nuevo se incorpora al minijuego
+     cuando el alumno avanza, que es la «retroalimentación» del proyecto. */
+  function etapaInternaDesbloqueada(idx) {
+    return etapaDesbloqueada(Number(idx) + 1);
+  }
+
   /* Detalle de lo que falta para abrir la etapa n */
   function requisitosEtapa(n) {
     const prev = ETAPAS[n - 1];
@@ -504,6 +512,7 @@ const Progreso = (function () {
     moduloCompletado, registrarPartida,
     modulosCompletados, superado, juegosTocados,
     etapaDesbloqueada, etapaMaxima, requisitosEtapa, nombreEtapa,
+    etapaInternaDesbloqueada,
     etapaDeParticula, particulaBloqueada,
     historial, mejorPuntaje, logroDe,
     reiniciar, avisar,

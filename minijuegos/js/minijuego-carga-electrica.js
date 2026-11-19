@@ -24,6 +24,12 @@ const CE_REGISTRADOS = {};
    ════════════════════════════════════════════ */
 function iniciar_carga_electrica() {
   ceState = { etapa: 0, modulo: 0 };
+  /* Red de seguridad: si la etapa de arranque quedara bloqueada por el
+     progreso global, se fuerza la etapa 0 (siempre abierta). */
+  const arranqueBloqueada = (typeof Progreso !== 'undefined' && Progreso.etapaInternaDesbloqueada)
+    ? !Progreso.etapaInternaDesbloqueada(ceState.etapa)
+    : false;
+  if (arranqueBloqueada) ceState = { etapa: 0, modulo: 0 };
   crearPantallaCE();
   ceLanzarModulo();
 }
@@ -108,6 +114,16 @@ function ceCancelarRAFs() {
 
 /* ceState.etapa = índice de etapa, ceState.modulo = índice de módulo */
 function ceIrEtapa(etapaIdx) {
+  /* Respeta el desbloqueo global del proyecto: una etapa cerrada no navega */
+  const bloqueada = (typeof Progreso !== 'undefined' && Progreso.etapaInternaDesbloqueada)
+    ? !Progreso.etapaInternaDesbloqueada(etapaIdx)
+    : false;
+  if (bloqueada) {
+    if (typeof Progreso !== 'undefined' && Progreso.avisar) {
+      Progreso.avisar(`🔒 La Etapa ${etapaIdx + 1} todavía está bloqueada: avanza en el proyecto para abrirla.`);
+    }
+    return;
+  }
   ceCancelarRAFs();
   ceState = { etapa: etapaIdx, modulo: 0 };
   ceRenderEtapaTabs();
@@ -136,12 +152,19 @@ function ceRenderEtapaTabs() {
   const cont = document.getElementById('ce-etapa-tabs');
   if (!cont) return;
   if (ceState.etapa === undefined) ceState.etapa = 0;
-  cont.innerHTML = CE_ETAPAS.map((e, i) => `
-    <button class="ce-etapa-tab ${ceState.etapa === i ? 'active' : ''}"
-            onclick="ceIrEtapa(${i})" title="${e.label}">
+  cont.innerHTML = CE_ETAPAS.map((e, i) => {
+    /* Pestaña bloqueada si el proyecto aún no abrió esa etapa interna */
+    const bloqueada = (typeof Progreso !== 'undefined' && Progreso.etapaInternaDesbloqueada)
+      ? !Progreso.etapaInternaDesbloqueada(i)
+      : false;
+    const title = bloqueada ? `🔒 Se abre al desbloquear la Etapa ${i + 1} del proyecto` : e.label;
+    return `
+    <button class="ce-etapa-tab ${ceState.etapa === i ? 'active' : ''} ${bloqueada ? 'etapa-tab-bloqueada' : ''}"
+            onclick="ceIrEtapa(${i})" title="${title}">
       Etapa ${i + 1}
     </button>
-  `).join('');
+  `;
+  }).join('');
 }
 
 function ceRenderDots() {
