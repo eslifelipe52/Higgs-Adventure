@@ -46,6 +46,13 @@ let _suscriptores = [];
 let _ui        = null;
 let _modoUI    = 'entrar';   /* pestaña activa de la pantalla de acceso */
 
+/* Firebase restaura la sesión guardada de forma asíncrona y solo después
+   avisa por onAuthStateChanged. Hasta que llega ese primer aviso no se sabe
+   si había sesión, así que no se puede pedir el invitado antes: hacerlo
+   creaba una cuenta anónima nueva en CADA recarga, pisando la anterior. */
+let _sesionResuelta  = false;  /* ¿ya llegó el primer aviso de Firebase? */
+let _intentoInvitado = false;  /* el invitado se pide una sola vez por carga */
+
 /* ── Utilidades ── */
 function _avisar() {
   const copia = {
@@ -163,6 +170,10 @@ async function iniciar() {
    3. SESIÓN
    ══════════════════════════════════════════ */
 async function _alCambiarUsuario(user) {
+  /* El primer aviso es el que dice si había sesión guardada o no */
+  const primerAviso = !_sesionResuelta;
+  _sesionResuelta = true;
+
   if (user) {
     _estado.usuario = {
       uid:        user.uid,
@@ -191,6 +202,11 @@ async function _alCambiarUsuario(user) {
       Progreso.desconectarNube();
     }
     _estado.sincronizando = false;
+
+    /* Solo en el primer aviso: si Firebase no encontró ninguna sesión
+       guardada, entonces sí se entra como invitado. Después de un cierre de
+       sesión manual no se crea otra cuenta anónima. */
+    if (primerAviso) _entrarComoInvitadoSiProcede();
   }
 
   _pintarUsuario();
@@ -223,8 +239,12 @@ function _crearAdaptadorNube(uid) {
   };
 }
 
-/* Si el modo invitado está activo y no hay nadie conectado, entra solo */
+/* Si el modo invitado está activo y no hay nadie conectado, entra solo.
+   Se llama una única vez por carga y solo cuando Firebase ya ha confirmado
+   que no había ninguna sesión guardada. */
 async function _entrarComoInvitadoSiProcede() {
+  if (_intentoInvitado) return;
+  _intentoInvitado = true;
   const modoInvitado = (typeof HIGGS_AUTH === 'undefined' || HIGGS_AUTH.modoInvitado !== false);
   if (!modoInvitado) { _abrirObligatorio(); return; }
   try {
@@ -565,9 +585,8 @@ window.HiggsAuth = {
   registrar, entrar, invitado, vincular, recuperar, reenviarVerificacion, salir
 };
 
-/* ── Arranque ── */
-iniciar().then(() => {
-  if (_estado.modo === 'listo') {
-    return _entrarComoInvitadoSiProcede();
-  }
-});
+/* ── Arranque ──
+   El invitado NO se pide aquí: se pide en el primer aviso de
+   onAuthStateChanged, cuando ya se sabe si había sesión guardada.
+   Pedirlo en este punto creaba una cuenta anónima nueva en cada recarga. */
+iniciar();

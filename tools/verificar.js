@@ -791,6 +791,38 @@ titulo('M. Direcciones de cada pantalla (#hash)');
   });
 }
 
+/* ════════════════════════════════════════
+   N. El invitado espera a la sesión guardada
+   ════════════════════════════════════════ */
+titulo('N. Sesión anónima y recargas');
+
+{
+  const auth = leer('js/auth.js');
+
+  probar('No se pide el invitado antes de saber si había sesión', () => {
+    /* Firebase restaura la sesión de forma asíncrona. Si se llama a
+       signInAnonymously() antes de su primer aviso, se crea una cuenta
+       anónima nueva en CADA recarga y se pierde la anterior. */
+    if (!/_sesionResuelta/.test(auth)) return 'no se marca el primer aviso de onAuthStateChanged';
+    if (!/if\s*\(primerAviso\)\s*_entrarComoInvitadoSiProcede\(\)/.test(auth)) {
+      return 'el invitado no está condicionado al primer aviso';
+    }
+    if (/iniciar\(\)\s*\.then\(/.test(auth)) {
+      return 'el arranque vuelve a pedir el invitado antes de tiempo';
+    }
+    if (!/^iniciar\(\);/m.test(auth)) return 'no se encuentra un arranque limpio (iniciar();)';
+    return true;
+  });
+
+  probar('El invitado se pide una sola vez por carga', () => {
+    if (!/_intentoInvitado/.test(auth)) return 'falta la marca de intento único';
+    if (!/if\s*\(_intentoInvitado\)\s*return/.test(auth)) {
+      return '_entrarComoInvitadoSiProcede() no se protege contra repetirse';
+    }
+    return true;
+  });
+}
+
 /* ── Pruebas asíncronas de la sincronización ── */
 (async () => {
 
