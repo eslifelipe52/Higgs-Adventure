@@ -10,6 +10,21 @@
      center" evita que lo que sobra por arriba quede inalcanzable. */
   justify-content: safe center;
   overflow-y: auto;
+  /* Barra de desplazamiento con el estilo del sitio. */
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0,229,255,0.28) transparent;
+}
+#screen-me::-webkit-scrollbar { width: 10px; }
+#screen-me::-webkit-scrollbar-track { background: transparent; }
+#screen-me::-webkit-scrollbar-thumb {
+  background: rgba(0,229,255,0.28);
+  border-radius: 8px;
+  border: 3px solid transparent;
+  background-clip: content-box;
+}
+#screen-me::-webkit-scrollbar-thumb:hover {
+  background: rgba(0,229,255,0.55);
+  background-clip: content-box;
 }
 
 .me-title {

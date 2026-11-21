@@ -15,6 +15,22 @@
   justify-content: safe center;
   background: radial-gradient(ellipse at 50% 40%, rgba(0,40,80,0.3) 0%, transparent 65%);
   overflow-y: auto;
+  /* Barra de desplazamiento con el estilo del sitio (misma que el perfil y
+     los paneles de los minijuegos). */
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0,229,255,0.28) transparent;
+}
+#screen-intro::-webkit-scrollbar { width: 10px; }
+#screen-intro::-webkit-scrollbar-track { background: transparent; }
+#screen-intro::-webkit-scrollbar-thumb {
+  background: rgba(0,229,255,0.28);
+  border-radius: 8px;
+  border: 3px solid transparent;
+  background-clip: content-box;
+}
+#screen-intro::-webkit-scrollbar-thumb:hover {
+  background: rgba(0,229,255,0.55);
+  background-clip: content-box;
 }
 
 .intro-stage {
