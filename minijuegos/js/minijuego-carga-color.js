@@ -722,8 +722,18 @@ function esHadronValido(g) {
    LOOP
    ════════════════════════════════════════════ */
 function ccLoop() {
-  ccActualizar();
-  ccDibujar();
+  /* Una excepción suelta aquí impedía volver a pedir el siguiente fotograma
+     y el juego se quedaba congelado para siempre. Ahora se registra una vez
+     y el bucle continúa. */
+  try {
+    ccActualizar();
+    ccDibujar();
+  } catch (e) {
+    if (!ccLoop._avisado) {
+      ccLoop._avisado = true;
+      console.error('Error en el bucle de Carga de Color:', e);
+    }
+  }
   ccRAF = requestAnimationFrame(ccLoop);
 }
 
@@ -1120,6 +1130,17 @@ function checkNivelCompleto() {
     btn.textContent = mismaEtapa ? 'Siguiente nivel →' : 'Siguiente etapa →';
     btn.classList.remove('hidden');
   }
+
+  /* Avance automático, como en el resto de minijuegos. Sin esto la
+     simulación se queda parada (ccActualizar sale en cuanto terminado) y
+     parece que el juego se ha colgado esperando un clic. El botón sigue
+     sirviendo para adelantarse. */
+  const idxAlTerminar = st.idx;
+  setTimeout(() => {
+    if (typeof ccState === 'undefined' || !ccState) return;
+    /* Solo si sigue en el mismo nivel y sigue terminado */
+    if (ccState.idx === idxAlTerminar && ccState.terminado) ccSiguienteNivel();
+  }, 2600);
 }
 
 /* ── Pantalla de resultados del Modo Libre ── */
