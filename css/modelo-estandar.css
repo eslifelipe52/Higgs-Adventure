@@ -5,7 +5,11 @@
 #screen-me {
   flex-direction: column;
   padding: 12px 40px 8px;
-  justify-content: center;
+  /* Con la tipografía actual el aviso, la rejilla y la leyenda pueden no
+     caber en pantallas bajas: se permite desplazar en vertical y "safe
+     center" evita que lo que sobra por arriba quede inalcanzable. */
+  justify-content: safe center;
+  overflow-y: auto;
 }
 
 .me-title {
@@ -109,9 +113,9 @@
 
 /* ── Leyenda ── */
 .me-legend {
-  display: flex; gap: 20px; justify-content: center;
-  margin-top: 12px; font-size: 13px; color: var(--text2);
+  display: flex; gap: 24px; justify-content: center; flex-wrap: wrap;
+  margin-top: 14px; font-size: 15.5px; color: var(--text2);
   flex-shrink: 0;
 }
-.legend-item { display: flex; align-items: center; gap: 6px; }
-.legend-dot  { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.legend-item { display: flex; align-items: center; gap: 7px; }
+.legend-dot  { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }

@@ -220,14 +220,20 @@ dentro llama a `pintarPantalla()` y además actualiza la dirección.
 
 ### Legibilidad
 
-Toda la tipografía del sitio parte de un mínimo de **12 px**. El texto corrido
-está entre 13 y 13,5 px y los títulos por encima de 18 px. Antes había 172
-declaraciones por debajo de 10 px —varias de 7 y 8 px— que resultaban ilegibles
-en pantallas pequeñas o para personas con baja visión.
+Toda la tipografía del sitio parte de un mínimo de **12 px**. El texto de
+lectura va de **13,5 a 18 px** (la introducción es la que más tiene, a 18 px) y
+los títulos de 20 px para arriba. Antes había 172 declaraciones por debajo de
+10 px —varias de 7 y 8 px— que resultaban ilegibles en pantallas pequeñas o
+para personas con baja visión.
 
 `node tools/verificar.js` incluye una comprobación que falla si vuelve a
 aparecer texto por debajo de 12 px, para que no se cuele otra vez al añadir
 pantallas nuevas.
+
+Como el contenido de la introducción y del Modelo Estándar puede no caber en
+pantallas bajas, esas dos pantallas usan `justify-content: safe center` con
+desplazamiento vertical: cuando todo cabe quedan centradas y, cuando no, se
+puede bajar hasta el principio sin que nada quede cortado.
 
 ![Tipografía legible en el Modelo Estándar](docs/capturas/10-tipografia-legible.png)
 

@@ -62,9 +62,9 @@
   display: flex; align-items: center; justify-content: center;
   gap: 10px; flex-wrap: wrap;
   margin: 0 auto 12px;
-  max-width: 720px;
-  padding: 8px 16px;
-  font-size: 13px;
+  max-width: 900px;
+  padding: 10px 18px;
+  font-size: 15.5px;
   color: var(--text2);
   background: rgba(255,215,64,0.05);
   border: 1px solid rgba(255,215,64,0.18);
@@ -75,8 +75,8 @@
 .me-bloqueo-banner.hidden { display: none; }
 .me-bloqueo-banner button {
   font-family: 'Orbitron', monospace;
-  font-size: 12px; letter-spacing: 1px; text-transform: uppercase;
-  padding: 5px 12px; border-radius: 4px; cursor: pointer;
+  font-size: 13.5px; letter-spacing: 1px; text-transform: uppercase;
+  padding: 6px 14px; border-radius: 4px; cursor: pointer;
   background: transparent; color: var(--accent);
   border: 1px solid rgba(0,229,255,0.35);
   transition: all 0.2s;
