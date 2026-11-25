@@ -212,6 +212,16 @@
   line-height: 1.55; text-align: center;
 }
 
+/* Dónde se guardan las cuentas (Firebase). Va siempre visible, debajo de la
+   nota variable, con un tono más discreto. */
+.auth-nota-db {
+  margin-top: 10px; padding-top: 12px;
+  border-top: 1px solid rgba(255,255,255,0.05);
+  font-size: 12px; color: rgba(160,180,210,0.72);
+  line-height: 1.55; text-align: center;
+}
+.auth-nota-db strong { color: rgba(0,229,255,0.85); font-weight: 700; }
+
 /* ════════════════════════════════════════
    SECCIÓN DE CUENTA EN EL PERFIL
    ════════════════════════════════════════ */

@@ -366,6 +366,12 @@ function _crearUI() {
       <div class="auth-msg" id="auth-msg"></div>
 
       <div class="auth-nota" id="auth-nota"></div>
+
+      <!-- Nota fija sobre dónde se guardan las cuentas -->
+      <div class="auth-nota-db">
+        🔒 Se guardan en <strong>Firebase</strong>, una base de datos gratuita
+        de Google.
+      </div>
     </div>
   `;
   document.body.appendChild(ov);
