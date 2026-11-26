@@ -7,8 +7,9 @@
    2. En «Configuración del proyecto → Tus apps → Web» copia el
       objeto de configuración y pégalo abajo, sustituyendo los
       valores «PEGA_AQUI…».
-   3. Sigue los pasos de docs/FIREBASE.md (activar los proveedores
-      de acceso y crear la base de datos).
+   3. En la consola, activa los proveedores «Correo electrónico/
+      contraseña» y «Anónimo», y crea una base de datos Firestore
+      en edición **Estándar** pegando las reglas de firestore.rules.
 
    ── IMPORTANTE SOBRE ESTAS CLAVES ──────────
    Estas claves NO son secretas: viajan al navegador de cualquier

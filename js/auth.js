@@ -121,7 +121,7 @@ async function iniciar() {
   if (!configurado) {
     _ponerModo('sin-configurar',
       'Firebase todavía no está configurado. Tu progreso se guarda solo en este navegador. ' +
-      'Sigue los pasos de docs/FIREBASE.md para activar las cuentas.');
+      'Rellena la configuración en js/firebase-config.js para activar las cuentas.');
     _crearUI();
     return;
   }

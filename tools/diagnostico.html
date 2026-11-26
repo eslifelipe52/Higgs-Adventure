@@ -100,8 +100,7 @@ fila('Configuración de Firebase', configurado
 if (!configurado) {
   fallar('Falta pegar tu configuración',
     'Abre <code>js/firebase-config.js</code> y sustituye los valores <code>PEGA_AQUI…</code> ' +
-    'por los de tu proyecto (Firebase Console → Configuración del proyecto → Tus apps → Web). ' +
-    'Los pasos están en <code>docs/FIREBASE.md</code>.');
+    'por los de tu proyecto (Firebase Console → Configuración del proyecto → Tus apps → Web).');
   throw new Error('sin configurar');
 }
 fila('Proyecto', '<code>' + FIREBASE_CONFIG.projectId + '</code>');

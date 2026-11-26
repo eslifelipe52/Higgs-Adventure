@@ -97,30 +97,6 @@ tools/verificar.js          comprobaciones automáticas del proyecto
 | Gluón, Bosón Z, Bosones W± | 3 | pendientes |
 | Campo de Higgs, Diagramas de Higgs | 4 | pendientes |
 
-### Capturas
-
-Grid del Modelo Estándar: solo la primera generación está accesible y el resto
-muestra la etapa en la que se desbloquea.
-
-![Grid del Modelo Estándar con las etapas bloqueadas](docs/capturas/01-modelo-estandar-bloqueado.png)
-
-Panel de perfil con el avance por etapas, los minijuegos superados y el progreso
-hacia la siguiente etapa.
-
-![Panel de perfil con el progreso por etapas](docs/capturas/02-perfil-progreso.png)
-
-Una sección de minijuegos todavía bloqueada explica qué falta para abrirla.
-
-![Aviso de sección de minijuegos bloqueada](docs/capturas/03-seccion-bloqueada.png)
-
-Minijuego de Espín (Etapa 1), sobre el fondo cuadriculado común.
-
-![Minijuego de Espín](docs/capturas/04-minijuego-espin.png)
-
-Módulo del bosón de Higgs, que se abre en la Etapa 4.
-
-![Pantalla del bosón de Higgs](docs/capturas/05-pantalla-higgs.png)
-
 ### Sistema de progreso y desbloqueo
 
 El desbloqueo progresivo es el eje pedagógico del proyecto y está implementado en
@@ -180,8 +156,6 @@ aparece un aviso en lugar de navegar. El avance automático también lo respeta:
 si al terminar una etapa la siguiente todavía está cerrada, el minijuego no
 salta a ella.
 
-![Etapas internas bloqueadas](docs/capturas/09-etapas-bloqueadas.png)
-
 Así funciona la **retroalimentación** que describe el proyecto: los minijuegos
 incorporan niveles nuevos a medida que el alumno avanza, en lugar de mostrar de
 golpe todo su contenido.
@@ -235,28 +209,22 @@ pantallas bajas, esas dos pantallas usan `justify-content: safe center` con
 desplazamiento vertical: cuando todo cabe quedan centradas y, cuando no, se
 puede bajar hasta el principio sin que nada quede cortado.
 
-![Tipografía legible en el Modelo Estándar](docs/capturas/10-tipografia-legible.png)
-
 ### Cuentas de usuario (Firebase)
 
 El sitio puede funcionar con cuentas para que el progreso de cada alumno lo siga
 entre computadoras. **Es opcional y está desactivado por defecto**: mientras no se
 configure, todo funciona como siempre con el progreso guardado en el navegador.
 
-Los pasos están en **[docs/FIREBASE.md](docs/FIREBASE.md)**. En resumen: crear un
-proyecto en Firebase, pegar su configuración en `js/firebase-config.js`, activar
-los proveedores «Correo electrónico/contraseña» y «Anónimo», y pegar las reglas de
-[`firestore.rules`](firestore.rules) en la consola.
-
-![Pantalla de acceso](docs/capturas/06-pantalla-de-acceso.png)
+En resumen: crear un proyecto en Firebase, pegar su configuración en
+`js/firebase-config.js`, activar los proveedores «Correo electrónico/contraseña»
+y «Anónimo», y pegar las reglas de [`firestore.rules`](firestore.rules) en la
+consola.
 
 El diseño del acceso es **invitado primero**: el alumno empieza a jugar sin
 registrarse (por dentro se le crea una cuenta anónima y su progreso ya se guarda
 en la nube) y, cuando quiera, crea una cuenta con su correo. En ese momento el
 progreso **se conserva**, porque la cuenta anónima se vincula al correo en lugar
 de reemplazarse.
-
-![Perfil con la sección de cuenta](docs/capturas/07-perfil-con-cuenta.png)
 
 Archivos que intervienen:
 
