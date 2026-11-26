@@ -111,7 +111,7 @@ function spRenderTabs() {
     const bloqueada = (typeof Progreso !== 'undefined' && Progreso.etapaInternaDesbloqueada)
       ? !Progreso.etapaInternaDesbloqueada(i)
       : false;
-    const title = bloqueada ? `🔒 Se abre al desbloquear la Etapa ${i + 1} del proyecto` : e.nombre;
+    const title = bloqueada ? `🔒 Se abre al desbloquear la Etapa ${i + 1} de Higgs Adventure` : e.nombre;
     return `
     <button class="sp-etapa-tab ${spState.etapa === i ? 'active' : ''} ${bloqueada ? 'etapa-tab-bloqueada' : ''}"
             onclick="spIrEtapa(${i})" title="${title}">${e.label}</button>
@@ -126,7 +126,7 @@ function spIrEtapa(e) {
     : false;
   if (bloqueada) {
     if (typeof Progreso !== 'undefined' && Progreso.avisar) {
-      Progreso.avisar(`🔒 La Etapa ${e + 1} todavía está bloqueada: avanza en el proyecto para abrirla.`);
+      Progreso.avisar(`🔒 La Etapa ${e + 1} todavía está bloqueada: avanza en Higgs Adventure para abrirla.`);
     }
     return;
   }
@@ -173,7 +173,7 @@ function spSiguienteNivel() {
       : false;
     if (bloqueada) {
       if (typeof Progreso !== 'undefined' && Progreso.avisar) {
-        Progreso.avisar(`🔒 La Etapa ${sig + 1} todavía está bloqueada: avanza en el proyecto para abrirla.`);
+        Progreso.avisar(`🔒 La Etapa ${sig + 1} todavía está bloqueada: avanza en Higgs Adventure para abrirla.`);
       }
       cerrarSpin();
     } else {

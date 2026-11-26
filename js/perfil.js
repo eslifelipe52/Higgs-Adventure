@@ -183,7 +183,7 @@ function _vistaProgreso() {
 
   return `
     <div class="perfil-section">
-      <div class="perfil-section-title">🧭 Etapas del proyecto</div>
+      <div class="perfil-section-title">🧭 Etapas de Higgs Adventure</div>
       ${filasEtapas}
       ${bloqueSiguiente}
     </div>

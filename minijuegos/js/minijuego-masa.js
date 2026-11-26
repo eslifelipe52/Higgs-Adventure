@@ -266,7 +266,7 @@ function msIniciarNivel(idx) {
      los botones «Ir a Etapa N →» y el avance automático pasan por aquí. */
   if (msEtapaBloqueada(idx)) {
     if (typeof Progreso !== 'undefined' && Progreso.avisar) {
-      Progreso.avisar(`🔒 Etapa ${idx + 1} bloqueada: se abre al desbloquear la Etapa ${idx + 1} del proyecto.`);
+      Progreso.avisar(`🔒 Etapa ${idx + 1} bloqueada: se abre al desbloquear la Etapa ${idx + 1} de Higgs Adventure.`);
     }
     /* Si aún no hay ninguna etapa pintada (estado inicial), forzamos la 1 */
     if (msState && typeof msState.idx === 'number') return;
@@ -1953,7 +1953,7 @@ function msRenderNivelDots() {
   const cerradas = [0,1,2].map(i => msEtapaBloqueada(i));
   dots.innerHTML = [0,1,2].map(i => `
     <button class="ms-nivel-dot ${msState.idx===i?'active':''} ${cerradas[i]?'etapa-tab-bloqueada':''}"
-            ${cerradas[i] ? `title="🔒 Se abre al desbloquear la Etapa ${i + 1} del proyecto"` : ''}
+            ${cerradas[i] ? `title="🔒 Se abre al desbloquear la Etapa ${i + 1} de Higgs Adventure"` : ''}
             onclick="msIniciarNivel(${i})">
       ${i===0 ? 'Etapa 1' : i===1 ? 'Etapa 2' : 'Etapa 3'}
     </button>

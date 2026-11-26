@@ -208,13 +208,13 @@ function ccEtapaBloqueada(i) {
 
 /* La pestaña interna N (base 0) se abre junto con la etapa N+1 del proyecto */
 function ccTextoEtapaBloqueada(i) {
-  return `🔒 Se abre al desbloquear la Etapa ${i + 1} del proyecto`;
+  return `🔒 Se abre al desbloquear la Etapa ${i + 1} de Higgs Adventure`;
 }
 
 /* Aviso flotante (no bloqueante) al intentar abrir una etapa cerrada */
 function ccAvisarEtapaBloqueada(i) {
   if (typeof Progreso !== 'undefined' && Progreso.avisar) {
-    Progreso.avisar(`🔒 Esta etapa se abre al desbloquear la Etapa ${i + 1} del proyecto`);
+    Progreso.avisar(`🔒 Esta etapa se abre al desbloquear la Etapa ${i + 1} de Higgs Adventure`);
   }
 }
 
